@@ -15,9 +15,12 @@ const sqlite = require('node:sqlite') as {
 };
 
 const dataDir = path.join(process.cwd(), 'data');
-const dbPath = path.join(dataDir, 'operon-kitchens.sqlite');
+const useBuildMemoryDb = process.env.OPERON_KITCHENS_BUILD_DB === 'memory';
+const dbPath = useBuildMemoryDb ? ':memory:' : path.join(dataDir, 'operon-kitchens.sqlite');
 
-fs.mkdirSync(dataDir, { recursive: true });
+if (!useBuildMemoryDb) {
+  fs.mkdirSync(dataDir, { recursive: true });
+}
 
 const globalForDb = globalThis as unknown as {
   operonKitchenDb?: SqliteDatabase;
@@ -26,7 +29,9 @@ const globalForDb = globalThis as unknown as {
 export const db = globalForDb.operonKitchenDb ?? new sqlite.DatabaseSync(dbPath);
 
 db.exec('PRAGMA foreign_keys = ON;');
-db.exec('PRAGMA journal_mode = WAL;');
+if (!useBuildMemoryDb) {
+  db.exec('PRAGMA journal_mode = WAL;');
+}
 db.exec('PRAGMA busy_timeout = 5000;');
 db.exec(`
   CREATE TABLE IF NOT EXISTS leads (
@@ -168,6 +173,6 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_kitchen_faqs_category ON kitchen_faqs(category);
 `);
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production' && !useBuildMemoryDb) {
   globalForDb.operonKitchenDb = db;
 }
