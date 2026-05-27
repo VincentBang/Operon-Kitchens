@@ -1,6 +1,7 @@
 import { QuoteInput } from '@/lib/pricing';
 
 export const defaultQuoteInput: QuoteInput = {
+  propertyType: 'house',
   measurementsProvided: false,
   photosProvided: false,
   layoutChange: false,
@@ -18,10 +19,14 @@ export const defaultQuoteInput: QuoteInput = {
   doorFinish: 'melamine',
   panelFinish: 'melamine',
   selectedAccessories: [],
+  zones: [],
   benchtopType: 'laminate',
   benchtopMetres: 0,
   splashbackType: 'tile',
   splashbackArea: 0,
+  engineeredStoneTransitionClaimed: false,
+  engineeredStoneContractBefore2023End: false,
+  engineeredStoneInstallBefore2024End: false,
   trades: {
     plumbing: false,
     electrical: false,
@@ -29,5 +34,42 @@ export const defaultQuoteInput: QuoteInput = {
     tiling: false,
     painting: false,
   },
+  appliances: {
+    rangehood: false,
+    cooktop: false,
+    oven: false,
+    dishwasher: false,
+    fridge: false,
+  },
+  lighting: {
+    ledStripsMetres: 0,
+    downlightQty: 0,
+    pendantQty: 0,
+  },
+  flooring: {
+    included: false,
+    areaSqm: 0,
+    type: 'none',
+  },
+  structuralWorks: {
+    wallRemoval: false,
+    beamRequired: false,
+    windowDoorChanges: false,
+  },
+  strataApprovalRequired: false,
+  basixReviewRequired: false,
+  dbpReviewRequired: false,
+  asbestosRisk: false,
+  accessConstraints: {
+    narrowAccess: false,
+    longCarry: false,
+    occupiedHome: false,
+  },
+  designPlan: null,
+  supportingFiles: [],
+  depositOfferedAmount: 0,
+  depositOfferedPercent: 10,
+  hbcInsuranceIncluded: false,
+  hbcCertificateConfirmed: false,
   highRiskItems: false,
 };

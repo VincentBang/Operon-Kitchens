@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest"
+    "test": "jest",
+    "test:ci": "jest --runInBand"
   },
   "dependencies": {
     "next": "^14.2.35",
@@ -20,6 +21,8 @@
     "@types/node": "20.2.5",
     "@types/react": "18.0.28",
     "autoprefixer": "10.4.13",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^14.2.35",
     "jest": "29.5.0",
     "jest-environment-jsdom": "^29.5.0",
     "postcss": "^8.5.10",

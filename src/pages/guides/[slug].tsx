@@ -1,25 +1,38 @@
-import { useRouter } from 'next/router';
+import { GetServerSideProps } from 'next';
 import Link from 'next/link';
-import { guides } from '@/data/guides';
+import { getGuideBySlug, GuideRecord } from '@/lib/adminData';
 
-export default function GuidePage() {
-  const router = useRouter();
-  const { slug } = router.query;
-  if (!slug || Array.isArray(slug)) return null;
-  const guide = guides.find((g) => g.slug === slug);
+interface Props {
+  guide: GuideRecord | null;
+}
+
+export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
+  const slug = typeof context.params?.slug === 'string' ? context.params.slug : '';
+  return { props: { guide: slug ? getGuideBySlug(slug) : null } };
+};
+
+export default function GuidePage({ guide }: Props) {
   if (!guide) {
     return (
-      <main className="min-h-screen p-4">
-        <h1 className="text-3xl font-bold">Guide not found</h1>
+      <main className="contentPage">
+        <h1 className="contentTitle">Guide not found</h1>
         <Link href="/" className="textLink">Return home</Link>
       </main>
     );
   }
   return (
-    <main className="min-h-screen p-4 max-w-3xl mx-auto space-y-4">
-      <h1 className="text-3xl font-bold">{guide.title}</h1>
-      <p>{guide.content}</p>
-      <p className="mt-4">For a personalised estimate, <Link href="/quote" className="textLink">start your quote</Link>.</p>
+    <main>
+      <section className="contentHero slim">
+        <div>
+          <p className="eyebrow">Kitchen guide</p>
+          <h1 className="contentTitle">{guide.title}</h1>
+        </div>
+        <p className="muted">Use this as planning context before your estimate is professionally reviewed.</p>
+      </section>
+      <article className="contentPage articleBody">
+        <p>{guide.content}</p>
+        <p className="contentCta">For a personalised estimate, <Link href="/quote" className="textLink">start your quote</Link>.</p>
+      </article>
     </main>
   );
 }

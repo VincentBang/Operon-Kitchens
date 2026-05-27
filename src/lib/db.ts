@@ -101,12 +101,71 @@ db.exec(`
     UNIQUE (name, version)
   );
 
+  CREATE TABLE IF NOT EXISTS kitchen_product_categories (
+    id TEXT PRIMARY KEY,
+    slug TEXT NOT NULL UNIQUE,
+    title TEXT NOT NULL,
+    summary TEXT NOT NULL,
+    details_json TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'published',
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS kitchen_glossary_terms (
+    id TEXT PRIMARY KEY,
+    slug TEXT NOT NULL UNIQUE,
+    term TEXT NOT NULL,
+    definition TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'published',
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS kitchen_guides (
+    id TEXT PRIMARY KEY,
+    slug TEXT NOT NULL UNIQUE,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'published',
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS kitchen_locations (
+    id TEXT PRIMARY KEY,
+    region TEXT NOT NULL UNIQUE,
+    name TEXT NOT NULL,
+    description TEXT NOT NULL,
+    notes TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'published',
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS kitchen_faqs (
+    id TEXT PRIMARY KEY,
+    question TEXT NOT NULL,
+    answer TEXT NOT NULL,
+    category TEXT NOT NULL DEFAULT 'general',
+    sort_order INTEGER NOT NULL DEFAULT 0,
+    status TEXT NOT NULL DEFAULT 'published',
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  );
+
   CREATE INDEX IF NOT EXISTS idx_quotes_lead_id ON quotes(lead_id);
   CREATE INDEX IF NOT EXISTS idx_quotes_created_at ON quotes(created_at);
   CREATE INDEX IF NOT EXISTS idx_quote_items_quote_id ON quote_items(quote_id);
   CREATE INDEX IF NOT EXISTS idx_rate_cards_is_active ON rate_cards(is_active);
   CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions(user_id);
   CREATE INDEX IF NOT EXISTS idx_sessions_expires_at ON sessions(expires_at);
+  CREATE INDEX IF NOT EXISTS idx_kitchen_product_categories_status ON kitchen_product_categories(status);
+  CREATE INDEX IF NOT EXISTS idx_kitchen_glossary_terms_status ON kitchen_glossary_terms(status);
+  CREATE INDEX IF NOT EXISTS idx_kitchen_guides_status ON kitchen_guides(status);
+  CREATE INDEX IF NOT EXISTS idx_kitchen_locations_status ON kitchen_locations(status);
+  CREATE INDEX IF NOT EXISTS idx_kitchen_faqs_status ON kitchen_faqs(status);
+  CREATE INDEX IF NOT EXISTS idx_kitchen_faqs_category ON kitchen_faqs(category);
 `);
 
 if (process.env.NODE_ENV !== 'production') {

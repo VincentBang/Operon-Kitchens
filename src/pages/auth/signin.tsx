@@ -58,29 +58,29 @@ export default function SignInPage() {
           <h1>Sign in</h1>
           <p className="muted">Customers can view saved quotes. Admins can access leads and rate cards.</p>
         </div>
-        <form onSubmit={handleSubmit} className="wizardPanel space-y-4">
-          <label className="flex flex-col">
+        <form onSubmit={handleSubmit} className="wizardPanel stepStack">
+          <label className="field">
             <span>Email</span>
-            <input className="p-2 border rounded" type="email" value={email} onChange={(event) => setEmail(event.target.value)} required />
+            <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} required aria-invalid={!email.trim()} />
           </label>
-          <label className="flex flex-col">
+          <label className="field">
             <span>Name</span>
-            <input className="p-2 border rounded" value={name} onChange={(event) => setName(event.target.value)} />
+            <input value={name} onChange={(event) => setName(event.target.value)} />
           </label>
-          <label className="flex flex-col">
+          <label className="field">
             <span>Phone</span>
-            <input className="p-2 border rounded" value={phone} onChange={(event) => setPhone(event.target.value)} />
+            <input value={phone} onChange={(event) => setPhone(event.target.value)} />
           </label>
-          <label className="flex flex-col">
+          <label className="field">
             <span>Admin passcode</span>
-            <input className="p-2 border rounded" type="password" value={passcode} onChange={(event) => setPasscode(event.target.value)} />
+            <input type="password" value={passcode} onChange={(event) => setPasscode(event.target.value)} />
           </label>
           <p className="privacyNotice">
             This development sign-in creates a secure browser session. Use <strong>admin@operonkitchens.local</strong> with the admin passcode to access the admin dashboard.
           </p>
-          {error && <div className="p-3 bg-red-50 border border-red-200 rounded text-red-700">{error}</div>}
+          {error && <div className="errorPanel">{error}</div>}
           <div className="flexActions">
-            <button className="bg-blue-600 text-white py-2 px-4 rounded" disabled={!email || isSubmitting}>
+            <button className="button primary" disabled={!email || isSubmitting}>
               {isSubmitting ? 'Signing in...' : 'Sign in'}
             </button>
             <Link href="/" className="textLink">Return home</Link>

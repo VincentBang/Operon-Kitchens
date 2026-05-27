@@ -39,13 +39,20 @@ const projects: Project[] = [
 
 export default function ProjectsPage() {
   return (
-    <main className="min-h-screen p-4 max-w-4xl mx-auto space-y-6">
-      <h1 className="text-3xl font-bold">Recent projects</h1>
-      <p className="mb-6">Each project is tailored to the client’s needs, finishes and budget.</p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <main>
+      <section className="contentHero slim">
+        <div>
+          <p className="eyebrow">Project patterns</p>
+          <h1 className="contentTitle">Recent projects</h1>
+        </div>
+        <p className="muted">Each project is tailored to the client’s needs, finishes, approvals and budget range.</p>
+      </section>
+      <section className="contentPage">
+      <div className="detailGrid two">
         {projects.map((proj) => (
-          <div key={proj.id} className="border p-4 rounded shadow-sm space-y-2">
-            <h3 className="font-semibold text-lg">{proj.style} - {proj.suburb}</h3>
+          <article key={proj.id} className="infoCard projectCard">
+            <span className="featureIcon" aria-hidden="true">P{proj.id}</span>
+            <h3>{proj.style} - {proj.suburb}</h3>
             <p><strong>Scope:</strong> {proj.scope}</p>
             <p><strong>Finish:</strong> {proj.finish}</p>
             <p><strong>Benchtop:</strong> {proj.benchtop}</p>
@@ -53,9 +60,10 @@ export default function ProjectsPage() {
             <p><strong>Timeframe:</strong> {proj.timeframe}</p>
             <p><strong>Challenge:</strong> {proj.challenge}</p>
             <Link href="/quote" className="textLink">Quote a similar project</Link>
-          </div>
+          </article>
         ))}
       </div>
+      </section>
     </main>
   );
 }

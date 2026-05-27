@@ -1,44 +1,51 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import Link from 'next/link';
-
-const quoteFields = [
-  'Cabinet material',
-  'Door finish',
-  'Hardware brand/level',
-  'Benchtop material',
-  'Splashback',
-  'Demolition',
-  'Disposal',
-  'Plumbing',
-  'Electrical',
-  'Appliances',
-  'Installation',
-  'Site access',
-  'GST status',
-  'Warranty',
-  'Exclusions',
-  'Payment stages',
-  'Quote expiry',
-  'PC sums/provisional sums',
-  'Stone/benchtop compliance',
-  'Licence and insurance'
-];
+import PrivacyCollectionNotice from '@/components/PrivacyCollectionNotice';
+import {
+  createDefaultReviewJobDetails,
+  evaluateKitchenQuoteReview,
+  KitchenQuoteReviewJobDetails,
+  ReviewCheckKey,
+  ReviewFileCategory,
+  ReviewFileSummary,
+  reviewChecks,
+} from '@/lib/quoteReview';
 
 export default function QuoteReview() {
-  const [mode, setMode] = useState<'choose' | 'nofile' | 'file'>('choose');
-  const [checked, setChecked] = useState<{ [field: string]: boolean }>({});
-  const [submitted, setSubmitted] = useState(false);
+  const [checked, setChecked] = useState<Partial<Record<ReviewCheckKey, boolean>>>({});
+  const [files, setFiles] = useState<ReviewFileSummary[]>([]);
+  const [jobDetails, setJobDetails] = useState<KitchenQuoteReviewJobDetails>(createDefaultReviewJobDetails());
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
   const [lookup, setLookup] = useState('');
   const [lookupError, setLookupError] = useState('');
   const [storedQuotes, setStoredQuotes] = useState<any[]>([]);
   const [isLookingUp, setIsLookingUp] = useState(false);
+  const [contactName, setContactName] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
+  const [contactPhone, setContactPhone] = useState('');
+  const [privacyAcknowledged, setPrivacyAcknowledged] = useState(false);
+  const [marketingOptIn, setMarketingOptIn] = useState(false);
+  const [leadError, setLeadError] = useState('');
+  const [isSubmittingLead, setIsSubmittingLead] = useState(false);
 
-  const handleToggle = (field: string) => {
-    setChecked((prev) => ({ ...prev, [field]: !prev[field] }));
+  const result = useMemo(() => evaluateKitchenQuoteReview({ checkedItems: checked, files, jobDetails }), [checked, files, jobDetails]);
+  const contactReady = Boolean(contactName.trim() && contactEmail.trim() && contactPhone.trim() && privacyAcknowledged);
+
+  const updateJobDetails = (patch: Partial<KitchenQuoteReviewJobDetails>) => {
+    setJobDetails((current) => ({ ...current, ...patch }));
   };
-  const handleSubmit = () => {
-    setSubmitted(true);
+
+  const addFiles = (fileList: FileList | null, category: ReviewFileCategory) => {
+    if (!fileList?.length) return;
+    const nextFiles = Array.from(fileList).map((file) => ({
+      id: `${category}-${file.name}-${Date.now()}`,
+      name: file.name,
+      category,
+      size: file.size,
+    }));
+    setFiles((current) => [...current, ...nextFiles]);
   };
+
   const handleLookup = async () => {
     setLookupError('');
     setStoredQuotes([]);
@@ -49,7 +56,6 @@ export default function QuoteReview() {
       const response = await fetch(`/api/quotes?${query}`);
       const payload = await response.json();
       if (!response.ok) throw new Error(payload.error || 'Could not find stored quote.');
-
       setStoredQuotes(payload.quote ? [payload.quote] : payload.quotes ?? []);
     } catch (error) {
       setLookupError(error instanceof Error ? error.message : 'Could not find stored quote.');
@@ -58,133 +64,248 @@ export default function QuoteReview() {
     }
   };
 
-  if (mode === 'choose') {
-    return (
-      <main className="min-h-screen p-4 max-w-3xl mx-auto space-y-4">
-        <h1 className="text-3xl font-bold mb-4">Review your kitchen quote</h1>
-        <p className="mb-2">Choose how you would like to review your existing quote:</p>
-        <div className="space-x-4">
-          <button
-            onClick={() => setMode('file')}
-            className="bg-blue-600 text-white py-2 px-4 rounded"
-          >
-            Upload quote file
-          </button>
-          <button
-            onClick={() => setMode('nofile')}
-            className="border border-blue-600 text-blue-600 py-2 px-4 rounded"
-          >
-            No file – checklist
-          </button>
+  const saveReviewLead = async () => {
+    setLeadError('');
+    setIsSubmittingLead(true);
+    try {
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: contactName,
+          email: contactEmail,
+          phone: contactPhone,
+          marketingOptIn,
+          privacyAcknowledged,
+          source: 'quote_review_structured_intake',
+          reviewIntake: {
+            jobDetails,
+            checkedItems: checked,
+            files,
+            placeholderResult: result,
+          },
+        }),
+      });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || 'Could not save review request.');
+      setReviewSubmitted(true);
+    } catch (error) {
+      setLeadError(error instanceof Error ? error.message : 'Could not save review request.');
+    } finally {
+      setIsSubmittingLead(false);
+    }
+  };
+
+  return (
+    <main className="pageSurface">
+      <section className="wizardShell">
+        <div className="wizardHeader">
+          <p className="eyebrow">Quote review</p>
+          <h1>Review your kitchen quote</h1>
+          <p className="muted">Upload a current quote, photos or plans, then capture the scope items a reviewer needs before comparing totals.</p>
         </div>
-        <section className="quoteResult mt-8">
-          <h2 className="text-xl font-semibold">Find a saved Operon estimate</h2>
-          <p className="text-gray-600 mt-1">Enter a quote ID or lead email to return to a saved quote.</p>
-          <div className="flex flex-col sm:flex-row gap-2 mt-4">
-            <input
-              type="text"
-              value={lookup}
-              onChange={(event) => setLookup(event.target.value)}
-              placeholder="Quote ID or email"
-              className="p-2 border rounded flex-1"
-            />
-            <button
-              onClick={handleLookup}
-              disabled={!lookup.trim() || isLookingUp}
-              className="bg-blue-600 text-white py-2 px-4 rounded"
-            >
-              {isLookingUp ? 'Searching...' : 'Find quote'}
-            </button>
-          </div>
-          {lookupError && <div className="p-3 mt-3 bg-red-50 border border-red-200 rounded text-red-700">{lookupError}</div>}
-          {storedQuotes.length > 0 && (
-            <div className="mt-4 space-y-3">
-              {storedQuotes.map((quote) => (
-                <article key={quote.id} className="border rounded p-3 bg-white">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                    <div>
-                      <p className="font-semibold">Quote {quote.id}</p>
-                      <p className="text-sm text-gray-600">
-                        ${quote.totals.total.toLocaleString(undefined, { maximumFractionDigits: 0 })} · {quote.totals.confidenceLevel} confidence
-                      </p>
-                    </div>
-                    <Link href={`/quote/${quote.id}`} className="textLink">View or edit</Link>
-                  </div>
+
+        <div className="wizardPanel stepStack">
+          <section className="quoteResult">
+            <h2>What this review checks</h2>
+            <p className="muted">Phase 1 is structured intake only. It does not perform full AI document review, legal advice or final price comparison.</p>
+            <div className="choiceGrid compact">
+              {reviewChecks.map((check) => (
+                <article className="checkCard tall" key={check.key}>
+                  <span><strong>{check.label}</strong><small>{check.explanation}</small></span>
                 </article>
               ))}
             </div>
-          )}
-        </section>
-        <p className="mt-8 text-sm text-gray-600">Not sure about your quote? You can also start a new estimate here: <Link href="/quote" className="textLink">Start estimate</Link></p>
-      </main>
-    );
-  }
-  if (mode === 'file') {
-    return (
-      <main className="min-h-screen p-4 max-w-xl mx-auto space-y-4">
-        <h1 className="text-3xl font-bold mb-4">Upload your quote</h1>
-        <p>For privacy reasons we do not expose uploaded files publicly. Please upload a PDF or image of your existing kitchen quote for review.</p>
-        <input type="file" accept=".pdf,image/*" className="mt-2" />
-        <p className="text-sm text-gray-500 mt-2">Note: File uploads are stored securely and used solely for quote preparation.</p>
-        <button
-          onClick={() => setMode('choose')}
-          className="text-blue-600 underline mt-4"
-        >
-          Back to options
-        </button>
-      </main>
-    );
-  }
-  // No-file checklist mode
-  const total = quoteFields.length;
-  const completed = quoteFields.filter((field) => checked[field]).length;
-  const completeness = Math.round((completed / total) * 100);
-  const missing = quoteFields.filter((field) => !checked[field]);
-  return (
-    <main className="min-h-screen p-4 max-w-3xl mx-auto space-y-4">
-      <h1 className="text-3xl font-bold mb-4">Quote completeness checklist</h1>
-      {submitted ? (
-        <div className="p-4 bg-green-100 border rounded">
-          <p>Your quote completeness score is {completeness}%. Here are items that appear to be missing:</p>
-          <ul className="list-disc list-inside">
-            {missing.map((m) => (
-              <li key={m}>{m}</li>
-            ))}
-          </ul>
-          <p className="mt-4">Questions to ask: ensure pricing covers all selected items, confirm compliance with engineered stone restrictions, check allowance for trades and site access.</p>
-          <p className="mt-2">To get a comparison estimate, <Link href="/quote" className="textLink">start a new estimate</Link>.</p>
-        </div>
-      ) : (
-        <>
-          <p>Tick the items that your current quote clearly includes:</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {quoteFields.map((field) => (
-              <label key={field} className="flex items-center space-x-2 border p-2 rounded">
-                <input
-                  type="checkbox"
-                  checked={checked[field] || false}
-                  onChange={() => handleToggle(field)}
-                />
-                <span>{field}</span>
+          </section>
+
+          <section className="quoteResult">
+            <h2>Saved Operon estimate</h2>
+            <p className="muted">Already started an Operon Kitchens estimate? Enter a quote ID or lead email.</p>
+            <div className="formInline">
+              <input value={lookup} onChange={(event) => setLookup(event.target.value)} placeholder="Quote ID or email" aria-label="Quote ID or email" />
+              <button onClick={handleLookup} disabled={!lookup.trim() || isLookingUp} className="button primary">{isLookingUp ? 'Searching...' : 'Find quote'}</button>
+            </div>
+            {lookupError && <div className="errorPanel">{lookupError}</div>}
+            {storedQuotes.length > 0 && (
+              <div className="adminList">
+                {storedQuotes.map((quote) => (
+                  <article key={quote.id} className="adminListItem">
+                    <div>
+                      <p className="font-semibold">Quote {quote.id}</p>
+                      <p className="text-sm text-gray-600">
+                        ${quote.totals.estimateLow.toLocaleString(undefined, { maximumFractionDigits: 0 })} - ${quote.totals.estimateHigh.toLocaleString(undefined, { maximumFractionDigits: 0 })} · {quote.totals.confidenceLabel ?? quote.totals.confidenceLevel} confidence
+                      </p>
+                    </div>
+                    <Link href={`/quote/${quote.id}`} className="textLink">View or edit</Link>
+                  </article>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section className="quoteResult">
+            <h2>Upload quote, photos or plans</h2>
+            <div className="formGrid two">
+              <label className="uploadBox"><span>Existing quote</span><input type="file" accept=".pdf,image/*" onChange={(event) => addFiles(event.target.files, 'existingQuote')} /></label>
+              <label className="uploadBox"><span>Photos</span><input type="file" multiple accept="image/*" onChange={(event) => addFiles(event.target.files, 'photo')} /></label>
+              <label className="uploadBox"><span>Plans</span><input type="file" multiple accept=".pdf,image/*" onChange={(event) => addFiles(event.target.files, 'plan')} /></label>
+              <label className="uploadBox"><span>Other documents</span><input type="file" multiple accept=".pdf,image/*" onChange={(event) => addFiles(event.target.files, 'other')} /></label>
+            </div>
+            {files.length > 0 && (
+              <ul className="lineItemList">
+                {files.map((file) => <li key={file.id}><span>{file.name}</span><span>{file.category}</span></li>)}
+              </ul>
+            )}
+          </section>
+
+          <section className="quoteResult">
+            <h2>Basic job details</h2>
+            <div className="formGrid two">
+              <label className="field">
+                <span>Property type</span>
+                <select value={jobDetails.propertyType} onChange={(event) => updateJobDetails({ propertyType: event.target.value as KitchenQuoteReviewJobDetails['propertyType'] })}>
+                  <option value="unsure">Unsure</option>
+                  <option value="house">House</option>
+                  <option value="townhouse">Townhouse</option>
+                  <option value="strataApartment">Strata apartment</option>
+                </select>
               </label>
-            ))}
-          </div>
-          <div className="flex justify-between mt-4">
-            <button
-              onClick={() => setMode('choose')}
-              className="bg-gray-200 text-gray-700 py-2 px-4 rounded"
-            >
-              Back
+              <label className="field">
+                <span>Project type</span>
+                <select value={jobDetails.projectType} onChange={(event) => updateJobDetails({ projectType: event.target.value as KitchenQuoteReviewJobDetails['projectType'] })}>
+                  <option value="unsure">Unsure</option>
+                  <option value="fullRenovation">Full renovation</option>
+                  <option value="cabinetryRefresh">Cabinetry refresh</option>
+                  <option value="benchtopSplashback">Benchtop/splashback</option>
+                </select>
+              </label>
+            </div>
+            <div className="choiceGrid compact">
+              <ReviewToggle label="Layout changes" checked={jobDetails.hasLayoutChange} onChange={(value) => updateJobDetails({ hasLayoutChange: value })} />
+              <ReviewToggle label="Services relocated" checked={jobDetails.servicesRelocated} onChange={(value) => updateJobDetails({ servicesRelocated: value })} />
+              <ReviewToggle label="Demolition included" checked={jobDetails.demolitionIncluded} onChange={(value) => updateJobDetails({ demolitionIncluded: value })} />
+              <ReviewToggle label="Waste included" checked={jobDetails.wasteIncluded} onChange={(value) => updateJobDetails({ wasteIncluded: value })} />
+              <ReviewToggle label="Strata/apartment risk" checked={jobDetails.strataOrApartment} onChange={(value) => updateJobDetails({ strataOrApartment: value })} />
+              <ReviewToggle label="Appliances specified" checked={jobDetails.appliancesSpecified} onChange={(value) => updateJobDetails({ appliancesSpecified: value })} />
+              <ReviewToggle label="Benchtop clear" checked={jobDetails.benchtopKnown} onChange={(value) => updateJobDetails({ benchtopKnown: value })} />
+              <ReviewToggle label="Splashback clear" checked={jobDetails.splashbackKnown} onChange={(value) => updateJobDetails({ splashbackKnown: value })} />
+            </div>
+          </section>
+
+          <section className="quoteResult">
+            <h2>Quote clarity checklist</h2>
+            <p className="muted">Tick only what the quote clearly states.</p>
+            <div className="choiceGrid">
+              {reviewChecks.map((check) => (
+                <label key={check.key} className="checkCard">
+                  <input type="checkbox" checked={Boolean(checked[check.key])} onChange={(event) => setChecked((current) => ({ ...current, [check.key]: event.target.checked }))} />
+                  <span><strong>{check.label}</strong><small>{check.explanation}</small></span>
+                </label>
+              ))}
+            </div>
+          </section>
+
+          <section className="quoteResult">
+            <h2>Placeholder review result</h2>
+            <div className="resultTopline">
+              <div>
+                <span className="eyebrow">Review readiness</span>
+                <strong>{result.status === 'reviewReady' ? 'Ready for review' : result.status === 'partial' ? 'Partly clear' : 'Needs more detail'}</strong>
+              </div>
+              <span className={`confidence ${result.confidenceScore >= 80 ? 'high' : result.confidenceScore >= 45 ? 'medium' : 'low'}`}>{result.confidenceScore}/100</span>
+            </div>
+            <p className="muted">{result.disclaimer}</p>
+            <p><strong>Recommended next step:</strong> {result.recommendedNextStep}</p>
+            {result.missingItems.length > 0 && (
+              <details className="advancedPanel" open>
+                <summary>Missing or unclear items</summary>
+                <ul>{result.missingItems.map((item) => <li key={item}>{item}</li>)}</ul>
+              </details>
+            )}
+            <details className="advancedPanel" open>
+              <summary>Manual review and compliance flags</summary>
+              <ul className="warningList">
+                {[...result.manualReviewFlags, ...result.complianceFlags].map((flag) => <li key={flag}>{flag}</li>)}
+              </ul>
+            </details>
+          </section>
+
+          <ReviewContactFields
+            name={contactName}
+            email={contactEmail}
+            phone={contactPhone}
+            privacyAcknowledged={privacyAcknowledged}
+            marketingOptIn={marketingOptIn}
+            onName={setContactName}
+            onEmail={setContactEmail}
+            onPhone={setContactPhone}
+            onPrivacy={setPrivacyAcknowledged}
+            onMarketing={setMarketingOptIn}
+          />
+
+          {leadError && <div className="errorPanel">{leadError}</div>}
+          {reviewSubmitted && <div className="successPanel">Your structured quote review intake has been saved. We will follow up with next steps.</div>}
+          <div className="wizardActions">
+            <Link href="/quote" className="button ghost">Start estimate instead</Link>
+            <button onClick={saveReviewLead} className="button primary" disabled={!contactReady || isSubmittingLead}>
+              {isSubmittingLead ? 'Saving...' : 'Request quote review'}
             </button>
-            <button
-              onClick={handleSubmit}
-              className="bg-blue-600 text-white py-2 px-4 rounded"
-            >
-              Evaluate
-            </button>
           </div>
-        </>
-      )}
+        </div>
+      </section>
     </main>
+  );
+}
+
+function ReviewToggle({ label, checked, onChange }: { label: string; checked: boolean; onChange: (value: boolean) => void }) {
+  return (
+    <label className="checkCard">
+      <input type="checkbox" checked={checked} onChange={(event) => onChange(event.target.checked)} />
+      <span>{label}</span>
+    </label>
+  );
+}
+
+interface ReviewContactFieldsProps {
+  name: string;
+  email: string;
+  phone: string;
+  privacyAcknowledged: boolean;
+  marketingOptIn: boolean;
+  onName: (value: string) => void;
+  onEmail: (value: string) => void;
+  onPhone: (value: string) => void;
+  onPrivacy: (value: boolean) => void;
+  onMarketing: (value: boolean) => void;
+}
+
+function ReviewContactFields({
+  name,
+  email,
+  phone,
+  privacyAcknowledged,
+  marketingOptIn,
+  onName,
+  onEmail,
+  onPhone,
+  onPrivacy,
+  onMarketing,
+}: ReviewContactFieldsProps) {
+  return (
+    <section className="quoteResult">
+      <h2>Contact details</h2>
+      <div className="formGrid">
+        <label className="field"><span>Name</span><input value={name} onChange={(event) => onName(event.target.value)} required aria-invalid={!name.trim()} /></label>
+        <label className="field"><span>Email</span><input type="email" value={email} onChange={(event) => onEmail(event.target.value)} required aria-invalid={!email.trim()} /></label>
+        <label className="field"><span>Phone</span><input type="tel" value={phone} onChange={(event) => onPhone(event.target.value)} required aria-invalid={!phone.trim()} /></label>
+      </div>
+      <PrivacyCollectionNotice
+        context="review"
+        acknowledged={privacyAcknowledged}
+        marketingOptIn={marketingOptIn}
+        onAcknowledgedChange={onPrivacy}
+        onMarketingChange={onMarketing}
+      />
+    </section>
   );
 }

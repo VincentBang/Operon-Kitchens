@@ -1,26 +1,38 @@
-import { useRouter } from 'next/router';
+import { GetServerSideProps } from 'next';
 import Link from 'next/link';
-import { locations } from '@/data/locations';
+import { getLocationByRegion, LocationRecord } from '@/lib/adminData';
 
-export default function LocationPage() {
-  const router = useRouter();
-  const { region } = router.query;
-  if (!region || Array.isArray(region)) return null;
-  const info = locations[region as string];
+interface Props {
+  info: LocationRecord | null;
+}
+
+export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
+  const region = typeof context.params?.region === 'string' ? context.params.region : '';
+  return { props: { info: region ? getLocationByRegion(region) : null } };
+};
+
+export default function LocationPage({ info }: Props) {
   if (!info) {
     return (
-      <main className="min-h-screen p-4">
-        <h1 className="text-3xl font-bold">Location not found</h1>
+      <main className="contentPage">
+        <h1 className="contentTitle">Location not found</h1>
         <Link href="/" className="textLink">Return home</Link>
       </main>
     );
   }
   return (
-    <main className="min-h-screen p-4 max-w-3xl mx-auto space-y-4">
-      <h1 className="text-3xl font-bold">{info.name}</h1>
-      <p>{info.description}</p>
-      <p className="italic text-gray-700">{info.notes}</p>
-      <p className="mt-4">Ready to renovate? <Link href="/quote" className="textLink">Start your estimate</Link></p>
+    <main>
+      <section className="contentHero slim">
+        <div>
+          <p className="eyebrow">Location guide</p>
+          <h1 className="contentTitle">{info.name}</h1>
+        </div>
+        <p className="muted">{info.description}</p>
+      </section>
+      <article className="contentPage articleBody">
+        <aside className="notePanel">{info.notes}</aside>
+        <p className="contentCta">Ready to renovate? <Link href="/quote" className="textLink">Start your estimate</Link></p>
+      </article>
     </main>
   );
 }

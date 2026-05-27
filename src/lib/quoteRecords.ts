@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { db } from '@/lib/db';
 import { calculatePricing, PricingResult, QuoteInput } from '@/lib/pricing';
-import rateCard from '@/data/rateCard.json';
+import { getActiveRateCardData, seedDefaultRateCard } from '@/lib/rateCards';
 
 export interface ContactInput {
   name: string;
@@ -61,32 +61,61 @@ function serializeLead(row: any) {
   };
 }
 
+function toPublicPricing(pricing: PricingResult | null) {
+  if (!pricing) return null;
+  return {
+    estimateLow: pricing.estimateLow,
+    estimateHigh: pricing.estimateHigh,
+    confidenceScore: pricing.confidenceScore,
+    confidenceLabel: pricing.confidenceLabel,
+    confidenceLevel: pricing.confidenceLevel,
+    includedScope: pricing.includedScope,
+    assumptions: pricing.assumptions,
+    exclusions: pricing.exclusions,
+    manualReviewFlags: pricing.manualReviewFlags,
+    flags: pricing.manualReviewFlags,
+    complianceFlags: pricing.complianceFlags,
+    recommendedNextStep: pricing.recommendedNextStep,
+    recommendedDeposit: pricing.recommendedDeposit,
+    recommendedDepositPercent: pricing.recommendedDepositPercent,
+    hbcRequired: pricing.hbcRequired,
+    depositWarning: pricing.depositWarning,
+    hbcWarning: pricing.hbcWarning,
+    materialCompliance: pricing.materialCompliance,
+  };
+}
+
 function serializeQuote(row: any) {
   const items = db
     .prepare('SELECT id, name, cost, sort_order AS sortOrder, created_at AS createdAt FROM quote_items WHERE quote_id = ? ORDER BY sort_order ASC')
     .all(row.id);
   const lead = row.lead_id ? serializeLead(getLeadById(row.lead_id)) : null;
   const pricing = parseJson<PricingResult | null>(row.pricing_json, null);
+  const publicPricing = toPublicPricing(pricing);
 
   return {
     id: row.id,
     status: row.status,
     lead,
     quoteInput: parseJson<QuoteInput | null>(row.input_json, null),
-    pricing,
+    pricing: publicPricing,
     totals: {
-      subtotal: row.subtotal,
-      margin: row.margin,
-      contingency: row.contingency,
-      gst: row.gst,
       total: row.total,
+      estimateLow: publicPricing?.estimateLow ?? row.total,
+      estimateHigh: publicPricing?.estimateHigh ?? row.total,
       confidenceScore: row.confidence_score,
       confidenceLevel: row.confidence_level,
+      confidenceLabel: publicPricing?.confidenceLabel ?? row.confidence_level,
     },
     assumptions: parseJson<string[]>(row.assumptions_json, []),
     exclusions: parseJson<string[]>(row.exclusions_json, []),
     flags: parseJson<string[]>(row.flags_json, []),
-    items,
+    items: items.map((item: any) => ({
+      id: item.id,
+      name: item.name,
+      sortOrder: item.sortOrder,
+      createdAt: item.createdAt,
+    })),
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -139,7 +168,7 @@ export async function saveQuoteRecord(input: SaveQuoteInput) {
   assertContact(input.contact);
 
   const lead = upsertLead(input.contact);
-  const pricing = calculatePricing(input.quoteInput);
+  const pricing = calculatePricing(input.quoteInput, getActiveRateCardData());
   const quoteId = input.quoteId || randomUUID();
   const createdAt = now();
   const updatedAt = createdAt;
@@ -266,14 +295,4 @@ export async function getAdminDashboardData() {
     .map((row: any) => ({ ...row, isActive: Boolean(row.isActive) }));
 
   return { leads, quotes, rateCards };
-}
-
-function seedDefaultRateCard() {
-  const existing = db.prepare('SELECT id FROM rate_cards WHERE name = ? AND version = ?').get('default-kitchen-rate-card', '2026-05-27');
-  if (existing) return;
-  const timestamp = now();
-  db.prepare(`
-    INSERT INTO rate_cards (id, name, version, data_json, is_active, created_at, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-  `).run(randomUUID(), 'default-kitchen-rate-card', '2026-05-27', JSON.stringify(rateCard), 1, timestamp, timestamp);
 }

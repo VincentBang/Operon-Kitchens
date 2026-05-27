@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
-import { QuoteInput, calculatePricing, PricingResult } from '@/lib/pricing';
+import Link from 'next/link';
+import { QuoteInput, calculatePricing, PricingResult, RateCard } from '@/lib/pricing';
+import PrivacyCollectionNotice from '@/components/PrivacyCollectionNotice';
+import { summarizeDesignPlan } from '@/lib/designPlan';
+import { createKitchenRecommendations } from '@/lib/recommendations';
 
 interface Props {
   data: QuoteInput;
+  rateCard?: RateCard;
   quoteId?: string;
   initialContact?: {
     name: string;
@@ -14,16 +19,23 @@ interface Props {
   onSaved?: (quoteId: string) => void;
 }
 
-const ReviewSubmit: React.FC<Props> = ({ data, quoteId, initialContact, onBack, onSaved }) => {
-  const quoteResult: PricingResult = calculatePricing(data);
+const ReviewSubmit: React.FC<Props> = ({ data, rateCard, quoteId, initialContact, onBack, onSaved }) => {
+  const quoteResult: PricingResult = calculatePricing(data, rateCard);
+  const recommendations = createKitchenRecommendations(data, quoteResult);
   const [name, setName] = useState(initialContact?.name ?? '');
   const [email, setEmail] = useState(initialContact?.email ?? '');
   const [phone, setPhone] = useState(initialContact?.phone ?? '');
   const [marketingOptIn, setMarketingOptIn] = useState(Boolean(initialContact?.marketingOptIn));
+  const [privacyAcknowledged, setPrivacyAcknowledged] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [savedQuoteId, setSavedQuoteId] = useState(quoteId ?? '');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const contactMissing = {
+    name: !name.trim(),
+    email: !email.trim(),
+    phone: !phone.trim(),
+  };
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -35,7 +47,7 @@ const ReviewSubmit: React.FC<Props> = ({ data, quoteId, initialContact, onBack, 
         body: JSON.stringify({
           quoteId: savedQuoteId || undefined,
           quoteInput: data,
-          contact: { name, email, phone, marketingOptIn },
+          contact: { name, email, phone, marketingOptIn, privacyAcknowledged },
           status: 'SUBMITTED',
         }),
       });
@@ -52,138 +64,195 @@ const ReviewSubmit: React.FC<Props> = ({ data, quoteId, initialContact, onBack, 
     }
   };
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-semibold">Review your estimate</h2>
+    <div className="stepStack">
+      <div className="stepIntro">
+        <h2>Review your estimate</h2>
+        <p>Check the estimate range logic, confidence items and collection notice before submitting for follow-up.</p>
+      </div>
       <div className="quoteResult">
         <div className="resultTopline">
           <div>
-            <span className="eyebrow">Starting estimate</span>
-            <strong>${quoteResult.total.toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong>
+            <span className="eyebrow">Planning estimate range</span>
+            <strong>
+              ${quoteResult.estimateLow.toLocaleString(undefined, { maximumFractionDigits: 0 })} - ${quoteResult.estimateHigh.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+            </strong>
           </div>
-          <span className={`confidence ${quoteResult.confidenceLevel}`}>{quoteResult.confidenceLevel} confidence</span>
+          <span className={`confidence ${quoteResult.confidenceLabel}`}>{quoteResult.confidenceLabel} confidence</span>
         </div>
-        <h3 className="font-semibold mb-2">Line items</h3>
-        <ul className="space-y-1">
-          {quoteResult.lineItems.map((item) => (
-            <li key={item.name} className="flex justify-between">
-              <span>{item.name}</span>
-              <span>${item.cost.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+        <p className="muted">This is not a final fixed quote. Final pricing needs site measure, confirmed selections and professional review.</p>
+        <h3>Included scope</h3>
+        <ul className="lineItemList">
+          {quoteResult.includedScope.map((item) => (
+            <li key={item}>
+              <span>{item}</span>
+              <span>Included</span>
             </li>
           ))}
         </ul>
-        <div className="mt-2 flex justify-between font-semibold">
-          <span>Margin</span>
-          <span>${quoteResult.margin.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+        <p className="muted">Recommended next step: {quoteResult.recommendedNextStep}</p>
+        <div className="compliancePanel">
+          <h3>NSW deposit and HBC guidance</h3>
+          <div className="totalRow">
+            <span>Recommended maximum deposit ({quoteResult.recommendedDepositPercent}%)</span>
+            <strong>${quoteResult.recommendedDeposit.toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong>
+          </div>
+          {quoteResult.depositWarning && <p className="warningText">{quoteResult.depositWarning}</p>}
+          {quoteResult.hbcRequired ? (
+            <p className={quoteResult.hbcWarning ? 'warningText' : 'successText'}>
+              {quoteResult.hbcWarning || 'HBC insurance is flagged as required for this estimate and has been marked as included and confirmed.'}
+            </p>
+          ) : (
+            <p className="muted">HBC insurance is not automatically triggered by this estimate because it is under $20,000 including GST.</p>
+          )}
         </div>
-        <div className="flex justify-between font-semibold">
-          <span>Contingency</span>
-          <span>${quoteResult.contingency.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+        <div className="compliancePanel">
+          <h3>Material compliance</h3>
+          {quoteResult.materialCompliance.summary.map((item) => (
+            <p key={item}>{item}</p>
+          ))}
+          {(quoteResult.materialCompliance.benchtop.status === 'banned' || quoteResult.materialCompliance.splashback.status === 'banned') && (
+            <p className="warningText">
+              Engineered stone containing more than 1% crystalline silica is restricted for new work. Suggested alternatives include porcelain, stainless steel, timber, laminate and supplier-confirmed low-silica composites.
+            </p>
+          )}
+          {quoteResult.materialCompliance.transitionProvisionApplies && (
+            <p className="warningText">Transition provision has been claimed and requires manual documentation review before any quote can proceed.</p>
+          )}
         </div>
-        <div className="mt-2 flex justify-between font-semibold">
-          <span>Subtotal</span>
-          <span>${quoteResult.subtotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
-        </div>
-        <div className="flex justify-between font-semibold">
-          <span>GST (10%)</span>
-          <span>${quoteResult.gst.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
-        </div>
-        <div className="flex justify-between font-bold text-lg mt-2">
-          <span>Total inc GST</span>
-          <span>${quoteResult.total.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
-        </div>
-        <div className="mt-2">
-          <p>Confidence level: <strong className="capitalize">{quoteResult.confidenceLevel}</strong> ({quoteResult.confidenceScore}/100)</p>
-          {quoteResult.flags.length > 0 && (
-            <ul className="list-disc list-inside text-red-700">
-              {quoteResult.flags.map((f) => (
+        <div className="reviewAccordions">
+          {recommendations.length > 0 && (
+            <div className="compliancePanel">
+              <h3>Recommended next steps</h3>
+              <ul className="lineItemList">
+                {recommendations.slice(0, 4).map((recommendation) => (
+                  <li key={recommendation.id}>
+                    <span>
+                      <strong>{recommendation.title}</strong>
+                      <br />
+                      <small>{recommendation.action}</small>
+                    </span>
+                    <span className={`confidence ${recommendation.priority}`}>{recommendation.priority}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <div className="compliancePanel">
+            <h3>Design plan</h3>
+            {data.designPlan ? (
+              <>
+                <p>{summarizeDesignPlan(data.designPlan)}</p>
+                {data.designPlan.previewImage && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img className="designAttachmentPreview" src={data.designPlan.previewImage} alt="Saved kitchen design plan preview" />
+                )}
+              </>
+            ) : (
+              <p className="muted">No design plan is attached yet. <Link href="/design" className="textLink">Open the design planner</Link> to sketch the room and save it to this estimate.</p>
+            )}
+          </div>
+          <p>Confidence level: <strong className="capitalize">{quoteResult.confidenceLabel}</strong> ({quoteResult.confidenceScore}/100)</p>
+          {quoteResult.manualReviewFlags.length > 0 && (
+            <ul className="warningList">
+              {quoteResult.manualReviewFlags.map((f) => (
                 <li key={f}>{f}</li>
               ))}
             </ul>
           )}
+          {quoteResult.complianceFlags.length > 0 && (
+            <details className="advancedPanel" open>
+              <summary>Compliance review flags</summary>
+              <ul className="warningList">
+                {quoteResult.complianceFlags.map((flag) => (
+                  <li key={flag}>{flag}</li>
+                ))}
+              </ul>
+            </details>
+          )}
           {quoteResult.assumptions.length > 0 && (
-            <div className="mt-2">
-              <h4 className="font-semibold">Assumptions</h4>
-              <ul className="list-disc list-inside text-gray-700">
+            <details className="advancedPanel" open>
+              <summary>Assumptions</summary>
+              <ul>
                 {quoteResult.assumptions.map((a) => (
                   <li key={a}>{a}</li>
                 ))}
               </ul>
-            </div>
+            </details>
           )}
           {quoteResult.exclusions.length > 0 && (
-            <div className="mt-2">
-              <h4 className="font-semibold">Exclusions</h4>
-              <ul className="list-disc list-inside text-gray-700">
+            <details className="advancedPanel">
+              <summary>Exclusions</summary>
+              <ul>
                 {quoteResult.exclusions.map((e) => (
                   <li key={e}>{e}</li>
                 ))}
               </ul>
-            </div>
+            </details>
           )}
         </div>
       </div>
       {submitted ? (
-        <div className="p-4 bg-green-100 border rounded">
+        <div className="successPanel">
           <p>Thank you {name}, your estimate has been saved. We will contact you shortly.</p>
-          <p className="mt-2">Quote ID: <strong>{savedQuoteId}</strong></p>
-          <p className="mt-2">
+          <p>Quote ID: <strong>{savedQuoteId}</strong></p>
+          <p>
             Return/edit link: <a className="textLink" href={`/quote/${savedQuoteId}`}>{`/quote/${savedQuoteId}`}</a>
           </p>
-          <p className="mt-2 text-sm text-gray-700">Sign in with {email} to view this quote later from your customer account.</p>
+          <p>Sign in with {email} to view this quote later from your customer account.</p>
         </div>
       ) : (
-        <div className="space-y-4">
-          <h3 className="font-semibold">Your details</h3>
-          <label className="flex flex-col">
+        <div className="quoteResult">
+          <h3>Your details</h3>
+          <div className="formGrid">
+          <label className="field">
             <span>Name</span>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="p-2 border rounded"
+              required
+              aria-invalid={contactMissing.name}
             />
           </label>
-          <label className="flex flex-col">
+          <label className="field">
             <span>Email</span>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="p-2 border rounded"
+              required
+              aria-invalid={contactMissing.email}
             />
           </label>
-          <label className="flex flex-col">
+          <label className="field">
             <span>Phone</span>
             <input
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="p-2 border rounded"
+              required
+              aria-invalid={contactMissing.phone}
             />
           </label>
-          <div className="privacyNotice">
-            We collect these details to review your estimate, arrange follow-up and prepare a written scope. Marketing is optional and separate from the quote request.
-            <label className="mt-2 flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={marketingOptIn}
-                onChange={(event) => setMarketingOptIn(event.target.checked)}
-              />
-              <span>Send me planning tips and product updates.</span>
-            </label>
           </div>
-          {submitError && <div className="p-3 bg-red-50 border border-red-200 rounded text-red-700">{submitError}</div>}
-          <div className="flex justify-between">
+          <PrivacyCollectionNotice
+            acknowledged={privacyAcknowledged}
+            marketingOptIn={marketingOptIn}
+            onAcknowledgedChange={setPrivacyAcknowledged}
+            onMarketingChange={setMarketingOptIn}
+          />
+          {submitError && <div className="errorPanel">{submitError}</div>}
+          <div className="wizardActions">
             <button
-              className="bg-gray-200 text-gray-700 py-2 px-4 rounded"
+              className="button ghost"
               onClick={onBack}
             >
               Back
             </button>
             <button
-              className="bg-blue-600 text-white py-2 px-4 rounded"
+              className="button primary"
               onClick={handleSubmit}
-              disabled={!name || !email || !phone || isSubmitting}
+              disabled={!name || !email || !phone || !privacyAcknowledged || isSubmitting}
             >
               {isSubmitting ? 'Saving...' : savedQuoteId ? 'Update estimate' : 'Submit estimate'}
             </button>

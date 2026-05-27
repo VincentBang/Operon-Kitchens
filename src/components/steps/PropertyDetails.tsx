@@ -5,19 +5,22 @@ interface Props {
   data: QuoteInput;
   onChange: (data: QuoteInput) => void;
   onNext: () => void;
+  onBack: () => void;
 }
 
-const PropertyDetails: React.FC<Props> = ({ data, onChange, onNext }) => {
+const PropertyDetails: React.FC<Props> = ({ data, onChange, onNext, onBack }) => {
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-semibold">Property details</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <label className="flex flex-col">
+    <div className="stepStack">
+      <div className="stepIntro">
+        <h2>Property and access</h2>
+        <p>Level, lift, parking and access conditions affect confidence and review flags.</p>
+      </div>
+      <div className="formGrid two">
+        <label className="field">
           <span>Property level</span>
           <select
             value={data.propertyLevel}
             onChange={(e) => onChange({ ...data, propertyLevel: e.target.value as QuoteInput['propertyLevel'] })}
-            className="p-2 border rounded"
           >
             <option value="ground">Ground</option>
             <option value="level1">Level 1</option>
@@ -25,29 +28,27 @@ const PropertyDetails: React.FC<Props> = ({ data, onChange, onNext }) => {
             <option value="unsure">Unsure</option>
           </select>
         </label>
-        <label className="flex flex-col">
+        <label className="field">
           <span>Lift available?</span>
           <select
             value={data.hasLift ? 'yes' : 'no'}
             onChange={(e) => onChange({ ...data, hasLift: e.target.value === 'yes' })}
-            className="p-2 border rounded"
           >
             <option value="yes">Yes</option>
             <option value="no">No</option>
           </select>
         </label>
-        <label className="flex flex-col">
+        <label className="field">
           <span>Parking access</span>
           <select
             value={data.parkingAccess}
             onChange={(e) => onChange({ ...data, parkingAccess: e.target.value as QuoteInput['parkingAccess'] })}
-            className="p-2 border rounded"
           >
             <option value="good">Good</option>
             <option value="limited">Limited</option>
           </select>
         </label>
-        <label className="flex items-center space-x-2">
+        <label className="checkCard">
           <input
             type="checkbox"
             checked={data.measurementsProvided}
@@ -55,7 +56,7 @@ const PropertyDetails: React.FC<Props> = ({ data, onChange, onNext }) => {
           />
           <span>I have measurements</span>
         </label>
-        <label className="flex items-center space-x-2">
+        <label className="checkCard">
           <input
             type="checkbox"
             checked={data.photosProvided}
@@ -64,9 +65,15 @@ const PropertyDetails: React.FC<Props> = ({ data, onChange, onNext }) => {
           <span>I have photos/floorplan</span>
         </label>
       </div>
-      <div className="flex justify-end">
+      <div className="wizardActions">
         <button
-          className="bg-blue-600 text-white py-2 px-4 rounded"
+          className="button ghost"
+          onClick={onBack}
+        >
+          Back
+        </button>
+        <button
+          className="button primary"
           onClick={onNext}
         >
           Next

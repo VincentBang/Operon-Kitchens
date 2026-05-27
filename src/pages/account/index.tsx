@@ -45,12 +45,12 @@ export default function AccountPage({ user, quotes }: AccountProps) {
             <p>No saved quotes yet.</p>
           ) : (
             quotes.map((quote) => (
-              <article key={quote.id} className="border rounded p-4 bg-white">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <article key={quote.id} className="adminListItem">
+                <div>
                   <div>
                     <p className="font-semibold">Quote {quote.id}</p>
                     <p className="text-sm text-gray-600">
-                      ${quote.totals.total.toLocaleString(undefined, { maximumFractionDigits: 0 })} · {quote.totals.confidenceLevel} confidence
+                      ${quote.totals.estimateLow.toLocaleString(undefined, { maximumFractionDigits: 0 })} - ${quote.totals.estimateHigh.toLocaleString(undefined, { maximumFractionDigits: 0 })} · {quote.totals.confidenceLabel ?? quote.totals.confidenceLevel} confidence
                     </p>
                   </div>
                   <Link href={`/quote/${quote.id}`} className="textLink">View or edit</Link>
@@ -60,7 +60,7 @@ export default function AccountPage({ user, quotes }: AccountProps) {
           )}
           <div className="flexActions">
             <Link href="/quote" className="button primary">Start another quote</Link>
-            <button onClick={signOut} className="bg-gray-200 text-gray-700 py-2 px-4 rounded">Sign out</button>
+            <button onClick={signOut} className="button ghost">Sign out</button>
           </div>
         </div>
       </section>

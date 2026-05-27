@@ -1,18 +1,34 @@
-import { glossary } from '@/data/glossary';
+import { GetServerSideProps } from 'next';
+import { GlossaryRecord, listGlossary } from '@/lib/adminData';
 
-export default function GlossaryPage() {
+interface Props {
+  terms: GlossaryRecord[];
+}
+
+export const getServerSideProps: GetServerSideProps<Props> = async () => {
+  return { props: { terms: listGlossary(false) } };
+};
+
+export default function GlossaryPage({ terms }: Props) {
   return (
-    <main className="min-h-screen p-4 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-4">Kitchen glossary</h1>
-      <p className="mb-6">Understand common kitchen and cabinetry terminology to help you navigate your renovation with confidence.</p>
-      <div className="divide-y divide-gray-200">
-        {glossary.map(({ term, definition }) => (
-          <div key={term} className="py-4">
-            <h3 className="font-semibold">{term}</h3>
+    <main>
+      <section className="contentHero slim">
+        <div>
+          <p className="eyebrow">Planning language</p>
+          <h1 className="contentTitle">Kitchen glossary</h1>
+        </div>
+        <p className="muted">Understand common kitchen and cabinetry terminology to help you navigate your renovation with confidence.</p>
+      </section>
+      <section className="contentPage">
+      <div className="definitionList">
+        {terms.map(({ term, definition }) => (
+          <article key={term}>
+            <h3>{term}</h3>
             <p>{definition}</p>
-          </div>
+          </article>
         ))}
       </div>
+      </section>
     </main>
   );
 }

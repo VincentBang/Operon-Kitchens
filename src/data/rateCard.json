@@ -49,6 +49,7 @@
   "benchtopRates": {
     "laminate": 400,
     "solidSurface": 900,
+    "engineeredStone": 0,
     "naturalStone": 1200,
     "porcelain": 1400,
     "timber": 700,
@@ -58,6 +59,7 @@
   "splashbackRates": {
     "tile": 150,
     "glass": 300,
+    "engineeredStone": 0,
     "stone": 400,
     "stainless": 350,
     "acrylic": 200,
@@ -75,11 +77,53 @@
     "tiling": 600,
     "painting": 500
   },
+  "applianceAllowances": {
+    "rangehood": 450,
+    "cooktop": 350,
+    "oven": 350,
+    "dishwasher": 280,
+    "fridge": 180
+  },
+  "lighting": {
+    "ledStripPerMetre": 90,
+    "downlightEach": 120,
+    "pendantEach": 180
+  },
+  "flooringRates": {
+    "none": 0,
+    "vinyl": 110,
+    "hybrid": 140,
+    "engineeredTimber": 230,
+    "tile": 190
+  },
+  "structuralWorks": {
+    "wallRemoval": 2500,
+    "beamEngineering": 1800,
+    "windowDoorChanges": 2200
+  },
   "accessLoading": {
     "level1": 0.05,
     "level2Plus": 0.1,
     "noLift": 0.15,
     "limitedParking": 0.1
+  },
+  "riskLoadings": {
+    "narrowAccess": 0.03,
+    "longCarry": 0.04,
+    "occupiedHome": 0.03,
+    "strataApartment": 0.04,
+    "strataApproval": 0.03,
+    "basixReview": 0.02,
+    "dbpReview": 0.04,
+    "asbestosRisk": 0.05,
+    "structuralWorks": 0.05
+  },
+  "estimateRange": {
+    "highConfidence": 0.12,
+    "mediumConfidence": 0.18,
+    "lowConfidence": 0.28,
+    "complianceReview": 0.04,
+    "structuralReview": 0.06
   },
   "margin": 0.25,
   "contingencyBase": 0.1

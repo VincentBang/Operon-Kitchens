@@ -25,11 +25,12 @@ export const productCategories: { [key: string]: ProductCategory } = {
   },
   benchtops: {
     title: 'Kitchen Benchtops',
-    summary: 'Compliance-safe materials including laminate, solid surface and porcelain.',
+    summary: 'Benchtop materials labelled by engineered-stone compliance status and crystalline silica risk.',
     details: [
-      'Engineered stone is restricted – we offer compliant natural stone alternatives subject to confirmation.',
-      'Laminate benchtops provide cost-effective style with many colours.',
-      'Porcelain and sintered surfaces offer premium durability and heat resistance.',
+      'Engineered stone benchtops, panels and slabs containing more than 1% crystalline silica are banned for ordinary new work from 1 July 2024.',
+      'Compliant alternatives include laminate, porcelain/sintered surfaces, stainless steel, timber or bamboo, and supplier-confirmed low-silica composites.',
+      'Natural stone and custom slab selections require supplier documentation and professional fabrication/compliance review.',
+      'Transition claims for contracts entered into on or before 31 Dec 2023 and installed before 31 Dec 2024 require manual documentation review.',
     ],
   },
   hardware: {
@@ -52,11 +53,11 @@ export const productCategories: { [key: string]: ProductCategory } = {
   },
   splashbacks: {
     title: 'Splashbacks',
-    summary: 'Tile, glass and compliant slab splashbacks.',
+    summary: 'Tile, glass, stainless steel and supplier-confirmed compliant slab splashbacks.',
     details: [
-      'Tiles provide flexibility and affordability.',
-      'Glass offers a seamless contemporary look.',
-      'Stone or porcelain slabs provide a premium finish subject to compliance.',
+      'Tile, glass and stainless steel splashbacks are common compliant alternatives to engineered-stone slab splashbacks.',
+      'Engineered stone slab splashbacks containing more than 1% crystalline silica are restricted for new work.',
+      'Stone, acrylic/composite or custom slab splashbacks require supplier documentation before compliance can be confirmed.',
     ],
   },
 };

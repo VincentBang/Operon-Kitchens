@@ -1,13 +1,15 @@
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
+import AdminShell from '@/components/admin/AdminShell';
 import { AuthUser, getUserFromRequest } from '@/lib/auth';
-import { getAdminDashboardData } from '@/lib/quoteRecords';
+import { getAdminSummary } from '@/lib/adminData';
 
 interface AdminProps {
   user: AuthUser;
   leads: any[];
   quotes: any[];
   rateCards: any[];
+  contentCounts: Record<string, number>;
 }
 
 export const getServerSideProps: GetServerSideProps<AdminProps> = async (context) => {
@@ -21,88 +23,80 @@ export const getServerSideProps: GetServerSideProps<AdminProps> = async (context
     };
   }
 
-  const data = await getAdminDashboardData();
-  return { props: { user, ...data } };
+  return { props: { user, ...getAdminSummary() } };
 };
 
-export default function AdminPage({ user, leads, quotes, rateCards }: AdminProps) {
+export default function AdminPage({ user, leads, quotes, rateCards, contentCounts }: AdminProps) {
   return (
-    <main className="pageSurface">
-      <section className="wizardShell">
-        <div className="wizardHeader">
-          <p className="eyebrow">Admin dashboard</p>
-          <h1>Leads and rate cards</h1>
-          <p className="muted">Signed in as {user.email}</p>
-        </div>
-        <div className="wizardPanel space-y-8">
-      <section className="space-y-3">
-        <h2 className="text-xl font-semibold mb-2">Submitted leads</h2>
-        {leads.length === 0 ? (
-          <p>No leads yet.</p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
-                <tr>
-                  <th className="py-2">Name</th>
-                  <th>Email</th>
-                  <th>Phone</th>
-                  <th>Quotes</th>
-                  <th>Latest value</th>
-                </tr>
-              </thead>
-              <tbody>
-                {leads.map((lead) => (
-                  <tr key={lead.id} className="border-t">
-                    <td className="py-2">{lead.name}</td>
-                    <td>{lead.email}</td>
-                    <td>{lead.phone}</td>
-                    <td>{lead.quoteCount}</td>
-                    <td>${Number(lead.latestQuoteTotal).toLocaleString(undefined, { maximumFractionDigits: 0 })}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+    <AdminShell user={user} title="Operon Kitchens admin">
+      <div className="adminGrid">
+        <Link href="/admin/leads" className="adminStat">
+          <span>Leads</span>
+          <strong>{leads.length}</strong>
+          <em>View pipeline and recent quote requests</em>
+        </Link>
+        <Link href="/admin/rate-cards" className="adminStat">
+          <span>Rate cards</span>
+          <strong>{rateCards.length}</strong>
+          <em>Update kitchen estimating assumptions</em>
+        </Link>
+        <Link href="/admin/products" className="adminStat">
+          <span>Products</span>
+          <strong>{contentCounts.products}</strong>
+          <em>Edit customer-facing category pages</em>
+        </Link>
+        <Link href="/admin/guides" className="adminStat">
+          <span>Guides</span>
+          <strong>{contentCounts.guides}</strong>
+          <em>Maintain quote education content</em>
+        </Link>
+        <Link href="/admin/faqs" className="adminStat">
+          <span>FAQs</span>
+          <strong>{contentCounts.faqs}</strong>
+          <em>Answer common quote and compliance questions</em>
+        </Link>
+      </div>
+
+      <section className="wizardPanel space-y-8">
+        <section>
+          <div className="adminSectionHeader">
+            <h2>Recent quotes</h2>
+            <Link href="/admin/leads" className="textLink">Open leads</Link>
           </div>
-        )}
-      </section>
-      <section className="space-y-3">
-        <h2 className="text-xl font-semibold mb-2">Recent quotes</h2>
-        {quotes.length === 0 ? (
-          <p>No submitted quotes yet.</p>
-        ) : (
-          <div className="space-y-3">
-            {quotes.map((quote) => (
-              <article key={quote.id} className="border rounded p-4 bg-white">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          {quotes.length === 0 ? (
+            <p className="muted">No submitted quotes yet.</p>
+          ) : (
+            <div className="adminList">
+              {quotes.map((quote) => (
+                <article key={quote.id} className="adminListItem">
                   <div>
-                    <p className="font-semibold">{quote.leadName || 'Unknown'} · {quote.leadEmail || 'No email'}</p>
-                    <p className="text-sm text-gray-600">
-                      ${quote.totals.total.toLocaleString(undefined, { maximumFractionDigits: 0 })} · {quote.totals.confidenceLevel} confidence · {quote.status}
-                    </p>
+                    <strong>{quote.leadName || 'Unknown'} · {quote.leadEmail || 'No email'}</strong>
+                    <p>${Number(quote.total).toLocaleString(undefined, { maximumFractionDigits: 0 })} · {quote.confidenceLevel} confidence · {quote.status}</p>
                   </div>
-                  <Link href={`/quote/${quote.id}`} className="textLink">Open quote</Link>
+                  <Link href={`/quote/${quote.id}`} className="textLink">Open</Link>
+                </article>
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section>
+          <div className="adminSectionHeader">
+            <h2>Active rate card</h2>
+            <Link href="/admin/rate-cards" className="textLink">Manage rates</Link>
+          </div>
+          <div className="adminList">
+            {rateCards.slice(0, 3).map((card) => (
+              <article key={card.id} className="adminListItem">
+                <div>
+                  <strong>{card.name}</strong>
+                  <p>Version {card.version} · {card.isActive ? 'Active' : 'Inactive'}</p>
                 </div>
               </article>
             ))}
           </div>
-        )}
+        </section>
       </section>
-      <section className="space-y-3">
-        <h2 className="text-xl font-semibold mb-2">Rate card management</h2>
-        {rateCards.map((card) => (
-          <article key={card.id} className="border rounded p-4 bg-white">
-            <p className="font-semibold">{card.name}</p>
-            <p className="text-sm text-gray-600">Version {card.version} · {card.isActive ? 'Active' : 'Inactive'}</p>
-          </article>
-        ))}
-      </section>
-      <section>
-        <h2 className="text-xl font-semibold mb-2">Settings</h2>
-        <p>Configure GST, margin, contingency and risk buffers. Set minimum job size and update FAQ content.</p>
-      </section>
-        </div>
-      </section>
-    </main>
+    </AdminShell>
   );
 }

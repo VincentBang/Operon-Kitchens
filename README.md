@@ -1,18 +1,24 @@
 # Operon Kitchens Web App
 
-This repository contains a prototype of **Operon Kitchens**, a Sydney‑based kitchen renovation quoting and education platform. The goal of this project is to provide homeowners with an instant starting estimate for their kitchen renovation, while making scope assumptions and exclusions explicit and protecting the business margin. It also includes product pages, a glossary, educational guides and a quote review tool.
+This repository contains a prototype of **Operon Kitchens**, a Sydney‑based kitchen renovation quoting and education platform. The goal of this project is to provide homeowners with a clear starting estimate range for their kitchen renovation, while making scope assumptions, exclusions and review flags explicit. It also includes product pages, a glossary, educational guides and a quote review tool.
+
+## Agent policy
+
+Codex and future agents must follow the strict isolation and autonomous execution rules in `AGENTS.md`. All write operations must stay inside `/Users/daibang/Documents/operon-kitchens`.
 
 ## Features
 
 * Multi‑step quote wizard capturing property details, scope, cabinetry, benchtop, splashback and trade allowances.
-* Instant pricing using a TypeScript pricing engine that reads editable rates from `src/data/rateCard.json`.
+* Planning estimate ranges using a TypeScript pricing engine and kitchen-only editable admin rate cards.
 * Confidence scoring based on information completeness and risk factors.
 * Quote review tool with checklist or file upload for analysing existing quotes.
 * Product category pages explaining options and their impact on pricing.
 * Kitchen glossary with common terms and definitions.
 * Location pages targeting Sydney suburbs and highlighting access considerations.
 * Guides covering cost, measurement and compliance topics.
-* Simple admin dashboard placeholder illustrating how leads and rate cards could be managed.
+* FAQ page for quote, scope and compliance questions.
+* Secured admin dashboard for leads, quote status, active rate cards, product categories, glossary terms, guides and location pages.
+* Kitchen-local CMS backed by editable database tables for products, glossary terms, guides, location pages and FAQs.
 
 ## Getting started
 
@@ -39,24 +45,36 @@ This project is built with [Next.js](https://nextjs.org/) and TypeScript. To run
    npm start
    ```
 
-## Pricing engine documentation
+## Estimate engine documentation
 
-The pricing engine logic lives in `src/lib/pricing.ts`. It exports a `calculatePricing` function that accepts a `QuoteInput` object and returns detailed line items, subtotal, margin, contingency, GST, total and a confidence score. The calculation uses rates defined in `src/data/rateCard.json`. Adjusting the numbers in the rate card will change the resulting estimates.
+The estimate engine logic lives in `src/lib/pricing.ts`. It exports a `calculatePricing` function that accepts a `QuoteInput` object and returns a customer-facing estimate range, confidence score, assumptions, exclusions, manual review flags, compliance flags and a recommended next step. Kitchen-only admin rate cards drive the calculation, but customer pages must not expose internal rate cards, supplier costs or margin logic.
 
 Key considerations:
 
-* **Cabinetry**: base, overhead and tall cabinets are charged per linear metre or per unit. Drawer runners and hinges have tiered rates.
-* **Finishes**: door and panel finishes have different price points (melamine, laminate, thermo, polyurethane, veneer, shaker, custom).
-* **Accessories**: optional accessories add to the cost according to the selected items.
-* **Benchtop and splashback**: the selected material and measured length/area determines the price. Natural stone options are flagged for compliance review.
-* **Installation and trades**: installation labour scales with the scope. Trade allowances apply when selected.
-* **Access loading**: if the property is above ground level without a lift or has limited parking, a percentage loading is applied.
-* **Margin and contingency**: configured percentages are applied to cover overheads and unknowns. Contingency increases for low confidence quotes.
-* **GST**: Australian Goods and Services Tax (10%) is applied at the end.
+* **Cabinetry**: base, overhead and tall cabinet scope affects the estimate range.
+* **Finishes**: door, panel, hardware and accessory tiers change the planning allowance.
+* **Benchtop and splashback**: material direction and measured length/area affect the estimate and compliance flags.
+* **Installation and trades**: installation and licensed trade allowances are included when selected.
+* **Access and risk**: stairs, lift access, parking, strata, structural work and older-property risk affect confidence.
+* **Compliance prompts**: deposit, HBC, strata, licensed trades and engineered-stone review items are flagged without providing legal advice.
 
 ## Sample rate card
 
-The sample rate card provided (`src/data/rateCard.json`) contains placeholder numbers for demonstration. These values are **not representative of actual market rates**. Before using the system in production, replace the placeholders with real supplier and labour costs and adjust the structure as needed. The admin dashboard is designed to allow editing of these values.
+The sample rate card provided (`src/data/rateCard.json`) contains placeholder assumptions for demonstration. These values are **not representative of actual market rates** and must remain admin-only. Before using the system in production, replace the placeholders through a secure kitchen-only admin workflow and keep internal calculation inputs out of customer-facing pages and public APIs.
+
+## Content management
+
+Phase 1 uses an internal Operon Kitchens CMS rather than an external hosted CMS. The CMS is backed by kitchen-specific SQLite tables and seeded from `src/data/products.ts`, `src/data/glossary.ts`, `src/data/guides.ts`, `src/data/locations.ts` and `src/data/faqs.ts` on first run.
+
+Editable admin areas:
+
+* `/admin/products`
+* `/admin/glossary`
+* `/admin/guides`
+* `/admin/locations`
+* `/admin/faqs`
+
+Public pages read published records from the CMS tables at request time, so admin edits can appear without code changes or redeploys. A later production version can swap this kitchen-local data layer to Supabase/Postgres, Sanity, Contentful or another hosted CMS while keeping the public page contracts similar.
 
 ## Further development
 
@@ -65,7 +83,7 @@ This prototype focuses on demonstrating structure and core logic. To move toward
 * **Database integration**: connect to a database such as Supabase/Postgres to persist leads, rate cards and admin data.
 * **Authentication**: secure the admin dashboard with proper authentication and authorisation.
 * **File uploads**: implement secure storage (e.g. S3 or Supabase Storage) with validation and size limits.
-* **Dynamic content management**: allow editing of product pages, glossary, guides and FAQs through an admin CMS.
+* **Dynamic content management**: product pages, glossary, guides, location pages and FAQs now read from kitchen CMS tables seeded from the static files. A future production CMS can replace the SQLite-backed admin layer.
 * **Comprehensive testing**: build out unit and integration tests for the pricing engine and form flows using Jest and React Testing Library.
 * **Responsive design**: refine mobile layouts and add visual polish consistent with a premium brand.
 * **Compliance checks**: integrate real‑time checks against NSW Fair Trading, SafeWork NSW and Australian Consumer Law guidelines. Always confirm the availability and legality of materials such as engineered stone alternatives.
