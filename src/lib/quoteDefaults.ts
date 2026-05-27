@@ -1,0 +1,33 @@
+import { QuoteInput } from '@/lib/pricing';
+
+export const defaultQuoteInput: QuoteInput = {
+  measurementsProvided: false,
+  photosProvided: false,
+  layoutChange: false,
+  propertyLevel: 'ground',
+  hasLift: true,
+  parkingAccess: 'good',
+  baseLinearMetres: 0,
+  overheadLinearMetres: 0,
+  tallCabinetQty: 0,
+  drawerQty: 0,
+  doorQty: 0,
+  panelQty: 0,
+  drawerRunnerLevel: 'standard',
+  hingeLevel: 'standard',
+  doorFinish: 'melamine',
+  panelFinish: 'melamine',
+  selectedAccessories: [],
+  benchtopType: 'laminate',
+  benchtopMetres: 0,
+  splashbackType: 'tile',
+  splashbackArea: 0,
+  trades: {
+    plumbing: false,
+    electrical: false,
+    gas: false,
+    tiling: false,
+    painting: false,
+  },
+  highRiskItems: false,
+};

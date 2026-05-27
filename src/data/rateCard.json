@@ -1,0 +1,86 @@
+{
+  "cabinetry": {
+    "baseRate": 600,
+    "overheadRate": 500,
+    "tallCabinetRate": 800,
+    "drawerRunnerRate": {
+      "standard": 50,
+      "premium": 90,
+      "heavyDuty": 120,
+      "tipOn": 140
+    },
+    "hingeRate": {
+      "standard": 10,
+      "premium": 20,
+      "pushToOpen": 25
+    }
+  },
+  "doorFinishRates": {
+    "melamine": 80,
+    "laminate": 90,
+    "thermo": 100,
+    "polyurethane": 150,
+    "veneer": 200,
+    "shaker": 180,
+    "custom": 250
+  },
+  "panelRates": {
+    "melamine": 50,
+    "laminate": 60,
+    "thermo": 70,
+    "polyurethane": 100,
+    "veneer": 120,
+    "custom": 150
+  },
+  "accessories": {
+    "pullOutBin": 150,
+    "cutleryTray": 40,
+    "spicePullOut": 120,
+    "carousel": 300,
+    "pullOutPantry": 600,
+    "tallPantryDrawers": 500,
+    "oilPullOut": 120,
+    "underSinkDrawer": 200,
+    "applianceGarage": 250,
+    "ledLighting": 100,
+    "wineRack": 150,
+    "openShelves": 80
+  },
+  "benchtopRates": {
+    "laminate": 400,
+    "solidSurface": 900,
+    "naturalStone": 1200,
+    "porcelain": 1400,
+    "timber": 700,
+    "stainless": 1300,
+    "custom": 1000
+  },
+  "splashbackRates": {
+    "tile": 150,
+    "glass": 300,
+    "stone": 400,
+    "stainless": 350,
+    "acrylic": 200,
+    "other": 250
+  },
+  "installation": {
+    "cabinet": 200,
+    "bench": 150,
+    "splashback": 100
+  },
+  "tradeAllowances": {
+    "plumbing": 800,
+    "electrical": 800,
+    "gas": 600,
+    "tiling": 600,
+    "painting": 500
+  },
+  "accessLoading": {
+    "level1": 0.05,
+    "level2Plus": 0.1,
+    "noLift": 0.15,
+    "limitedParking": 0.1
+  },
+  "margin": 0.25,
+  "contingencyBase": 0.1
+}
