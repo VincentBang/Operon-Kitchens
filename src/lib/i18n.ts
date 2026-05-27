@@ -15,22 +15,22 @@ export const supportedLocales: LocaleOption[] = [
 
 const messages: Record<SupportedLocale, Record<string, string>> = {
   'en-AU': {
-    estimateNotice: 'Your estimate is a planning guide and needs professional review before a final quote.',
+    estimateNotice: 'Your estimate is a planning guide and needs professional review before written scope confirmation.',
     startQuote: 'Start kitchen quote',
     privacyNotice: 'Please acknowledge the privacy collection notice before submitting.',
   },
   'zh-Hans': {
-    estimateNotice: '此估算仅供规划参考，最终报价前需要专业审核。',
+    estimateNotice: '此估算仅供规划参考，书面范围确认前需要专业审核。',
     startQuote: '开始厨房报价',
     privacyNotice: '提交前请确认您已阅读隐私收集通知。',
   },
   vi: {
-    estimateNotice: 'Ước tính này chỉ dùng để lập kế hoạch và cần được chuyên gia kiểm tra trước khi báo giá cuối cùng.',
+    estimateNotice: 'Ước tính này chỉ dùng để lập kế hoạch và cần được chuyên gia kiểm tra trước khi xác nhận phạm vi bằng văn bản.',
     startQuote: 'Bắt đầu báo giá bếp',
     privacyNotice: 'Vui lòng xác nhận thông báo thu thập thông tin cá nhân trước khi gửi.',
   },
   ar: {
-    estimateNotice: 'هذا التقدير مخصص للتخطيط فقط ويحتاج إلى مراجعة مهنية قبل عرض السعر النهائي.',
+    estimateNotice: 'هذا التقدير مخصص للتخطيط فقط ويحتاج إلى مراجعة مهنية قبل تأكيد نطاق العمل كتابياً.',
     startQuote: 'ابدأ عرض سعر المطبخ',
     privacyNotice: 'يرجى تأكيد إشعار جمع المعلومات الشخصية قبل الإرسال.',
   },

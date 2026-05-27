@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import Head from 'next/head';
 import Link from 'next/link';
 import PrivacyCollectionNotice from '@/components/PrivacyCollectionNotice';
 import {
@@ -10,6 +11,16 @@ import {
   ReviewFileSummary,
   reviewChecks,
 } from '@/lib/quoteReview';
+
+const reviewValueCards = [
+  ['Missing inclusions', 'Demolition, rubbish removal, delivery, final clean, painting and patching can change the real comparison.'],
+  ['Allowance clarity', 'PC sums, provisional sums, appliance allowances and benchtop allowances should be clear before you compare totals.'],
+  ['Trade scope', 'Plumbing, electrical, gas and relocation assumptions need licensed trade confirmation.'],
+  ['Benchtop and splashback clarity', 'Material, cut-outs, joins, waterfalls and splashback inclusions should be visible in the scope.'],
+  ['Apartment/strata risk', 'Lift access, parking, strata approval and class 2 screening can affect timing and review requirements.'],
+  ['Contract/compliance prompts', 'Deposit guidance, HBC triggers and site measure requirements are flagged for professional confirmation.'],
+  ['Quote confidence', 'The review separates what is clear, what is missing and what needs professional confirmation.'],
+];
 
 export default function QuoteReview() {
   const [checked, setChecked] = useState<Partial<Record<ReviewCheckKey, boolean>>>({});
@@ -98,17 +109,38 @@ export default function QuoteReview() {
 
   return (
     <main className="pageSurface">
+      <Head>
+        <title>Kitchen quote review | Operon Kitchens</title>
+        <meta
+          name="description"
+          content="Upload an existing kitchen quote, photos or plans for structured review of inclusions, allowances, exclusions, compliance prompts and site measure requirements."
+        />
+      </Head>
       <section className="wizardShell">
         <div className="wizardHeader">
           <p className="eyebrow">Quote review</p>
           <h1>Review your kitchen quote</h1>
-          <p className="muted">Upload a current quote, photos or plans, then capture the scope items a reviewer needs before comparing totals.</p>
+          <p className="muted">Understand what is included, what is provisional and what needs confirmation before relying on a kitchen quote.</p>
         </div>
 
         <div className="wizardPanel stepStack">
           <section className="quoteResult">
-            <h2>What this review checks</h2>
-            <p className="muted">Phase 1 is structured intake only. It does not perform full AI document review, legal advice or final price comparison.</p>
+            <h2>What a quote review can uncover</h2>
+            <p className="muted">
+              Phase 1 captures structured review intake. You can upload files now or continue with the checklist if documents are not ready.
+            </p>
+            <div className="choiceGrid compact">
+              {reviewValueCards.map(([title, body]) => (
+                <article className="checkCard tall" key={title}>
+                  <span><strong>{title}</strong><small>{body}</small></span>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="quoteResult">
+            <h2>Detailed review checks</h2>
+            <p className="muted">These are the specific items captured for professional review. This is not legal advice or automated document approval.</p>
             <div className="choiceGrid compact">
               {reviewChecks.map((check) => (
                 <article className="checkCard tall" key={check.key}>
@@ -145,6 +177,7 @@ export default function QuoteReview() {
 
           <section className="quoteResult">
             <h2>Upload quote, photos or plans</h2>
+            <p className="muted">Upload what you have, or continue without a file and use the checklist below.</p>
             <div className="formGrid two">
               <label className="uploadBox"><span>Existing quote</span><input type="file" accept=".pdf,image/*" onChange={(event) => addFiles(event.target.files, 'existingQuote')} /></label>
               <label className="uploadBox"><span>Photos</span><input type="file" multiple accept="image/*" onChange={(event) => addFiles(event.target.files, 'photo')} /></label>
@@ -206,7 +239,7 @@ export default function QuoteReview() {
           </section>
 
           <section className="quoteResult">
-            <h2>Placeholder review result</h2>
+            <h2>Structured review preview</h2>
             <div className="resultTopline">
               <div>
                 <span className="eyebrow">Review readiness</span>

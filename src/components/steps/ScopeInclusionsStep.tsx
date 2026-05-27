@@ -58,6 +58,33 @@ export default function ScopeInclusionsStep({ data, onChange, onNext, onBack }: 
           <span>Include kitchen flooring allowance</span>
         </label>
       </div>
+      <div className="formGrid two">
+        <label className="field">
+          <span>Appliance allowance</span>
+          <select value={data.applianceAllowance} onChange={(event) => onChange({ ...data, applianceAllowance: event.target.value as QuoteInput['applianceAllowance'] })}>
+            <option value="notSure">Not sure</option>
+            <option value="excluded">Excluded / by owner</option>
+            <option value="standardPc">Standard PC allowance</option>
+            <option value="premiumPc">Premium PC allowance</option>
+            <option value="exactModelsKnown">Exact models known</option>
+          </select>
+        </label>
+      </div>
+      <h3 className="compactHeading">Removal, make-good and clean-up</h3>
+      <div className="choiceGrid compact">
+        <label className="checkCard">
+          <input type="checkbox" checked={data.highRiskItems} onChange={(event) => onChange({ ...data, highRiskItems: event.target.checked })} />
+          <span><strong>Demolition/removal needs review</strong><small>Includes removal, protection or waste uncertainty.</small></span>
+        </label>
+        <label className="checkCard">
+          <input type="checkbox" checked={data.trades.tiling} onChange={(event) => onChange({ ...data, trades: { ...data.trades, tiling: event.target.checked } })} />
+          <span>Splashback tiling included</span>
+        </label>
+        <label className="checkCard">
+          <input type="checkbox" checked={data.trades.painting} onChange={(event) => onChange({ ...data, trades: { ...data.trades, painting: event.target.checked } })} />
+          <span>Painting/plaster patching included</span>
+        </label>
+      </div>
       {data.flooring.included && (
         <div className="formGrid two">
           <label className="field">

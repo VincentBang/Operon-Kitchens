@@ -29,6 +29,8 @@ const QuoteWizard = () => {
     name: '',
     email: '',
     phone: '',
+    preferredContactMethod: 'either',
+    addressOptional: '',
     marketingOptIn: false,
     privacyAcknowledged: false,
   });
@@ -85,6 +87,8 @@ const QuoteWizard = () => {
             name: payload.quote.lead.name,
             email: payload.quote.lead.email,
             phone: payload.quote.lead.phone,
+            preferredContactMethod: payload.quote.quoteInput?.preferredContactMethod ?? 'either',
+            addressOptional: payload.quote.quoteInput?.addressOptional ?? '',
             marketingOptIn: payload.quote.lead.marketingOptIn,
             privacyAcknowledged: false,
           });
@@ -129,7 +133,7 @@ const QuoteWizard = () => {
       <div className="wizardHeader">
         <p className="eyebrow">Estimate builder</p>
         <h1>Kitchen quote wizard</h1>
-        <p className="muted">Build a planning estimate range with confidence, assumptions, exclusions and review flags before a professional quote.</p>
+        <p className="muted">Build a planning estimate range with confidence, assumptions, exclusions and review flags before a professional review.</p>
       </div>
       <div className="wizardPanel">
         {loadError && <div className="p-4 mb-4 bg-red-50 border border-red-200 rounded text-red-700">{loadError}</div>}
@@ -157,7 +161,7 @@ const QuoteWizard = () => {
         {steps[step]}
       </div>
       <aside className="notePanel">
-        Estimates are planning guides only. Final pricing depends on a site measure, approved selections, licensed trade checks and written confirmation.
+        Estimates are planning guides only. Price confirmation depends on a site measure, approved selections, licensed trade checks and written scope confirmation.
       </aside>
     </div>
   );

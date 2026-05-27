@@ -26,7 +26,7 @@ export interface KitchenChatbotResponse {
 
 const routeMap: Record<Exclude<KitchenChatbotIntent, 'unsupported' | 'general' | 'operator'>, KitchenChatbotRoute> = {
   quote: { label: 'Start kitchen quote', href: '/quote' },
-  design: { label: 'Open design planner', href: '/design' },
+  design: { label: 'Open beta design sketch', href: '/design' },
   review: { label: 'Review existing quote', href: '/quote/review' },
   materials: { label: 'Browse kitchen products', href: '/products/benchtops' },
   compliance: { label: 'Start quote with compliance checks', href: '/quote' },
@@ -114,7 +114,7 @@ export function getKitchenChatbotResponse(input: string): KitchenChatbotResponse
   if (intent === 'review') {
     return {
       intent,
-      text: 'The quote review tool is useful when you already have a written quote and want to understand scope clarity, assumptions and missing items. It should not be treated as a final price comparison.',
+      text: 'The quote review tool is useful when you already have a written quote and want to understand scope clarity, assumptions and missing items. It should not be treated as confirmed price comparison.',
       actions: [
         'Upload or describe the existing quote.',
         'Check whether cabinetry, benchtop, trades, GST and exclusions are visible.',
@@ -130,7 +130,7 @@ export function getKitchenChatbotResponse(input: string): KitchenChatbotResponse
 
 export const kitchenChatbotWelcome: KitchenChatbotResponse = {
   intent: 'general',
-  text: 'Hi, I can help with kitchen quote scope, materials, measurements, NSW review flags and where to go next. I do not provide final fixed pricing or legal advice.',
+  text: 'Hi, I can help with kitchen quote scope, materials, measurements, NSW review flags and where to go next. I do not provide confirmed pricing or legal advice.',
   actions: [
     'Ask about deposit, HBC or strata checks.',
     'Ask what measurements to prepare.',

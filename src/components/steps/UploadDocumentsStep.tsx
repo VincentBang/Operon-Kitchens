@@ -34,7 +34,7 @@ export default function UploadDocumentsStep({ data, onChange, onNext, onBack }: 
     <div className="stepStack">
       <div className="stepIntro">
         <h2>Upload photos, plans or current quote</h2>
-        <p>Add file names for review context. Actual secure upload can be connected later.</p>
+        <p>Photos and plans improve estimate confidence. Price confirmation still requires site measure and written scope confirmation.</p>
       </div>
       <div className="formGrid two">
         {categories.map((category) => (

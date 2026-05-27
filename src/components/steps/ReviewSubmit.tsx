@@ -79,7 +79,7 @@ const ReviewSubmit: React.FC<Props> = ({ data, rateCard, quoteId, initialContact
           </div>
           <span className={`confidence ${quoteResult.confidenceLabel}`}>{quoteResult.confidenceLabel} confidence</span>
         </div>
-        <p className="muted">This is not a final fixed quote. Final pricing needs site measure, confirmed selections and professional review.</p>
+        <p className="muted">This is a planning estimate, subject to site measure, confirmed selections and written scope confirmation.</p>
         <h3>Included scope</h3>
         <ul className="lineItemList">
           {quoteResult.includedScope.map((item) => (

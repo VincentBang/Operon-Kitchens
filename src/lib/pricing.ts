@@ -30,10 +30,19 @@ export interface QuoteAttachment {
  * Types representing the shape of the quote data. These can be extended as needed.
  */
 export interface QuoteInput {
+  projectType: 'fullRenovation' | 'cabinetryBenchtopRefresh' | 'benchtopOnly' | 'notSure';
+  suburb: string;
+  roughTiming: 'planning' | 'oneToThreeMonths' | 'readySoon' | 'urgent';
+  budgetBand: 'notSpecified' | 'under25k' | '25kTo45k' | '45kTo70k' | '70kPlus';
+  hasExistingQuote: boolean;
   propertyType: 'house' | 'townhouse' | 'strataApartment';
+  propertyAgeBand: 'unknown' | 'pre1980' | '1980To2000' | 'post2000';
+  heritageOrOlderHomeUncertainty: boolean;
   measurementsProvided: boolean;
   photosProvided: boolean;
   layoutChange: boolean;
+  layoutType: 'straight' | 'galley' | 'lShape' | 'uShape' | 'island' | 'notSure';
+  kitchenSize: 'small' | 'medium' | 'large' | 'notSure';
   propertyLevel: 'ground' | 'level1' | 'level2+' | 'unsure';
   hasLift: boolean;
   parkingAccess: 'good' | 'limited';
@@ -80,6 +89,14 @@ export interface QuoteInput {
     areaSqm: number;
     type: keyof typeof rateCard.flooringRates;
   };
+  plumbingMovement: 'sameLocation' | 'moves' | 'notSure';
+  electricalScope: 'similar' | 'upgrades' | 'notSure';
+  gasInvolved: 'yes' | 'no' | 'notSure';
+  waterproofingChanges: 'yes' | 'no' | 'notSure';
+  apartmentClass2Uncertainty: boolean;
+  widerRenovationThresholdRisk: 'yes' | 'no' | 'notSure';
+  olderPropertyAsbestosConcern: 'yes' | 'no' | 'notSure';
+  applianceAllowance: 'excluded' | 'standardPc' | 'premiumPc' | 'exactModelsKnown' | 'notSure';
   structuralWorks: {
     wallRemoval: boolean;
     beamRequired: boolean;
@@ -96,6 +113,8 @@ export interface QuoteInput {
   };
   designPlan: DesignPlan | null;
   supportingFiles: QuoteAttachment[];
+  preferredContactMethod: 'phone' | 'email' | 'either';
+  addressOptional: string;
   depositOfferedAmount: number;
   depositOfferedPercent: number;
   hbcInsuranceIncluded: boolean;
@@ -141,18 +160,30 @@ export interface PricingResult {
  */
 function calculateConfidence(input: QuoteInput): number {
   let score = 100;
+  if (input.projectType === 'notSure') score -= 5;
+  if (!input.suburb?.trim()) score -= 4;
+  if (input.layoutType === 'notSure') score -= 10;
+  if (input.kitchenSize === 'notSure' && input.baseLinearMetres <= 0) score -= 10;
   if (input.zones.length > 0) score -= Math.min(12, input.zones.length * 4);
   if (input.propertyType === 'strataApartment') score -= 8;
   if (!input.measurementsProvided) score -= 20;
   if (!input.photosProvided) score -= 10;
+  if (!input.supportingFiles.some((file) => file.category === 'photo' || file.category === 'plan')) score -= 6;
   if (input.layoutChange) score -= 10;
   if (input.propertyLevel === 'level2+') score -= 5;
   if (!input.hasLift && input.propertyLevel !== 'ground') score -= 5;
   if (input.parkingAccess === 'limited') score -= 5;
   if (input.highRiskItems) score -= 20;
+  if (input.doorFinish === 'melamine' && input.panelFinish === 'melamine' && input.benchtopType === 'laminate' && input.projectType === 'notSure') score -= 5;
+  if (input.applianceAllowance === 'notSure') score -= 8;
+  if (input.plumbingMovement === 'notSure') score -= 8;
+  if (input.electricalScope === 'notSure') score -= 8;
+  if (input.gasInvolved === 'notSure') score -= 4;
+  if (input.waterproofingChanges === 'yes' || input.waterproofingChanges === 'notSure') score -= 5;
   if (input.structuralWorks.wallRemoval || input.structuralWorks.beamRequired || input.structuralWorks.windowDoorChanges) score -= 15;
-  if (input.strataApprovalRequired || input.basixReviewRequired || input.dbpReviewRequired) score -= 8;
-  if (input.asbestosRisk) score -= 10;
+  if (input.strataApprovalRequired || input.basixReviewRequired || input.dbpReviewRequired || input.apartmentClass2Uncertainty) score -= 8;
+  if (input.widerRenovationThresholdRisk === 'yes' || input.widerRenovationThresholdRisk === 'notSure') score -= 5;
+  if (input.asbestosRisk || input.olderPropertyAsbestosConcern === 'yes' || (input.olderPropertyAsbestosConcern === 'notSure' && input.propertyAgeBand !== 'post2000')) score -= 10;
   if (input.accessConstraints.narrowAccess || input.accessConstraints.longCarry || input.accessConstraints.occupiedHome) score -= 6;
   return Math.max(0, score);
 }
@@ -230,11 +261,28 @@ function getRecommendedNextStep(confidenceLevel: PricingResult['confidenceLevel'
 export function calculatePricing(input: QuoteInput, activeRateCard: RateCard = rateCard): PricingResult {
   input = {
     ...input,
+    projectType: input.projectType ?? 'notSure',
+    suburb: input.suburb ?? '',
+    roughTiming: input.roughTiming ?? 'planning',
+    budgetBand: input.budgetBand ?? 'notSpecified',
+    hasExistingQuote: Boolean(input.hasExistingQuote),
     propertyType: input.propertyType ?? 'house',
+    propertyAgeBand: input.propertyAgeBand ?? 'unknown',
+    heritageOrOlderHomeUncertainty: Boolean(input.heritageOrOlderHomeUncertainty),
+    layoutType: input.layoutType ?? 'notSure',
+    kitchenSize: input.kitchenSize ?? 'notSure',
     zones: input.zones ?? [],
     appliances: input.appliances ?? { rangehood: false, cooktop: false, oven: false, dishwasher: false, fridge: false },
     lighting: input.lighting ?? { ledStripsMetres: 0, downlightQty: 0, pendantQty: 0 },
     flooring: input.flooring ?? { included: false, areaSqm: 0, type: 'none' },
+    plumbingMovement: input.plumbingMovement ?? 'notSure',
+    electricalScope: input.electricalScope ?? 'notSure',
+    gasInvolved: input.gasInvolved ?? 'notSure',
+    waterproofingChanges: input.waterproofingChanges ?? 'notSure',
+    apartmentClass2Uncertainty: Boolean(input.apartmentClass2Uncertainty),
+    widerRenovationThresholdRisk: input.widerRenovationThresholdRisk ?? 'notSure',
+    olderPropertyAsbestosConcern: input.olderPropertyAsbestosConcern ?? 'notSure',
+    applianceAllowance: input.applianceAllowance ?? 'notSure',
     structuralWorks: input.structuralWorks ?? { wallRemoval: false, beamRequired: false, windowDoorChanges: false },
     strataApprovalRequired: Boolean(input.strataApprovalRequired),
     basixReviewRequired: Boolean(input.basixReviewRequired),
@@ -243,6 +291,8 @@ export function calculatePricing(input: QuoteInput, activeRateCard: RateCard = r
     accessConstraints: input.accessConstraints ?? { narrowAccess: false, longCarry: false, occupiedHome: false },
     designPlan: input.designPlan ?? null,
     supportingFiles: input.supportingFiles ?? [],
+    preferredContactMethod: input.preferredContactMethod ?? 'either',
+    addressOptional: input.addressOptional ?? '',
   };
   const lineItems: { name: string; cost: number }[] = [];
   // Cabinetry
@@ -365,16 +415,16 @@ export function calculatePricing(input: QuoteInput, activeRateCard: RateCard = r
       ? 'Home Building Compensation cover is flagged for review because this residential project estimate is over $20,000 including GST. Cover should be confirmed before taking money or commencing work.'
       : null;
   const complianceFlags: string[] = [];
-  complianceFlags.push('Final site measure required before final quote confirmation');
+  complianceFlags.push('Final site measure required before price confirmation');
   complianceFlags.push('NSW deposit guidance: maximum deposit should be 10% of the final home building contract price');
   if (depositWarning) complianceFlags.push('Proposed deposit exceeds 10% guidance');
   if (hbcRequired) complianceFlags.push('HBC likely required if residential work exceeds $20,000 including GST');
   if (hbcWarning) complianceFlags.push('HBC cover not confirmed');
   if (input.strataApprovalRequired || input.propertyType === 'strataApartment') complianceFlags.push('Strata/apartment approval review required');
-  if (input.basixReviewRequired || input.structuralWorks.wallRemoval || input.structuralWorks.windowDoorChanges) complianceFlags.push('BASIX review may be required for wider renovation threshold risk');
-  if (input.dbpReviewRequired || input.propertyType === 'strataApartment') complianceFlags.push('DBP/class 2 screening required for apartment risk');
-  if (input.asbestosRisk) complianceFlags.push('Older-property/asbestos risk review required');
-  if (input.trades.plumbing || input.trades.electrical || input.trades.gas) complianceFlags.push('Licensed trade confirmation required for plumbing, gas or electrical work');
+  if (input.basixReviewRequired || input.widerRenovationThresholdRisk !== 'no' || input.structuralWorks.wallRemoval || input.structuralWorks.windowDoorChanges) complianceFlags.push('BASIX/wider renovation review may be required and must be confirmed');
+  if (input.dbpReviewRequired || input.apartmentClass2Uncertainty || input.propertyType === 'strataApartment') complianceFlags.push('DBP/class 2 screening may be required for apartment work');
+  if (input.asbestosRisk || input.olderPropertyAsbestosConcern !== 'no' || input.heritageOrOlderHomeUncertainty || input.propertyAgeBand === 'pre1980') complianceFlags.push('Older-property/asbestos review likely requires confirmation');
+  if (input.trades.plumbing || input.trades.electrical || input.trades.gas || input.plumbingMovement !== 'sameLocation' || input.electricalScope !== 'similar' || input.gasInvolved !== 'no') complianceFlags.push('Licensed trade confirmation required for plumbing, gas or electrical work');
   const benchtopCompliance = getMaterialCompliance('benchtop', input.benchtopType);
   const splashbackCompliance = getMaterialCompliance('splashback', input.splashbackType);
   const transitionApplies = transitionProvisionApplies(input);
@@ -395,13 +445,15 @@ export function calculatePricing(input: QuoteInput, activeRateCard: RateCard = r
   const assumptions: string[] = [];
   const exclusions: string[] = [];
   // Example assumptions and exclusions based on input
-  assumptions.push('This is an estimate range for planning and quote review, not a final fixed quote.');
-  assumptions.push('Final site measure, confirmed selections and licensed trade review are required before written quote confirmation.');
+  assumptions.push('This is a planning estimate range for scope review, not a contract price.');
+  assumptions.push('Site measure, confirmed selections and licensed trade review are required before written scope confirmation.');
   if (!input.measurementsProvided) assumptions.push('Measurements will be verified during site visit.');
   if (input.supportingFiles.length > 0) assumptions.push(`${input.supportingFiles.length} supporting file(s) supplied for professional review.`);
   if (input.designPlan) assumptions.push(`Customer design plan attached for review: ${summarizeDesignPlan(input.designPlan)}.`);
   if (input.zones.length > 0) assumptions.push(`Estimate includes ${input.zones.length + 1} project zones including kitchen${input.zones.length ? `, ${input.zones.map((zone) => zone.name).join(', ')}` : ''}.`);
   if (selectedApplianceCount(input) > 0) assumptions.push('Appliance allowances are planning placeholders until exact model selections and installation requirements are confirmed.');
+  if (input.applianceAllowance === 'exactModelsKnown') assumptions.push('Exact appliance models have been nominated for review, subject to installation confirmation.');
+  if (input.applianceAllowance === 'notSure') assumptions.push('Appliance allowance needs confirmation before the estimate confidence can improve.');
   if (input.flooring.included) assumptions.push('Flooring allowance is included for the nominated kitchen area only and should be reconciled with any flooring-specific quote.');
   assumptions.push('Deposit on a final NSW home building contract must not exceed 10%.');
   if (hbcRequired) assumptions.push('Projects over $20,000 including GST need Home Building Compensation insurance reviewed and confirmed before taking money or starting work.');
@@ -419,9 +471,10 @@ export function calculatePricing(input: QuoteInput, activeRateCard: RateCard = r
   if (input.benchtopType === 'naturalStone') flags.push('Benchtop subject to supplier compliance confirmation');
   if (input.zones.length > 0) flags.push('Multiple zones require manual scope review');
   if (selectedApplianceCount(input) > 0) flags.push('Appliance selections require model and installation confirmation');
-  if (input.asbestosRisk) flags.push('Older-property/asbestos risk requires site review');
-  if (input.strataApprovalRequired || input.propertyType === 'strataApartment') flags.push('Apartment or strata project requires approval pathway review');
-  if (input.basixReviewRequired || input.dbpReviewRequired) flags.push('Building approval pathway requires manual screening');
+  if (input.asbestosRisk || input.olderPropertyAsbestosConcern !== 'no' || input.propertyAgeBand === 'pre1980') flags.push('Older-property/asbestos risk requires site review');
+  if (input.strataApprovalRequired || input.propertyType === 'strataApartment' || input.apartmentClass2Uncertainty) flags.push('Apartment or strata project requires approval pathway review');
+  if (input.basixReviewRequired || input.dbpReviewRequired || input.widerRenovationThresholdRisk !== 'no') flags.push('Building approval pathway requires manual screening');
+  if (input.plumbingMovement === 'notSure' || input.electricalScope === 'notSure' || input.gasInvolved === 'notSure') flags.push('Service relocation details are unclear and need professional confirmation');
   if (input.structuralWorks.wallRemoval || input.structuralWorks.beamRequired || input.structuralWorks.windowDoorChanges) flags.push('Structural scope requires manual review');
   const manualReviewFlags = Array.from(new Set(flags));
   const includedScope = lineItems

@@ -36,7 +36,7 @@ export function createKitchenRecommendations(
       id: 'budget-stage-scope',
       type: 'budget',
       priority: 'high',
-      title: 'Stage the scope before requesting a final quote',
+      title: 'Stage the scope before requesting price confirmation',
       reason: 'The current estimate range sits above the budget preference supplied for planning.',
       action: 'Keep the base kitchen scope visible, then separate optional upgrades such as extra zones, lighting, accessories or flooring for manual review.',
     });

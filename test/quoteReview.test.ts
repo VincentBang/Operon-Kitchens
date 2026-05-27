@@ -48,7 +48,7 @@ describe('kitchen quote review intake', () => {
     );
     expect(result.complianceFlags).toEqual(
       expect.arrayContaining([
-        'Final site measure required before any final fixed quote can be confirmed',
+        'Final site measure required before price confirmation',
         'Deposit and HBC terms need confirmation',
       ]),
     );

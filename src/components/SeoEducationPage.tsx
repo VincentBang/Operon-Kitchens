@@ -7,6 +7,13 @@ interface Props {
 }
 
 export default function SeoEducationPage({ page }: Props) {
+  const relatedLinks = [
+    ['Kitchen renovation cost Sydney', '/kitchen-renovation-cost-sydney'],
+    ['Kitchen quote review', '/kitchen-quote-review'],
+    ['Kitchen renovation process', '/kitchen-renovation-process'],
+    ['Apartment kitchen renovation Sydney', '/apartment-kitchen-renovation-sydney'],
+  ].filter(([, href]) => href !== `/${page.slug}`);
+
   return (
     <main>
       <Head>
@@ -29,6 +36,21 @@ export default function SeoEducationPage({ page }: Props) {
       </section>
 
       <section className="contentPage articleBody">
+        <section className="guideSummary">
+          <article>
+            <h2>Quote clarity first</h2>
+            <p>
+              A useful kitchen estimate separates inclusions, allowances, exclusions, assumptions and review flags before comparing totals.
+            </p>
+          </article>
+          <article>
+            <h2>Sydney context</h2>
+            <p>
+              Access, strata rules, older properties, licensed trades and material restrictions can all affect the path from planning estimate to confirmed scope.
+            </p>
+          </article>
+        </section>
+
         {page.sections.map((section) => (
           section.expandable ? (
             <details className="faqItem" key={section.heading}>
@@ -42,6 +64,30 @@ export default function SeoEducationPage({ page }: Props) {
             </section>
           )
         ))}
+
+        <section>
+          <h2>Common cost and scope drivers</h2>
+          <ul>
+            <li>Cabinetry quantity, door finish, hardware and storage accessories.</li>
+            <li>Benchtop and splashback material, cut-outs, joins, waterfalls and edge detail.</li>
+            <li>Appliance allowance, exact model selection, ventilation and installation assumptions.</li>
+            <li>Plumbing, electrical, gas, lighting, demolition, waste, access and make-good scope.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>What to prepare</h2>
+          <p>
+            Bring photos of each wall, rough measurements, plans if available, current quote documents, appliance preferences, finish direction, access notes and any strata or approval requirements.
+          </p>
+        </section>
+
+        <section>
+          <h2>Risks and exclusions to check</h2>
+          <p>
+            Check whether demolition, rubbish removal, delivery, final clean, painting, plaster patching, flooring touch-ups, service relocation and provisional allowances are included or excluded.
+          </p>
+        </section>
 
         <aside className="compliancePanel">
           <h2>Review note</h2>
@@ -58,6 +104,18 @@ export default function SeoEducationPage({ page }: Props) {
                 <summary>{faq.question}</summary>
                 <p>{faq.answer}</p>
               </details>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <h2>Related guides</h2>
+          <div className="linkGrid">
+            {relatedLinks.map(([label, href]) => (
+              <Link href={href} className="infoCard linkedCard" key={href}>
+                {label}
+                <span>Read guide</span>
+              </Link>
             ))}
           </div>
         </section>

@@ -17,6 +17,14 @@ const PropertyDetails: React.FC<Props> = ({ data, onChange, onNext, onBack }) =>
       </div>
       <div className="formGrid two">
         <label className="field">
+          <span>Property type</span>
+          <select value={data.propertyType} onChange={(event) => onChange({ ...data, propertyType: event.target.value as QuoteInput['propertyType'] })}>
+            <option value="house">House</option>
+            <option value="townhouse">Townhouse</option>
+            <option value="strataApartment">Apartment / strata</option>
+          </select>
+        </label>
+        <label className="field">
           <span>Property level</span>
           <select
             value={data.propertyLevel}
@@ -48,21 +56,30 @@ const PropertyDetails: React.FC<Props> = ({ data, onChange, onNext, onBack }) =>
             <option value="limited">Limited</option>
           </select>
         </label>
-        <label className="checkCard">
-          <input
-            type="checkbox"
-            checked={data.measurementsProvided}
-            onChange={(e) => onChange({ ...data, measurementsProvided: e.target.checked })}
-          />
-          <span>I have measurements</span>
+        <label className="field">
+          <span>Property age if known</span>
+          <select value={data.propertyAgeBand} onChange={(event) => onChange({ ...data, propertyAgeBand: event.target.value as QuoteInput['propertyAgeBand'] })}>
+            <option value="unknown">Not sure</option>
+            <option value="pre1980">Pre-1980</option>
+            <option value="1980To2000">1980-2000</option>
+            <option value="post2000">After 2000</option>
+          </select>
         </label>
         <label className="checkCard">
           <input
             type="checkbox"
-            checked={data.photosProvided}
-            onChange={(e) => onChange({ ...data, photosProvided: e.target.checked })}
+            checked={data.strataApprovalRequired}
+            onChange={(e) => onChange({ ...data, strataApprovalRequired: e.target.checked })}
           />
-          <span>I have photos/floorplan</span>
+          <span>Strata/body corporate involved</span>
+        </label>
+        <label className="checkCard">
+          <input
+            type="checkbox"
+            checked={data.heritageOrOlderHomeUncertainty}
+            onChange={(e) => onChange({ ...data, heritageOrOlderHomeUncertainty: e.target.checked })}
+          />
+          <span>Heritage or older-home uncertainty</span>
         </label>
       </div>
       <div className="wizardActions">

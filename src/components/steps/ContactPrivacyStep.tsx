@@ -4,6 +4,8 @@ export interface WizardContact {
   name: string;
   email: string;
   phone: string;
+  preferredContactMethod?: 'phone' | 'email' | 'either';
+  addressOptional?: string;
   marketingOptIn: boolean;
   privacyAcknowledged: boolean;
 }
@@ -36,6 +38,20 @@ export default function ContactPrivacyStep({ contact, onChange, onNext, onBack }
           <label className="field">
             <span>Phone</span>
             <input type="tel" value={contact.phone} required aria-invalid={!contact.phone.trim()} onChange={(event) => onChange({ ...contact, phone: event.target.value })} />
+          </label>
+        </div>
+        <div className="formGrid two">
+          <label className="field">
+            <span>Preferred contact method</span>
+            <select value={contact.preferredContactMethod ?? 'either'} onChange={(event) => onChange({ ...contact, preferredContactMethod: event.target.value as WizardContact['preferredContactMethod'] })}>
+              <option value="either">Either</option>
+              <option value="phone">Phone</option>
+              <option value="email">Email</option>
+            </select>
+          </label>
+          <label className="field">
+            <span>Suburb/address optional</span>
+            <input type="text" value={contact.addressOptional ?? ''} onChange={(event) => onChange({ ...contact, addressOptional: event.target.value })} />
           </label>
         </div>
         <PrivacyCollectionNotice

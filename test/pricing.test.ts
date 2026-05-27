@@ -5,8 +5,13 @@ describe('pricing engine', () => {
   it('calculates a simple straight-line kitchen correctly', () => {
     const input: QuoteInput = {
       ...defaultQuoteInput,
+      projectType: 'fullRenovation',
+      suburb: 'Randwick',
+      layoutType: 'lShape',
+      kitchenSize: 'medium',
       measurementsProvided: true,
       photosProvided: true,
+      supportingFiles: [{ id: 'photo-1', name: 'kitchen-photo.jpg', category: 'photo' }],
       baseLinearMetres: 3,
       overheadLinearMetres: 2,
       drawerQty: 2,
@@ -14,6 +19,13 @@ describe('pricing engine', () => {
       panelQty: 4,
       benchtopMetres: 3,
       splashbackArea: 2,
+      applianceAllowance: 'exactModelsKnown',
+      plumbingMovement: 'sameLocation',
+      electricalScope: 'similar',
+      gasInvolved: 'no',
+      waterproofingChanges: 'no',
+      widerRenovationThresholdRisk: 'no',
+      olderPropertyAsbestosConcern: 'no',
     };
     const result = calculatePricing(input);
     expect(result.total).toBeGreaterThan(0);
@@ -22,8 +34,8 @@ describe('pricing engine', () => {
     expect(result.confidenceLevel).toBe('high');
     expect(result.confidenceLabel).toBe('high');
     expect(result.includedScope).toContain('Base cabinets');
-    expect(result.assumptions).toContain('This is an estimate range for planning and quote review, not a final fixed quote.');
-    expect(result.complianceFlags).toContain('Final site measure required before final quote confirmation');
+    expect(result.assumptions).toContain('This is a planning estimate range for scope review, not a contract price.');
+    expect(result.complianceFlags).toContain('Final site measure required before price confirmation');
     expect(result.complianceFlags).toContain('NSW deposit guidance: maximum deposit should be 10% of the final home building contract price');
     expect(result.recommendedNextStep).toContain('professional');
   });
@@ -31,8 +43,13 @@ describe('pricing engine', () => {
   it('prices multiple zones, appliances, lighting, flooring and structural allowances', () => {
     const input: QuoteInput = {
       ...defaultQuoteInput,
+      projectType: 'fullRenovation',
+      suburb: 'Manly',
+      layoutType: 'island',
+      kitchenSize: 'large',
       measurementsProvided: true,
       photosProvided: true,
+      supportingFiles: [{ id: 'photo-1', name: 'kitchen-photo.jpg', category: 'photo' }],
       baseLinearMetres: 4,
       overheadLinearMetres: 2,
       doorQty: 8,
@@ -55,6 +72,13 @@ describe('pricing engine', () => {
       lighting: { ledStripsMetres: 4, downlightQty: 6, pendantQty: 2 },
       flooring: { included: true, areaSqm: 14, type: 'hybrid' },
       structuralWorks: { wallRemoval: true, beamRequired: true, windowDoorChanges: false },
+      applianceAllowance: 'premiumPc',
+      plumbingMovement: 'sameLocation',
+      electricalScope: 'similar',
+      gasInvolved: 'no',
+      waterproofingChanges: 'no',
+      widerRenovationThresholdRisk: 'no',
+      olderPropertyAsbestosConcern: 'no',
     };
 
     const result = calculatePricing(input);
@@ -68,7 +92,24 @@ describe('pricing engine', () => {
   });
 
   it('reduces confidence and increases contingency for apartment and approval risks', () => {
-    const simple = calculatePricing({ ...defaultQuoteInput, measurementsProvided: true, photosProvided: true, baseLinearMetres: 3 });
+    const simple = calculatePricing({
+      ...defaultQuoteInput,
+      projectType: 'fullRenovation',
+      suburb: 'Parramatta',
+      layoutType: 'straight',
+      kitchenSize: 'medium',
+      measurementsProvided: true,
+      photosProvided: true,
+      supportingFiles: [{ id: 'photo-1', name: 'kitchen-photo.jpg', category: 'photo' }],
+      baseLinearMetres: 3,
+      applianceAllowance: 'exactModelsKnown',
+      plumbingMovement: 'sameLocation',
+      electricalScope: 'similar',
+      gasInvolved: 'no',
+      waterproofingChanges: 'no',
+      widerRenovationThresholdRisk: 'no',
+      olderPropertyAsbestosConcern: 'no',
+    });
     const complex = calculatePricing({
       ...defaultQuoteInput,
       propertyType: 'strataApartment',
@@ -87,7 +128,43 @@ describe('pricing engine', () => {
     expect(complex.estimateHigh - complex.estimateLow).toBeGreaterThan(simple.estimateHigh - simple.estimateLow);
     expect(complex.contingency).toBeGreaterThan(simple.contingency);
     expect(complex.complianceFlags).toContain('Strata/apartment approval review required');
-    expect(complex.complianceFlags).toContain('Older-property/asbestos risk review required');
-    expect(complex.complianceFlags).toContain('DBP/class 2 screening required for apartment risk');
+    expect(complex.complianceFlags).toContain('Older-property/asbestos review likely requires confirmation');
+    expect(complex.complianceFlags).toContain('DBP/class 2 screening may be required for apartment work');
+  });
+
+  it('rewards clearer scope details with higher confidence', () => {
+    const unclear = calculatePricing({
+      ...defaultQuoteInput,
+      projectType: 'notSure',
+      layoutType: 'notSure',
+      kitchenSize: 'notSure',
+      photosProvided: false,
+      measurementsProvided: false,
+      plumbingMovement: 'notSure',
+      electricalScope: 'notSure',
+      gasInvolved: 'notSure',
+      olderPropertyAsbestosConcern: 'notSure',
+    });
+    const clear = calculatePricing({
+      ...defaultQuoteInput,
+      projectType: 'fullRenovation',
+      suburb: 'Surry Hills',
+      layoutType: 'galley',
+      kitchenSize: 'medium',
+      baseLinearMetres: 3,
+      measurementsProvided: true,
+      photosProvided: true,
+      supportingFiles: [{ id: 'plan-1', name: 'floorplan.pdf', category: 'plan' }],
+      applianceAllowance: 'exactModelsKnown',
+      plumbingMovement: 'sameLocation',
+      electricalScope: 'similar',
+      gasInvolved: 'no',
+      waterproofingChanges: 'no',
+      widerRenovationThresholdRisk: 'no',
+      olderPropertyAsbestosConcern: 'no',
+    });
+
+    expect(unclear.confidenceLabel).toBe('low');
+    expect(clear.confidenceScore).toBeGreaterThan(unclear.confidenceScore);
   });
 });

@@ -28,12 +28,63 @@ export default function ServicesRiskStep({ data, onChange, onNext, onBack }: Pro
           </label>
         ))}
       </div>
+      <div className="formGrid three">
+        <label className="field">
+          <span>Plumbing</span>
+          <select value={data.plumbingMovement} onChange={(event) => onChange({ ...data, plumbingMovement: event.target.value as QuoteInput['plumbingMovement'] })}>
+            <option value="sameLocation">Stays same location</option>
+            <option value="moves">Moves</option>
+            <option value="notSure">Not sure</option>
+          </select>
+        </label>
+        <label className="field">
+          <span>Electrical</span>
+          <select value={data.electricalScope} onChange={(event) => onChange({ ...data, electricalScope: event.target.value as QuoteInput['electricalScope'] })}>
+            <option value="similar">Stays similar</option>
+            <option value="upgrades">Upgrades / changes</option>
+            <option value="notSure">Not sure</option>
+          </select>
+        </label>
+        <label className="field">
+          <span>Gas involved</span>
+          <select value={data.gasInvolved} onChange={(event) => onChange({ ...data, gasInvolved: event.target.value as QuoteInput['gasInvolved'] })}>
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+            <option value="notSure">Not sure</option>
+          </select>
+        </label>
+        <label className="field">
+          <span>Waterproofing/wet-area changes</span>
+          <select value={data.waterproofingChanges} onChange={(event) => onChange({ ...data, waterproofingChanges: event.target.value as QuoteInput['waterproofingChanges'] })}>
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+            <option value="notSure">Not sure</option>
+          </select>
+        </label>
+        <label className="field">
+          <span>Wider renovation threshold risk</span>
+          <select value={data.widerRenovationThresholdRisk} onChange={(event) => onChange({ ...data, widerRenovationThresholdRisk: event.target.value as QuoteInput['widerRenovationThresholdRisk'] })}>
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+            <option value="notSure">Not sure</option>
+          </select>
+        </label>
+        <label className="field">
+          <span>Older property/asbestos concern</span>
+          <select value={data.olderPropertyAsbestosConcern} onChange={(event) => onChange({ ...data, olderPropertyAsbestosConcern: event.target.value as QuoteInput['olderPropertyAsbestosConcern'] })}>
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+            <option value="notSure">Not sure</option>
+          </select>
+        </label>
+      </div>
       <details className="advancedPanel" open>
         <summary>Approvals and property risks</summary>
         <div className="choiceGrid compact">
           <label className="checkCard"><input type="checkbox" checked={data.strataApprovalRequired} onChange={(event) => onChange({ ...data, strataApprovalRequired: event.target.checked })} /><span>Strata approval likely</span></label>
           <label className="checkCard"><input type="checkbox" checked={data.basixReviewRequired} onChange={(event) => onChange({ ...data, basixReviewRequired: event.target.checked })} /><span>BASIX review risk</span></label>
           <label className="checkCard"><input type="checkbox" checked={data.dbpReviewRequired} onChange={(event) => onChange({ ...data, dbpReviewRequired: event.target.checked })} /><span>DBP/class 2 screen</span></label>
+          <label className="checkCard"><input type="checkbox" checked={data.apartmentClass2Uncertainty} onChange={(event) => onChange({ ...data, apartmentClass2Uncertainty: event.target.checked })} /><span>Apartment/class 2 uncertainty</span></label>
           <label className="checkCard"><input type="checkbox" checked={data.asbestosRisk} onChange={(event) => onChange({ ...data, asbestosRisk: event.target.checked })} /><span>Older property/asbestos</span></label>
           <label className="checkCard"><input type="checkbox" checked={data.structuralWorks.wallRemoval} onChange={(event) => onChange({ ...data, structuralWorks: { ...data.structuralWorks, wallRemoval: event.target.checked } })} /><span>Wall removal</span></label>
           <label className="checkCard"><input type="checkbox" checked={data.structuralWorks.beamRequired} onChange={(event) => onChange({ ...data, structuralWorks: { ...data.structuralWorks, beamRequired: event.target.checked } })} /><span>Beam/engineering likely</span></label>

@@ -1,68 +1,86 @@
+import Head from 'next/head';
 import Link from 'next/link';
 
-interface Project {
+interface ProjectProfile {
   id: number;
-  style: string;
-  suburb: string;
+  title: string;
+  suburbType: string;
+  problem: string;
   scope: string;
   finish: string;
   benchtop: string;
-  hardware: string;
   timeframe: string;
-  challenge: string;
+  costDrivers: string[];
+  result: string;
 }
 
-const projects: Project[] = [
+const projectProfiles: ProjectProfile[] = [
   {
     id: 1,
-    style: 'Modern coastal',
-    suburb: 'Bondi',
-    scope: 'Full kitchen replacement',
-    finish: 'Polyurethane shaker',
-    benchtop: 'Engineered stone alternative',
-    hardware: 'Premium soft-close',
-    timeframe: '6 weeks',
-    challenge: 'Working within tight strata regulations',
+    title: 'Apartment kitchen with strata access',
+    suburbType: 'Eastern suburbs apartment',
+    problem: 'The customer needed to compare a quote where access, waste removal and strata conditions were not clearly separated.',
+    scope: 'Cabinetry replacement, benchtop, splashback, appliance allowance and licensed trade coordination.',
+    finish: 'Painted/profiled door direction with premium soft-close hardware.',
+    benchtop: 'Porcelain or supplier-confirmed compliant surface.',
+    timeframe: 'Typical planning window: 6-8 weeks subject to approvals and selections.',
+    costDrivers: ['Lift and parking access', 'Strata approval pathway', 'Benchtop material confirmation', 'Electrical and plumbing review'],
+    result: 'The estimate would flag strata, service and allowance items before site measure.',
   },
   {
     id: 2,
-    style: 'Contemporary',
-    suburb: 'Chatswood',
-    scope: 'Cabinetry & benchtop',
-    finish: 'Melamine flat panel',
-    benchtop: 'Laminate',
-    hardware: 'Standard soft-close',
-    timeframe: '4 weeks',
-    challenge: 'Integrating existing appliances',
+    title: 'Family home cabinetry and benchtop refresh',
+    suburbType: 'North Shore house',
+    problem: 'The main risk was comparing a refresh scope against a full renovation quote without clear exclusions.',
+    scope: 'Cabinetry fronts, selected storage accessories, benchtop replacement, sink/tap allowance and minor make-good.',
+    finish: 'Laminate or polyurethane direction depending on budget band.',
+    benchtop: 'Laminate, timber or porcelain/sintered surface direction.',
+    timeframe: 'Typical planning window: 4-6 weeks after selections and measure.',
+    costDrivers: ['Door finish tier', 'Hardware and accessory selection', 'Existing service locations', 'Painting/patching allowance'],
+    result: 'The estimate would separate refresh scope from items better handled by trades or separate quotes.',
   },
 ];
 
 export default function ProjectsPage() {
   return (
     <main>
+      <Head>
+        <title>Typical kitchen project profiles | Operon Kitchens</title>
+        <meta
+          name="description"
+          content="Example kitchen project profiles showing scope, finish direction, quote risks, budget drivers and planning pathways for Sydney renovations."
+        />
+      </Head>
       <section className="contentHero slim">
         <div>
-          <p className="eyebrow">Project patterns</p>
-          <h1 className="contentTitle">Recent projects</h1>
+          <p className="eyebrow">Project examples</p>
+          <h1 className="contentTitle">Typical kitchen project profiles</h1>
         </div>
-        <p className="muted">Each project is tailored to the client’s needs, finishes, approvals and budget range.</p>
+        <p className="muted">
+          These are example profiles for planning and quote education. They are not presented as completed Operon Kitchens jobs.
+        </p>
       </section>
       <section className="contentPage">
-      <div className="detailGrid two">
-        {projects.map((proj) => (
-          <article key={proj.id} className="infoCard projectCard">
-            <span className="featureIcon" aria-hidden="true">P{proj.id}</span>
-            <h3>{proj.style} - {proj.suburb}</h3>
-            <p><strong>Scope:</strong> {proj.scope}</p>
-            <p><strong>Finish:</strong> {proj.finish}</p>
-            <p><strong>Benchtop:</strong> {proj.benchtop}</p>
-            <p><strong>Hardware:</strong> {proj.hardware}</p>
-            <p><strong>Timeframe:</strong> {proj.timeframe}</p>
-            <p><strong>Challenge:</strong> {proj.challenge}</p>
-            <Link href="/quote" className="textLink">Quote a similar project</Link>
-          </article>
-        ))}
-      </div>
+        <div className="detailGrid two">
+          {projectProfiles.map((profile) => (
+            <article key={profile.id} className="infoCard projectCard">
+              <span className="featureIcon" aria-hidden="true">E{profile.id}</span>
+              <h2>{profile.title}</h2>
+              <p><strong>Profile:</strong> {profile.suburbType}</p>
+              <p><strong>Problem:</strong> {profile.problem}</p>
+              <p><strong>Scope:</strong> {profile.scope}</p>
+              <p><strong>Finish:</strong> {profile.finish}</p>
+              <p><strong>Benchtop:</strong> {profile.benchtop}</p>
+              <p><strong>Timeframe:</strong> {profile.timeframe}</p>
+              <details className="advancedPanel">
+                <summary>What affected the budget range</summary>
+                <ul>{profile.costDrivers.map((item) => <li key={item}>{item}</li>)}</ul>
+              </details>
+              <p><strong>Result:</strong> {profile.result}</p>
+              <Link href="/quote" className="textLink">Estimate a similar project</Link>
+            </article>
+          ))}
+        </div>
       </section>
     </main>
   );

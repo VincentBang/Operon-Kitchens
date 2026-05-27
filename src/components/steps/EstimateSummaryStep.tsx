@@ -31,7 +31,11 @@ export default function EstimateSummaryStep({ data, contact, rateCard, quoteId, 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           quoteId: savedQuoteId || undefined,
-          quoteInput: data,
+          quoteInput: {
+            ...data,
+            preferredContactMethod: contact.preferredContactMethod ?? data.preferredContactMethod,
+            addressOptional: contact.addressOptional ?? data.addressOptional,
+          },
           contact,
           status: 'SUBMITTED',
         }),
@@ -52,17 +56,17 @@ export default function EstimateSummaryStep({ data, contact, rateCard, quoteId, 
     <div className="stepStack">
       <div className="stepIntro">
         <h2>Estimate summary</h2>
-        <p>Review the planning range, confidence, assumptions and next step before submitting.</p>
+        <p>Review the planning range, confidence, assumptions, exclusions and review flags before requesting professional follow-up.</p>
       </div>
       <div className="quoteResult">
         <div className="resultTopline">
           <div>
-            <span className="eyebrow">Planning estimate range</span>
+            <span className="eyebrow">Planning budget range</span>
             <strong>${quoteResult.estimateLow.toLocaleString(undefined, { maximumFractionDigits: 0 })} - ${quoteResult.estimateHigh.toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong>
           </div>
-          <span className={`confidence ${quoteResult.confidenceLabel}`}>{quoteResult.confidenceLabel} confidence</span>
+          <span className={`confidence ${quoteResult.confidenceLabel}`}>{quoteResult.confidenceLabel} confidence · {quoteResult.confidenceScore}/100</span>
         </div>
-        <p className="muted">This is not a final fixed quote. Final pricing needs site measure, confirmed selections and professional review.</p>
+        <p className="muted">This is a planning estimate, subject to site measure, confirmed selections and written scope confirmation.</p>
         <h3>Included scope</h3>
         <ul className="lineItemList">
           {quoteResult.includedScope.map((item) => <li key={item}><span>{item}</span><span>Included</span></li>)}
@@ -117,7 +121,7 @@ export default function EstimateSummaryStep({ data, contact, rateCard, quoteId, 
           <div className="wizardActions">
             <button className="button ghost" onClick={onBack}>Back</button>
             <button className="button primary" onClick={handleSubmit} disabled={isSubmitting || !contact.privacyAcknowledged}>
-              {isSubmitting ? 'Saving...' : savedQuoteId ? 'Update estimate' : 'Submit estimate'}
+              {isSubmitting ? 'Saving...' : savedQuoteId ? 'Update estimate' : 'Request professional review'}
             </button>
           </div>
         </>

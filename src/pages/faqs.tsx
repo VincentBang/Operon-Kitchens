@@ -1,4 +1,5 @@
 import { GetServerSideProps } from 'next';
+import Head from 'next/head';
 import Link from 'next/link';
 import { FaqRecord, listFaqs } from '@/lib/adminData';
 
@@ -27,6 +28,13 @@ export default function FaqsPage({ faqs }: Props) {
 
   return (
     <main>
+      <Head>
+        <title>Kitchen renovation FAQ | Operon Kitchens</title>
+        <meta
+          name="description"
+          content="Answers about kitchen estimate ranges, quote review, confidence scores, compliance prompts, site measure and Sydney renovation planning."
+        />
+      </Head>
       <section className="section twoColumn">
         <div>
           <p className="eyebrow">Kitchen quote help</p>

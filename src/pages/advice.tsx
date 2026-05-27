@@ -1,7 +1,7 @@
 import { FormEvent, useMemo, useState } from 'react';
+import Head from 'next/head';
 import Link from 'next/link';
 import { answerKitchenPlanningQuestion } from '@/lib/planningAssistant';
-import { getSupplierIntegrationPolicy, supplierConnectors } from '@/lib/supplierIntegrations';
 import { getLocalizedMessage, supportedLocales, SupportedLocale } from '@/lib/i18n';
 
 const sampleQuestions = [
@@ -16,7 +16,6 @@ export default function AdvicePage() {
   const [submittedQuestion, setSubmittedQuestion] = useState(sampleQuestions[0]);
   const [locale, setLocale] = useState<SupportedLocale>('en-AU');
   const answer = useMemo(() => answerKitchenPlanningQuestion(submittedQuestion), [submittedQuestion]);
-  const supplierPolicy = getSupplierIntegrationPolicy();
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -25,6 +24,13 @@ export default function AdvicePage() {
 
   return (
     <main>
+      <Head>
+        <title>Kitchen renovation advice | Operon Kitchens</title>
+        <meta
+          name="description"
+          content="Customer-safe kitchen renovation planning guidance for estimates, measurements, compliance prompts, materials and quote review preparation."
+        />
+      </Head>
       <section className="section">
         <Link href="/" className="textLink">Back to Operon Kitchens</Link>
         <p className="eyebrow">Planning support</p>
@@ -80,14 +86,12 @@ export default function AdvicePage() {
         </article>
 
         <article className="infoCard">
-          <h2>Supplier connector readiness</h2>
-          <p>{supplierPolicy.summary}</p>
+          <h2>What this guidance can do</h2>
+          <p>It can help you prepare better measurements, clearer scope notes and safer questions for professional review.</p>
           <ul>
-            {supplierConnectors.map((connector) => (
-              <li key={connector.supplier}>
-                <strong>{connector.supplier}</strong>: {connector.publicPurpose}
-              </li>
-            ))}
+            <li>Explain planning terms in plain English.</li>
+            <li>Point you to estimate or quote review pathways.</li>
+            <li>Flag where licensed trades or site review may be needed.</li>
           </ul>
         </article>
       </section>

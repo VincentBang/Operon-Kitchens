@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default function KitchenLayoutSizeStep({ data, onChange, onNext, onBack }: Props) {
-  const hasCabinetScope = data.baseLinearMetres + data.overheadLinearMetres + data.tallCabinetQty > 0;
+  const hasCabinetScope = data.baseLinearMetres + data.overheadLinearMetres + data.tallCabinetQty > 0 || data.kitchenSize !== 'notSure';
   const updateZone = (id: string, patch: Partial<QuoteZone>) => {
     onChange({ ...data, zones: data.zones.map((zone) => (zone.id === id ? { ...zone, ...patch } : zone)) });
   };
@@ -37,8 +37,28 @@ export default function KitchenLayoutSizeStep({ data, onChange, onNext, onBack }
         <h2>Kitchen layout and size</h2>
         <p>Approximate joinery quantities are enough for a planning range. Final measure comes later.</p>
       </div>
-      {!hasCabinetScope && <p className="fieldError" role="alert">Add at least one cabinet quantity before continuing.</p>}
+      {!hasCabinetScope && <p className="fieldError" role="alert">Choose a rough size or add at least one cabinet quantity before continuing.</p>}
       <div className="formGrid three">
+        <label className="field">
+          <span>Layout type</span>
+          <select value={data.layoutType} onChange={(event) => onChange({ ...data, layoutType: event.target.value as QuoteInput['layoutType'] })}>
+            <option value="notSure">Not sure</option>
+            <option value="straight">Straight</option>
+            <option value="galley">Galley</option>
+            <option value="lShape">L-shape</option>
+            <option value="uShape">U-shape</option>
+            <option value="island">Island</option>
+          </select>
+        </label>
+        <label className="field">
+          <span>Rough kitchen size</span>
+          <select value={data.kitchenSize} onChange={(event) => onChange({ ...data, kitchenSize: event.target.value as QuoteInput['kitchenSize'] })}>
+            <option value="notSure">Not sure</option>
+            <option value="small">Small</option>
+            <option value="medium">Medium</option>
+            <option value="large">Large</option>
+          </select>
+        </label>
         <label className="field">
           <span>Base cabinets (linear m)</span>
           <input type="number" min="0" step="0.1" value={data.baseLinearMetres} aria-invalid={!hasCabinetScope} onChange={(event) => onChange({ ...data, baseLinearMetres: parseFloat(event.target.value) || 0 })} />
@@ -62,6 +82,14 @@ export default function KitchenLayoutSizeStep({ data, onChange, onNext, onBack }
         <label className="field">
           <span>Panels (qty)</span>
           <input type="number" min="0" value={data.panelQty} onChange={(event) => onChange({ ...data, panelQty: parseInt(event.target.value) || 0 })} />
+        </label>
+        <label className="checkCard">
+          <input type="checkbox" checked={data.measurementsProvided} onChange={(event) => onChange({ ...data, measurementsProvided: event.target.checked })} />
+          <span><strong>Measurements ready</strong><small>Approximate cabinet run or room dimensions are available.</small></span>
+        </label>
+        <label className="checkCard">
+          <input type="checkbox" checked={data.photosProvided} onChange={(event) => onChange({ ...data, photosProvided: event.target.checked })} />
+          <span><strong>Floorplan/photos ready</strong><small>Files can be noted in the upload step.</small></span>
         </label>
       </div>
       <details className="advancedPanel">

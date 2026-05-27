@@ -27,7 +27,7 @@ export const educationPages: SeoEducationPage[] = [
     slug: 'kitchen-renovation-cost-sydney',
     eyebrow: 'Kitchen renovation cost Sydney',
     title: 'Kitchen renovation cost in Sydney, explained clearly.',
-    summary: 'Understand the main cost drivers before you ask for a final quote: layout, cabinetry, surfaces, services, access, approvals and selection certainty.',
+    summary: 'Understand the main cost drivers before you book a site visit: layout, cabinetry, surfaces, services, access, approvals and selection certainty.',
     primaryCta: 'Start kitchen estimate',
     primaryHref: '/quote',
     secondaryCta: 'Review existing quote',
@@ -39,7 +39,7 @@ export const educationPages: SeoEducationPage[] = [
       },
       {
         heading: 'Why a range is safer early',
-        body: 'An early online estimate should show a budget range and confidence score, not a final fixed price. The range narrows when measurements, photos, plans, selections and site risks are reviewed.',
+        body: 'An early online estimate should show a budget range and confidence score, not contract pricing. The range narrows when measurements, photos, plans, selections and site risks are reviewed.',
       },
       {
         heading: 'What to prepare',
@@ -48,7 +48,7 @@ export const educationPages: SeoEducationPage[] = [
       },
     ],
     faqs: [
-      { question: 'Can I get a fixed kitchen renovation price online?', answer: 'No. Operon Kitchens provides an estimate range and review flags. Final pricing requires site measure, confirmed selections and professional scope review.' },
+      { question: 'Can I get a confirmed kitchen renovation price online?', answer: 'No. Operon Kitchens provides an estimate range and review flags. Price confirmation requires site measure, confirmed selections and professional scope review.' },
       { question: 'Why do two kitchen quotes look so different?', answer: 'They may include different cabinetry materials, hardware, benchtops, trade work, demolition, waste, appliances, GST, exclusions or provisional allowances.' },
     ],
   },
@@ -56,7 +56,7 @@ export const educationPages: SeoEducationPage[] = [
     slug: 'kitchen-quote-sydney',
     eyebrow: 'Kitchen quote Sydney',
     title: 'A clearer way to start a Sydney kitchen quote.',
-    summary: 'Build an estimate that separates scope, confidence, assumptions and review items before the final quote stage.',
+    summary: 'Build an estimate that separates scope, confidence, assumptions and review items before site measure.',
     primaryCta: 'Start kitchen estimate',
     primaryHref: '/quote',
     secondaryCta: 'Read the process',
@@ -72,13 +72,13 @@ export const educationPages: SeoEducationPage[] = [
       },
       {
         heading: 'Next step after the estimate',
-        body: 'After online intake, photos, plans or a current quote can be reviewed. A site measure and confirmed selections are still required before a final written quote.',
+        body: 'After online intake, photos, plans or a current quote can be reviewed. A site measure and confirmed selections are still required before written scope confirmation.',
         expandable: true,
       },
     ],
     faqs: [
       { question: 'What does the quote wizard ask for?', answer: 'It asks about property type, layout, size, scope inclusions, finishes, services, risk flags, uploads and contact details.' },
-      { question: 'Can I use the estimate to compare builders?', answer: 'Use it as a scope clarity tool. It helps you spot assumptions and exclusions, but it is not a substitute for a final builder quote.' },
+      { question: 'Can I use the estimate to compare builders?', answer: 'Use it as a scope clarity tool. It helps you spot assumptions and exclusions, but it is not a substitute for a written builder proposal.' },
     ],
   },
   {
@@ -172,7 +172,7 @@ export const educationPages: SeoEducationPage[] = [
     slug: 'kitchen-renovation-process',
     eyebrow: 'Kitchen renovation process',
     title: 'A calm process for kitchen renovation decisions.',
-    summary: 'Move from online estimate to document upload, review, site measure, selections and final scope without pretending everything is known on day one.',
+    summary: 'Move from online estimate to document upload, review, site measure, selections and written scope confirmation without pretending everything is known on day one.',
     primaryCta: 'Start kitchen estimate',
     primaryHref: '/quote',
     secondaryCta: 'Review current quote',
@@ -187,8 +187,8 @@ export const educationPages: SeoEducationPage[] = [
         body: 'Photos, plans and current quotes are reviewed so assumptions, exclusions, access constraints and compliance flags can be checked before site measure.',
       },
       {
-        heading: '3. Final scope and quote',
-        body: 'Final quote work follows confirmed site conditions, product selections, trade requirements and client decisions. The early estimate is not a final fixed quote.',
+        heading: '3. Written scope confirmation',
+        body: 'Written scope confirmation follows confirmed site conditions, product selections, trade requirements and client decisions. The early estimate is a planning range only.',
         expandable: true,
       },
     ],

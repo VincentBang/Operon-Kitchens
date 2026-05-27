@@ -7,8 +7,8 @@ export interface Faq {
 
 export const faqs: Faq[] = [
   {
-    question: 'Is the online estimate a fixed quote?',
-    answer: 'No. It is a planning estimate that shows scope assumptions, exclusions and confidence level. A fixed written quote requires professional review, measurements and confirmed selections.',
+    question: 'Is the online estimate a confirmed price?',
+    answer: 'No. It is a planning estimate that shows scope assumptions, exclusions and confidence level. Written scope confirmation requires professional review, measurements and confirmed selections.',
     category: 'quotes',
     sortOrder: 10,
   },

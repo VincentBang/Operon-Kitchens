@@ -61,7 +61,7 @@ export const reviewChecks: { key: ReviewCheckKey; label: string; explanation: st
   { key: 'benchtopSplashback', label: 'Benchtop/splashback clarity', explanation: 'Material, thickness, compliance and fabrication assumptions should be clear.' },
   { key: 'strataApartment', label: 'Strata/apartment risks', explanation: 'Apartment work may need strata approval, access booking and class 2 screening.' },
   { key: 'demolitionWaste', label: 'Demolition and waste scope', explanation: 'Removal, disposal, protection and make-good work should not be assumed.' },
-  { key: 'siteMeasure', label: 'Final site measure requirement', explanation: 'A final fixed quote should follow site measure and confirmed selections.' },
+  { key: 'siteMeasure', label: 'Final site measure requirement', explanation: 'Price confirmation should follow site measure and confirmed selections.' },
 ];
 
 export function createDefaultReviewJobDetails(): KitchenQuoteReviewJobDetails {
@@ -86,7 +86,7 @@ export function evaluateKitchenQuoteReview(intake: KitchenQuoteReviewIntake): Ki
   }));
   const missingItems = checksExplained.filter((check) => !check.checked).map((check) => check.label);
   const manualReviewFlags: string[] = [];
-  const complianceFlags: string[] = ['Final site measure required before any final fixed quote can be confirmed'];
+  const complianceFlags: string[] = ['Final site measure required before price confirmation'];
   const quoteFileSupplied = intake.files.some((file) => file.category === 'existingQuote');
   const supportingVisualsSupplied = intake.files.some((file) => file.category === 'photo' || file.category === 'plan');
 

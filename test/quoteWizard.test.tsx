@@ -90,8 +90,8 @@ describe('QuoteWizard', () => {
     expect(screen.getByText('Estimate summary')).toBeInTheDocument();
     expect(screen.getByText(/Customer design plan attached/)).toBeInTheDocument();
     expect(screen.getByText(/Recommended maximum deposit/)).toBeInTheDocument();
-    expect(screen.getByText(/Planning estimate range/)).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: 'Submit estimate' }));
+    expect(screen.getByText(/Planning budget range/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Request professional review' }));
 
     expect(await screen.findByText(/your estimate has been saved/i)).toBeInTheDocument();
     await waitFor(() => {

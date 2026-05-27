@@ -7,7 +7,7 @@ export interface PlanningAssistantAnswer {
 
 const fallbackAnswer: PlanningAssistantAnswer = {
   topic: 'general',
-  answer: 'Operon Kitchens can help turn early kitchen scope details into an estimate range with assumptions, exclusions and review flags. A final fixed quote still needs site measure, selections and professional confirmation.',
+  answer: 'Operon Kitchens can help turn early kitchen scope details into an estimate range with assumptions, exclusions and review flags. Price confirmation still needs site measure, selections and professional review.',
   suggestedNextSteps: [
     'Start the quote wizard with the information you have.',
     'Add photos, plans and measurements in millimetres where possible.',
@@ -62,7 +62,7 @@ export function answerKitchenPlanningQuestion(question: string): PlanningAssista
   if (text.includes('budget') || text.includes('cost') || text.includes('price') || text.includes('allowance')) {
     return {
       topic: 'budget',
-      answer: 'The best early budget view is an estimate range with visible inclusions, exclusions and confidence scoring. Avoid treating it as a final fixed price until the site and selections are reviewed.',
+      answer: 'The best early budget view is an estimate range with visible inclusions, exclusions and confidence scoring. Avoid treating it as contract pricing until the site and selections are reviewed.',
       suggestedNextSteps: [
         'Separate must-have scope from optional upgrades.',
         'Check the line items for cabinetry, benchtop, trades, access and contingency.',
@@ -75,7 +75,7 @@ export function answerKitchenPlanningQuestion(question: string): PlanningAssista
   if (text.includes('process') || text.includes('next') || text.includes('timeline') || text.includes('review')) {
     return {
       topic: 'process',
-      answer: 'A practical kitchen quote process starts with guided intake, then estimate review, then site measure and selection confirmation before a final written quote.',
+      answer: 'A practical kitchen quote process starts with guided intake, then estimate review, then site measure and selection confirmation before written scope confirmation.',
       suggestedNextSteps: [
         'Complete the quote wizard.',
         'Attach photos, plans or an existing quote for comparison.',

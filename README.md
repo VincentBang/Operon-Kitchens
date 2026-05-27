@@ -1,6 +1,6 @@
 # Operon Kitchens Web App
 
-This repository contains a prototype of **Operon Kitchens**, a Sydney‑based kitchen renovation quoting and education platform. The goal of this project is to provide homeowners with a clear starting estimate range for their kitchen renovation, while making scope assumptions, exclusions and review flags explicit. It also includes product pages, a glossary, educational guides and a quote review tool.
+This repository contains **Operon Kitchens**, a Sydney-based kitchen renovation quoting and education platform. The goal of this project is to provide homeowners with a clear starting estimate range for their kitchen renovation, while making scope assumptions, exclusions and review flags explicit. It also includes product pages, a glossary, educational guides and a quote review tool.
 
 ## Agent policy
 
@@ -47,7 +47,7 @@ This project is built with [Next.js](https://nextjs.org/) and TypeScript. To run
 
 ## Estimate engine documentation
 
-The estimate engine logic lives in `src/lib/pricing.ts`. It exports a `calculatePricing` function that accepts a `QuoteInput` object and returns a customer-facing estimate range, confidence score, assumptions, exclusions, manual review flags, compliance flags and a recommended next step. Kitchen-only admin rate cards drive the calculation, but customer pages must not expose internal rate cards, supplier costs or margin logic.
+The estimate engine logic lives in `src/lib/pricing.ts`. It exports a `calculatePricing` function that accepts a `QuoteInput` object and returns a customer-facing estimate range, confidence score, assumptions, exclusions, manual review flags, compliance flags and a recommended next step. Kitchen-only admin rate cards drive the calculation, but customer pages must not expose commercial calculation inputs.
 
 Key considerations:
 
@@ -78,7 +78,7 @@ Public pages read published records from the CMS tables at request time, so admi
 
 ## Further development
 
-This prototype focuses on demonstrating structure and core logic. To move towards a production‑ready system the following should be addressed:
+This Phase 1 application focuses on structure and core quote-review logic. To move towards a production-ready system the following should be addressed:
 
 * **Database integration**: connect to a database such as Supabase/Postgres to persist leads, rate cards and admin data.
 * **Authentication**: secure the admin dashboard with proper authentication and authorisation.

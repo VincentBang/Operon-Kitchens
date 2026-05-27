@@ -24,10 +24,11 @@ describe('SEO education content', () => {
     });
   });
 
-  it('does not claim online estimates are final fixed quotes', () => {
+  it('does not claim online estimates are confirmed contract prices', () => {
     const allCopy = JSON.stringify(educationPages).toLowerCase();
     expect(allCopy).not.toContain('guaranteed fixed price');
     expect(allCopy).not.toContain('final fixed price online');
+    expect(allCopy).not.toContain('final fixed quote');
   });
 
   it('includes glossary terms for allowances and compliance-aware review', () => {

@@ -1,102 +1,120 @@
-import Link from 'next/link';
+import Head from 'next/head';
 import Image from 'next/image';
+import Link from 'next/link';
+import { getAreaHref, priorityFooterAreas } from '@/lib/areas';
 
-const valuePoints = [
-  ['Scope clarity', 'Separate cabinetry, finishes, trades, approvals and site risks before comparing totals.'],
-  ['Estimate confidence', 'Show whether the estimate is ready to rely on or still needs photos, plans and review.'],
-  ['Assumptions and exclusions', 'Make allowances, exclusions and unknowns visible instead of hiding them in a headline number.'],
-  ['Professional review', 'Move from online estimate to review, site measure and final scope before a confirmed quote.'],
+const pathCards = [
+  ['Start estimate', 'Build a planning budget range with confidence scoring and review flags.', '/quote'],
+  ['Review existing quote', 'Upload a current quote and check inclusions, allowances and exclusions.', '/quote/review'],
+  ['Browse guides', 'Understand process, PC sums, benchtop options and apartment risks.', '/kitchen-renovation-process'],
+  ['View areas', 'See kitchen quote guidance for Sydney suburbs and project types.', '/areas'],
 ];
 
-const processSteps = [
-  ['01', 'Online estimate', 'Answer guided kitchen questions and receive a budget range, confidence score and next-step prompts.'],
-  ['02', 'Upload photos/plans', 'Add existing photos, plans or a current builder quote so the review can be more specific.'],
-  ['03', 'Professional review', 'A reviewer checks inclusions, allowances, compliance flags and unclear scope items.'],
-  ['04', 'Site measure', 'Measurements, access and selections are confirmed before any final quote position is offered.'],
-  ['05', 'Final scope and quote', 'The final proposal follows confirmed site conditions, selections and trade requirements.'],
+const quoteChangeDrivers = [
+  'Cabinetry finish, door profile and hardware tier',
+  'Benchtop, splashback, cut-outs, joins and edge details',
+  'Appliance allowance, exact models and ventilation assumptions',
+  'Plumbing, electrical, gas or lighting relocation',
+  'Access, parking, lift bookings, strata and approval conditions',
+  'PC sums, provisional sums, exclusions and variation wording',
 ];
 
-const complianceNotes = [
-  'HBC review may be required for residential work over $20,000 including GST.',
-  'Deposit guidance is capped at 10% for NSW residential home building contracts.',
-  'Electrical, plumbing and gas work must be confirmed by appropriately licensed trades.',
-  'Strata, apartment and engineered-stone risks are flagged for confirmation.',
+const claritySteps = [
+  ['01', 'Describe the project', 'Capture project type, suburb, timing, budget band and whether you already have a quote.'],
+  ['02', 'Add layout and scope', 'Record property type, access, layout, size, inclusions, finishes and service assumptions.'],
+  ['03', 'Upload context', 'Photos, plans and current quotes help reduce uncertainty before professional review.'],
+  ['04', 'Review confidence', 'See estimate range, confidence score, assumptions, exclusions and manual review flags.'],
+  ['05', 'Confirm on site', 'Move toward site measure, selection confirmation and written scope before contract pricing.'],
 ];
 
 const finishTiers = [
-  ['Essential', 'Practical cabinetry and laminate-led selections for controlled budgets.'],
-  ['Refined', 'Upgraded door finishes, hardware and benchtop directions with clearer allowances.'],
-  ['Signature', 'More detailed finish direction for premium cabinetry, surfaces and accessories.'],
+  ['Refresh', 'Cabinetry fronts, benchtop or splashback updates where the existing kitchen layout mostly remains.'],
+  ['Full renovation', 'Cabinetry, surfaces, sink/tap, appliance allowance, trades, demolition and make-good review.'],
+  ['Apartment kitchen', 'Extra attention to strata, access, lift bookings, work hours, class 2 screening and waste.'],
+];
+
+const projectExamples = [
+  ['Apartment quote review', 'Strata access, lift bookings, appliance assumptions and unclear rubbish removal were the key review items.'],
+  ['Family kitchen refresh', 'The scope separated cabinetry fronts, hardware, benchtop and painting/patching boundaries.'],
+  ['Premium home estimate', 'Finish tier, benchtop alternatives, appliance allowance and site access shaped the planning range.'],
 ];
 
 const faqs = [
-  ['Is the online estimate a final quote?', 'No. It is a budget range with assumptions, exclusions and confidence scoring. A final quote follows review, site measure and confirmed selections.'],
-  ['Can I upload an existing kitchen quote?', 'Yes. The review intake captures your quote, photos, plans and the key scope items that often make quotes hard to compare.'],
-  ['Do you check compliance items?', 'The system flags common review areas such as HBC, deposit terms, strata risk, licensed trades and engineered-stone restrictions. It is not legal advice.'],
-  ['Why use finish tiers instead of endless product choices?', 'Early estimates need controlled choices. Exact supplier products can be confirmed later once the scope, budget and site conditions are clearer.'],
-];
-
-const educationLinks = [
-  ['Kitchen renovation cost Sydney', '/kitchen-renovation-cost-sydney'],
-  ['Kitchen quote review', '/kitchen-quote-review'],
-  ['Apartment kitchen renovation', '/apartment-kitchen-renovation-sydney'],
-  ['Benchtop options after engineered stone restrictions', '/kitchen-benchtop-options-after-engineered-stone-ban'],
-  ['PC sums and provisional sums', '/kitchen-pc-sums-and-provisional-sums'],
-  ['Kitchen renovation glossary', '/kitchen-renovation-glossary'],
+  ['Is this a confirmed quote?', 'No. It is a planning estimate range and review framework. Site measure, selections and written scope confirmation are still required.'],
+  ['Why upload photos or plans?', 'They help identify service locations, access, layout, existing conditions and missing scope items.'],
+  ['Can you review another kitchen quote?', 'Yes. The review intake captures inclusions, allowances, exclusions, compliance prompts and items requiring professional confirmation.'],
 ];
 
 export default function Home() {
   return (
     <main>
+      <Head>
+        <title>Operon Kitchens | Sydney kitchen estimates and quote review</title>
+        <meta
+          name="description"
+          content="Clear Sydney kitchen renovation estimate ranges, quote confidence, scope clarity, assumptions, exclusions and professional review pathways."
+        />
+      </Head>
+
       <section className="hero">
-        <nav className="nav">
-          <Link href="/" className="brand">Operon Kitchens</Link>
-          <div className="navLinks">
-            <Link href="/quote">Estimate</Link>
-            <Link href="/quote/review">Review</Link>
-            <Link href="/projects">Projects</Link>
-            <Link href="/faqs">FAQ</Link>
-          </div>
-        </nav>
         <div className="heroContent">
-          <p className="eyebrow">Kitchen renovation estimates</p>
-          <h1>Clear kitchen renovation estimates before the final quote.</h1>
+          <p className="eyebrow">Sydney kitchen quote clarity</p>
+          <h1>Clear kitchen renovation estimates before you book a site visit.</h1>
           <p className="heroLead">
-            Start with a structured budget range, visible assumptions, exclusions and review flags before booking a site measure.
+            Operon Kitchens helps Sydney homeowners understand likely budget range, scope, allowances, exclusions and review items before site measure.
           </p>
           <div className="heroActions">
             <Link href="/quote" className="button primary">Start kitchen estimate</Link>
-            <Link href="/quote/review" className="button secondary">Review existing kitchen quote</Link>
+            <Link href="/quote/review" className="button secondary">Review existing quote</Link>
           </div>
         </div>
       </section>
 
       <section className="proofStrip">
-        {valuePoints.map(([title]) => <span key={title}>{title}</span>)}
+        <span>Estimate range, not guesswork</span>
+        <span>Scope and allowance clarity</span>
+        <span>Photos and plans improve confidence</span>
+        <span>NSW compliance-aware prompts</span>
       </section>
 
-      <section className="section twoColumn">
-        <div>
-          <p className="eyebrow">Why it exists</p>
-          <h2>Kitchen quotes should be easier to understand before anyone commits.</h2>
+      <section className="section">
+        <div className="sectionIntro">
+          <p className="eyebrow">Choose your path</p>
+          <h2>Start where your project is today.</h2>
         </div>
-        <div className="valueStack">
-          {valuePoints.map(([title, body]) => (
-            <article key={title}>
+        <div className="cardGrid four">
+          {pathCards.map(([title, body, href]) => (
+            <Link href={href} className="infoCard linkedCard" key={href}>
               <h3>{title}</h3>
               <p>{body}</p>
-            </article>
+              <span>Open</span>
+            </Link>
           ))}
+        </div>
+      </section>
+
+      <section className="section splitFeature">
+        <Image src="/images/kitchen-living.jpg" alt="Modern kitchen living space for renovation quote planning" width={980} height={735} sizes="(max-width: 820px) 100vw, 52vw" priority />
+        <div>
+          <p className="eyebrow">Why kitchen quotes change</p>
+          <h2>Kitchen pricing moves when the scope is unclear.</h2>
+          <p className="muted">
+            Two quotes can look different because they include different selections, service assumptions, access constraints or allowance wording.
+          </p>
+          <ul className="checkList">
+            {quoteChangeDrivers.map((driver) => <li key={driver}>{driver}</li>)}
+          </ul>
+          <Link href="/kitchen-pc-sums-and-provisional-sums" className="textLink">Understand PC sums and provisional sums</Link>
         </div>
       </section>
 
       <section className="section processSection">
         <div className="sectionIntro">
-          <p className="eyebrow">Process</p>
-          <h2>From first estimate to final scope.</h2>
+          <p className="eyebrow">Quote clarity process</p>
+          <h2>From first estimate to site-ready scope.</h2>
         </div>
         <div className="processGrid">
-          {processSteps.map(([number, title, body]) => (
+          {claritySteps.map(([number, title, body]) => (
             <article className="infoCard processCard" key={number}>
               <span className="stepNumber">{number}</span>
               <h3>{title}</h3>
@@ -106,28 +124,33 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section splitFeature">
-        <Image src="/images/kitchen-living.jpg" alt="Finished kitchen with cabinetry and benchtop details" width={980} height={735} sizes="(max-width: 820px) 100vw, 52vw" />
+      <section className="section twoColumn">
         <div>
-          <p className="eyebrow">Compliance-aware review</p>
-          <h2>Flag the common issues early.</h2>
+          <p className="eyebrow">Quote review</p>
+          <h2>Already have a kitchen quote? Check what sits behind the total.</h2>
           <p className="muted">
-            Operon Kitchens highlights review areas that can affect budget, timing or contract readiness. This guidance is practical and concise, not legal advice.
+            The review intake checks missing inclusions, PC sums, provisional sums, service relocation, appliance assumptions, benchtop clarity, strata risks and site measure requirements.
           </p>
-          <ul className="checkList">
-            {complianceNotes.map((note) => <li key={note}>{note}</li>)}
-          </ul>
-          <Link href="/quote/review" className="textLink">Review an existing quote</Link>
+          <div className="flexActions">
+            <Link href="/quote/review" className="button primary">Review existing quote</Link>
+            <Link href="/kitchen-quote-review" className="button ghost">Read review guide</Link>
+          </div>
+        </div>
+        <div className="valueStack">
+          {['Missing inclusions and exclusions', 'Allowance and provisional-sum clarity', 'Trade scope and licensed work prompts', 'Deposit, HBC, strata and material review flags'].map((item) => (
+            <article key={item}>
+              <h3>{item}</h3>
+              <p>Captured as a review item so your next conversation is clearer and more useful.</p>
+            </article>
+          ))}
         </div>
       </section>
 
-      <section className="section finishSection">
+      <section className="section">
         <div className="sectionIntro">
-          <p className="eyebrow">Finish tiers</p>
-          <h2>Controlled choices, clearer allowances.</h2>
-          <p className="muted">
-            Early quoting works best when selections are structured. Operon Kitchens uses finish tiers to keep decisions calm, comparable and ready for professional review.
-          </p>
+          <p className="eyebrow">Finish tiers and project types</p>
+          <h2>Controlled choices, not endless supplier chaos.</h2>
+          <p className="muted">Operon Kitchens keeps early selections practical: enough detail for estimate confidence without exposing behind-the-scenes commercial details or pretending every product is final.</p>
         </div>
         <div className="cardGrid">
           {finishTiers.map(([title, body]) => (
@@ -139,10 +162,55 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="section">
+        <div className="sectionIntro">
+          <p className="eyebrow">Project examples</p>
+          <h2>Typical profiles for clearer planning.</h2>
+          <p className="muted">Example profiles show how scope, access and selections can affect the estimate range. They are not presented as completed Operon Kitchens jobs.</p>
+        </div>
+        <div className="cardGrid">
+          {projectExamples.map(([title, body]) => (
+            <article className="infoCard" key={title}>
+              <h3>{title}</h3>
+              <p>{body}</p>
+            </article>
+          ))}
+        </div>
+        <Link href="/projects" className="textLink">View typical project profiles</Link>
+      </section>
+
+      <section className="section twoColumn complianceHome">
+        <div>
+          <p className="eyebrow">Compliance-aware prompts</p>
+          <h2>Important review items are flagged early.</h2>
+          <p className="muted">This is practical planning guidance, not legal advice. Each item still requires project-specific review or confirmation.</p>
+        </div>
+        <ul className="checkList">
+          <li>HBC and 10% deposit guidance may require review for NSW residential work.</li>
+          <li>Plumbing, electrical and gas work must be confirmed by appropriately licensed trades.</li>
+          <li>Apartment and strata projects may need access, approval and class 2 screening.</li>
+          <li>Engineered-stone restrictions must be confirmed before selecting surfaces.</li>
+          <li>Site measure and written scope confirmation are required before contract pricing.</li>
+        </ul>
+      </section>
+
+      <section className="section">
+        <div className="sectionIntro">
+          <p className="eyebrow">Sydney kitchen quote support</p>
+          <h2>Area-specific planning for homes and apartments.</h2>
+        </div>
+        <div className="areaPillGrid">
+          {priorityFooterAreas.slice(0, 12).map((area) => (
+            <Link key={area} href={getAreaHref(area)}>{area}</Link>
+          ))}
+          <Link href="/areas">View all areas</Link>
+        </div>
+      </section>
+
       <section className="section faqStack">
         <div className="sectionIntro">
           <p className="eyebrow">FAQ</p>
-          <h2>Clear answers before the next step.</h2>
+          <h2>Questions before you renovate.</h2>
         </div>
         <div className="faqList">
           {faqs.map(([question, answer]) => (
@@ -154,24 +222,12 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section educationLinks">
-        <div className="sectionIntro">
-          <p className="eyebrow">Education</p>
-          <h2>Plan with clearer renovation language.</h2>
-        </div>
-        <div className="linkGrid">
-          {educationLinks.map(([label, href]) => (
-            <Link key={href} href={href} className="infoCard textLink">{label}</Link>
-          ))}
-        </div>
-      </section>
-
       <section className="section finalCta">
-        <p className="eyebrow">Ready to start</p>
-        <h2>Build a clearer kitchen estimate, then confirm the final quote after review and site measure.</h2>
+        <p className="eyebrow">Ready to clarify the scope?</p>
+        <h2>Start with a planning estimate range, then move to professional review and site measure.</h2>
         <div className="heroActions">
           <Link href="/quote" className="button primary">Start kitchen estimate</Link>
-          <Link href="/quote/review" className="button secondary">Review existing kitchen quote</Link>
+          <Link href="/quote/review" className="button secondary">Review existing quote</Link>
         </div>
       </section>
     </main>
