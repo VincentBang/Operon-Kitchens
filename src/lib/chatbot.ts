@@ -25,7 +25,7 @@ export interface KitchenChatbotResponse {
 }
 
 const routeMap: Record<Exclude<KitchenChatbotIntent, 'unsupported' | 'general' | 'operator'>, KitchenChatbotRoute> = {
-  quote: { label: 'Start kitchen quote', href: '/quote' },
+  quote: { label: 'Start kitchen estimate', href: '/quote' },
   design: { label: 'Open beta design sketch', href: '/design' },
   review: { label: 'Review existing quote', href: '/quote/review' },
   materials: { label: 'Browse kitchen products', href: '/products/benchtops' },
@@ -55,7 +55,7 @@ function responseFromAnswer(intent: KitchenChatbotIntent, answer: PlanningAssist
   const route =
     intent === 'materials' || intent === 'compliance' || intent === 'measurement' || intent === 'quote' || intent === 'design' || intent === 'review'
       ? routeMap[intent]
-      : { label: 'Start kitchen quote', href: '/quote' };
+      : { label: 'Start kitchen estimate', href: '/quote' };
 
   return {
     intent,
@@ -130,12 +130,12 @@ export function getKitchenChatbotResponse(input: string): KitchenChatbotResponse
 
 export const kitchenChatbotWelcome: KitchenChatbotResponse = {
   intent: 'general',
-  text: 'Hi, I can help with kitchen quote scope, materials, measurements, NSW review flags and where to go next. I do not provide confirmed pricing or legal advice.',
+  text: 'Hi, I can help with kitchen quote scope, materials, measurements, NSW review flags and where to go next. I do not provide confirmed pricing, legal advice or compliance certainty.',
   actions: [
     'Ask about deposit, HBC or strata checks.',
     'Ask what measurements to prepare.',
     'Ask whether a material needs review.',
   ],
-  route: { label: 'Start kitchen quote', href: '/quote' },
+  route: { label: 'Start kitchen estimate', href: '/quote' },
   requiresReview: true,
 };

@@ -1,6 +1,5 @@
-import SeoEducationPage from '@/components/SeoEducationPage';
-import { getEducationPage } from '@/lib/seoEducation';
+import EducationRoutePage from '@/components/EducationRoutePage';
 
 export default function KitchenQuoteReviewEducationPage() {
-  return <SeoEducationPage page={getEducationPage('kitchen-quote-review')!} />;
+  return <EducationRoutePage slug="kitchen-quote-review" />;
 }

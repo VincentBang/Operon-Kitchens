@@ -1,34 +1,44 @@
-import { GetServerSideProps } from 'next';
+import { GetStaticPaths, GetStaticProps } from 'next';
+import Head from 'next/head';
 import Link from 'next/link';
-import { getProductBySlug, ProductRecord } from '@/lib/adminData';
+import { productCategories, ProductCategory } from '@/data/products';
 
 interface Props {
-  category: ProductRecord | null;
+  category: ProductCategory;
+  slug: string;
 }
 
-export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
-  const slug = typeof context.params?.slug === 'string' ? context.params.slug : '';
-  return { props: { category: slug ? getProductBySlug(slug) : null } };
+export const getStaticPaths: GetStaticPaths = async () => ({
+  paths: Object.keys(productCategories).map((slug) => ({ params: { slug } })),
+  fallback: false,
+});
+
+export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+  const slug = typeof params?.slug === 'string' ? params.slug : '';
+  const category = productCategories[slug];
+  if (!category) return { notFound: true };
+  return { props: { category, slug } };
 };
 
-export default function ProductPage({ category }: Props) {
-  if (!category) {
-    return (
-      <main className="contentPage">
-        <h1 className="contentTitle">Product not found</h1>
-        <p className="mt-2">Please select a valid product category.</p>
-        <Link href="/" className="textLink mt-4 inline-block">Return home</Link>
-      </main>
-    );
-  }
+export default function ProductPage({ category, slug }: Props) {
   return (
     <main>
+      <Head>
+        <title>{category.title} | Operon Kitchens</title>
+        <meta name="description" content={`${category.summary} Kitchen estimate guidance for ${category.title.toLowerCase()} in Sydney renovations.`} />
+      </Head>
       <section className="contentHero">
         <div>
           <p className="eyebrow">Product category</p>
           <h1 className="contentTitle">{category.title}</h1>
         </div>
-        <p className="muted">{category.summary}</p>
+        <div>
+          <p className="muted">{category.summary}</p>
+          <div className="flexActions">
+            <Link href={`/quote?category=${slug}`} className="button primary">Estimate with this scope</Link>
+            <Link href="/quote/review" className="button ghost">Review existing quote</Link>
+          </div>
+        </div>
       </section>
       <section className="contentPage">
         <div className="detailGrid">
@@ -39,7 +49,10 @@ export default function ProductPage({ category }: Props) {
             </article>
           ))}
         </div>
-        <p className="contentCta">Ready to price your kitchen? <Link href="/quote" className="textLink">Start your estimate</Link></p>
+        <aside className="compliancePanel contentCta">
+          <h2>Product selections still need confirmation</h2>
+          <p>Final material suitability, fabrication requirements and trade scope must be confirmed before written scope and contract pricing.</p>
+        </aside>
       </section>
     </main>
   );

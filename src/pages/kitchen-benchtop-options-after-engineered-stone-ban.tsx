@@ -1,6 +1,5 @@
-import SeoEducationPage from '@/components/SeoEducationPage';
-import { getEducationPage } from '@/lib/seoEducation';
+import EducationRoutePage from '@/components/EducationRoutePage';
 
 export default function KitchenBenchtopOptionsPage() {
-  return <SeoEducationPage page={getEducationPage('kitchen-benchtop-options-after-engineered-stone-ban')!} />;
+  return <EducationRoutePage slug="kitchen-benchtop-options-after-engineered-stone-ban" />;
 }

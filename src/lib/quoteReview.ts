@@ -42,6 +42,12 @@ export interface KitchenQuoteReviewIntake {
 export interface KitchenQuoteReviewResult {
   status: 'notReady' | 'partial' | 'reviewReady';
   confidenceScore: number;
+  reviewScores: {
+    scopeClarity: number;
+    allowanceRisk: number;
+    missingInformation: number;
+    reviewReadiness: number;
+  };
   checksExplained: { key: ReviewCheckKey; label: string; explanation: string; checked: boolean }[];
   missingItems: string[];
   manualReviewFlags: string[];
@@ -110,6 +116,17 @@ export function evaluateKitchenQuoteReview(intake: KitchenQuoteReviewIntake): Ki
   }
 
   const completedCount = checksExplained.filter((check) => check.checked).length;
+  const hasScopeChecks = Boolean(intake.checkedItems.missingInclusions && intake.checkedItems.exclusions && intake.checkedItems.demolitionWaste && intake.checkedItems.siteMeasure);
+  const allowanceRisk = Math.max(
+    0,
+    100 -
+      [
+        intake.checkedItems.pcSums,
+        intake.checkedItems.provisionalSums,
+        intake.checkedItems.applianceAssumptions,
+        intake.checkedItems.benchtopSplashback,
+      ].filter(Boolean).length * 25,
+  );
   const fileScore = quoteFileSupplied ? 15 : 0;
   const visualScore = supportingVisualsSupplied ? 10 : 0;
   const detailScore = Math.round((completedCount / reviewChecks.length) * 75);
@@ -123,11 +140,17 @@ export function evaluateKitchenQuoteReview(intake: KitchenQuoteReviewIntake): Ki
   return {
     status,
     confidenceScore,
+    reviewScores: {
+      scopeClarity: hasScopeChecks ? 85 : Math.round((completedCount / reviewChecks.length) * 80),
+      allowanceRisk,
+      missingInformation: Math.max(0, Math.round((missingItems.length / reviewChecks.length) * 100)),
+      reviewReadiness: confidenceScore,
+    },
     checksExplained,
     missingItems,
     manualReviewFlags: Array.from(new Set(manualReviewFlags)),
     complianceFlags: Array.from(new Set(complianceFlags)),
     recommendedNextStep,
-    disclaimer: 'This is a structured intake only. It does not perform full AI document review, legal advice or final price comparison.',
+    disclaimer: 'This intake does not replace full document review, legal advice, site inspection or written quote confirmation.',
   };
 }

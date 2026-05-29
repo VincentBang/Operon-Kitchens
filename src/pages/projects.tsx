@@ -12,6 +12,7 @@ interface ProjectProfile {
   timeframe: string;
   costDrivers: string[];
   result: string;
+  imageClass: string;
 }
 
 const projectProfiles: ProjectProfile[] = [
@@ -26,6 +27,7 @@ const projectProfiles: ProjectProfile[] = [
     timeframe: 'Typical planning window: 6-8 weeks subject to approvals and selections.',
     costDrivers: ['Lift and parking access', 'Strata approval pathway', 'Benchtop material confirmation', 'Electrical and plumbing review'],
     result: 'The estimate would flag strata, service and allowance items before site measure.',
+    imageClass: 'apartment',
   },
   {
     id: 2,
@@ -38,6 +40,7 @@ const projectProfiles: ProjectProfile[] = [
     timeframe: 'Typical planning window: 4-6 weeks after selections and measure.',
     costDrivers: ['Door finish tier', 'Hardware and accessory selection', 'Existing service locations', 'Painting/patching allowance'],
     result: 'The estimate would separate refresh scope from items better handled by trades or separate quotes.',
+    imageClass: 'refresh',
   },
 ];
 
@@ -64,6 +67,9 @@ export default function ProjectsPage() {
         <div className="detailGrid two">
           {projectProfiles.map((profile) => (
             <article key={profile.id} className="infoCard projectCard">
+              <div className={`projectVisual ${profile.imageClass}`} role="img" aria-label={`${profile.title} planning example visual`}>
+                <span>Planning example</span>
+              </div>
               <span className="featureIcon" aria-hidden="true">E{profile.id}</span>
               <h2>{profile.title}</h2>
               <p><strong>Profile:</strong> {profile.suburbType}</p>
@@ -74,10 +80,10 @@ export default function ProjectsPage() {
               <p><strong>Timeframe:</strong> {profile.timeframe}</p>
               <details className="advancedPanel">
                 <summary>What affected the budget range</summary>
-                <ul>{profile.costDrivers.map((item) => <li key={item}>{item}</li>)}</ul>
+                <div className="tagList">{profile.costDrivers.map((item) => <span key={item}>{item}</span>)}</div>
               </details>
               <p><strong>Result:</strong> {profile.result}</p>
-              <Link href="/quote" className="textLink">Estimate a similar project</Link>
+              <Link href="/quote" className="button primary">Estimate this type of kitchen</Link>
             </article>
           ))}
         </div>

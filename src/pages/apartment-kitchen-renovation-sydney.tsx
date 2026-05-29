@@ -1,6 +1,5 @@
-import SeoEducationPage from '@/components/SeoEducationPage';
-import { getEducationPage } from '@/lib/seoEducation';
+import EducationRoutePage from '@/components/EducationRoutePage';
 
 export default function ApartmentKitchenRenovationSydneyPage() {
-  return <SeoEducationPage page={getEducationPage('apartment-kitchen-renovation-sydney')!} />;
+  return <EducationRoutePage slug="apartment-kitchen-renovation-sydney" />;
 }

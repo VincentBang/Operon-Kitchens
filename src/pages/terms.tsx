@@ -55,6 +55,7 @@ export default function TermsPage() {
       <p>
         These terms explain how to use the Operon Kitchens website, estimate tools and quote review intake. They are written in plain English and should be read together with the privacy policy.
       </p>
+      <p className="muted">Last updated: 28 May 2026.</p>
 
       {termsSections.map((section) => (
         <section key={section.title}>

@@ -36,4 +36,10 @@ describe('Operon Kitchens chatbot', () => {
     expect(response.route.href).toBe('/quote/review');
     expect(response.requiresReview).toBe(true);
   });
+
+  it('states the chatbot does not provide legal advice or compliance certainty', () => {
+    render(<KitchenChatbot />);
+    fireEvent.click(screen.getByRole('button', { name: /Ask Operon/i }));
+    expect(screen.getByText(/I do not provide confirmed pricing, legal advice or compliance certainty/i)).toBeInTheDocument();
+  });
 });

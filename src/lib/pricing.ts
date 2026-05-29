@@ -147,6 +147,13 @@ export interface PricingResult {
   confidenceScore: number;
   confidenceLabel: 'high' | 'medium' | 'low';
   confidenceLevel: 'high' | 'medium' | 'low';
+  confidenceReasonsPositive: string[];
+  confidenceReasonsNegative: string[];
+  reviewRiskScore: number;
+  reviewRiskLabel: 'low' | 'medium' | 'high';
+  riskReasons: string[];
+  leadQuality: 'hot' | 'medium' | 'low';
+  recommendedFollowUp: string;
   assumptions: string[];
   exclusions: string[];
   manualReviewFlags: string[];
@@ -195,6 +202,99 @@ function getConfidenceLevel(score: number): 'high' | 'medium' | 'low' {
   if (score >= 70) return 'high';
   if (score >= 40) return 'medium';
   return 'low';
+}
+
+function getConfidenceReasons(input: QuoteInput) {
+  const positive = [
+    input.projectType !== 'notSure' && 'Project type selected',
+    Boolean(input.suburb?.trim()) && 'Suburb supplied for Sydney context',
+    input.layoutType !== 'notSure' && 'Kitchen layout selected',
+    (input.kitchenSize !== 'notSure' || input.baseLinearMetres > 0) && 'Kitchen size or cabinet run supplied',
+    input.measurementsProvided && 'Measurements supplied',
+    (input.photosProvided || input.supportingFiles.some((file) => file.category === 'photo' || file.category === 'plan')) && 'Photos or plans supplied',
+    (input.hasExistingQuote || input.supportingFiles.some((file) => file.category === 'currentQuote')) && 'Existing quote available for review',
+    input.applianceAllowance !== 'notSure' && 'Appliance allowance direction selected',
+    input.plumbingMovement !== 'notSure' && 'Plumbing movement known',
+    input.electricalScope !== 'notSure' && 'Electrical scope known',
+    input.gasInvolved !== 'notSure' && 'Gas involvement clarified',
+  ].filter(Boolean) as string[];
+
+  const negative = [
+    input.projectType === 'notSure' && 'Project type still unclear',
+    !input.suburb?.trim() && 'Suburb not supplied',
+    input.layoutType === 'notSure' && 'Kitchen layout still unclear',
+    input.kitchenSize === 'notSure' && input.baseLinearMetres <= 0 && 'Kitchen size or cabinet run not supplied',
+    !input.measurementsProvided && 'Measurements still need confirmation',
+    !input.photosProvided && !input.supportingFiles.some((file) => file.category === 'photo' || file.category === 'plan') && 'No photos or plans attached',
+    input.applianceAllowance === 'notSure' && 'Appliance selections or allowance level unclear',
+    input.plumbingMovement === 'notSure' && 'Plumbing movement unclear',
+    input.electricalScope === 'notSure' && 'Electrical scope unclear',
+    input.gasInvolved === 'notSure' && 'Gas involvement unclear',
+    input.propertyType === 'strataApartment' && 'Apartment or strata conditions need review',
+    input.olderPropertyAsbestosConcern !== 'no' && 'Older-property or asbestos item needs review',
+    input.structuralWorks.wallRemoval && 'Structural wall change selected',
+    input.waterproofingChanges !== 'no' && 'Wet-area or waterproofing scope needs confirmation',
+  ].filter(Boolean) as string[];
+
+  return { positive, negative };
+}
+
+function calculateReviewRisk(input: QuoteInput) {
+  let score = 12;
+  const reasons: string[] = [];
+
+  const addRisk = (points: number, reason: string) => {
+    score += points;
+    reasons.push(reason);
+  };
+
+  if (input.propertyType === 'strataApartment' || input.strataApprovalRequired) addRisk(14, 'Apartment or strata approval pathway needs review');
+  if (input.propertyLevel === 'level2+' || (!input.hasLift && input.propertyLevel !== 'ground') || input.parkingAccess === 'limited') addRisk(8, 'Access, lift or loading constraints may affect scope');
+  if (input.plumbingMovement === 'moves' || input.plumbingMovement === 'notSure') addRisk(10, 'Plumbing relocation or uncertainty needs licensed trade confirmation');
+  if (input.electricalScope === 'upgrades' || input.electricalScope === 'notSure') addRisk(10, 'Electrical upgrade or uncertainty needs licensed trade confirmation');
+  if (input.gasInvolved !== 'no') addRisk(8, 'Gas involvement requires licensed trade confirmation');
+  if (input.structuralWorks.wallRemoval || input.structuralWorks.beamRequired || input.structuralWorks.windowDoorChanges) addRisk(18, 'Structural or opening changes require manual review');
+  if (input.waterproofingChanges !== 'no') addRisk(8, 'Wet-area or waterproofing changes require confirmation');
+  if (input.basixReviewRequired || input.widerRenovationThresholdRisk !== 'no') addRisk(8, 'BASIX or wider renovation threshold may need review');
+  if (input.dbpReviewRequired || input.apartmentClass2Uncertainty) addRisk(8, 'DBP/class 2 screening may be relevant');
+  if (input.asbestosRisk || input.olderPropertyAsbestosConcern !== 'no' || input.propertyAgeBand === 'pre1980' || input.heritageOrOlderHomeUncertainty) addRisk(12, 'Older-property or asbestos risk should be checked');
+  if (input.accessConstraints.narrowAccess || input.accessConstraints.longCarry || input.accessConstraints.occupiedHome) addRisk(6, 'Site access or occupied-home constraints affect delivery and staging');
+  if (input.zones.length > 0) addRisk(6, 'Multiple rooms or zones require scope coordination');
+
+  const reviewRiskScore = Math.min(100, score);
+  const reviewRiskLabel: PricingResult['reviewRiskLabel'] = reviewRiskScore >= 65 ? 'high' : reviewRiskScore >= 35 ? 'medium' : 'low';
+
+  return {
+    reviewRiskScore,
+    reviewRiskLabel,
+    riskReasons: reasons.length ? reasons : ['No unusual complexity has been identified beyond normal site measure and written scope confirmation.'],
+  };
+}
+
+function calculateLeadQuality(input: QuoteInput, confidenceScore: number, reviewRiskScore: number) {
+  let score = 20;
+  if (input.roughTiming === 'urgent' || input.roughTiming === 'readySoon') score += 15;
+  if (input.roughTiming === 'oneToThreeMonths') score += 8;
+  if (input.hasExistingQuote || input.supportingFiles.some((file) => file.category === 'currentQuote')) score += 12;
+  if (input.photosProvided || input.supportingFiles.some((file) => file.category === 'photo' || file.category === 'plan')) score += 8;
+  if (['mosman', 'vaucluse', 'double bay', 'bellevue hill', 'woollahra', 'rose bay', 'neutral bay', 'manly', 'wahroonga', 'pymble', 'killara', 'hunters hill'].some((area) => input.suburb.toLowerCase().includes(area))) score += 10;
+  if (input.projectType === 'fullRenovation') score += 10;
+  if (input.budgetBand === '45kTo70k' || input.budgetBand === '70kPlus') score += 12;
+  if (input.budgetBand === '25kTo45k') score += 6;
+  if (input.preferredContactMethod !== 'either' || input.addressOptional.trim()) score += 4;
+  if (confidenceScore >= 70) score += 6;
+  if (reviewRiskScore >= 50) score += 5;
+
+  const normalized = Math.min(100, score);
+  const leadQuality: PricingResult['leadQuality'] = normalized >= 70 ? 'hot' : normalized >= 45 ? 'medium' : 'low';
+  const recommendedFollowUp =
+    leadQuality === 'hot'
+      ? 'Prioritise same-day follow-up and request site-measure availability, photos or current quote files.'
+      : leadQuality === 'medium'
+        ? 'Send a scope clarification follow-up and invite the customer to add photos, plans or quote files.'
+        : 'Send planning guidance and prompt the customer to complete more project details before review.';
+
+  return { leadQuality, recommendedFollowUp };
 }
 
 function priceCabinetZone(zone: QuoteZone, activeRateCard: RateCard) {
@@ -381,6 +481,9 @@ export function calculatePricing(input: QuoteInput, activeRateCard: RateCard = r
   const margin = subtotal * activeRateCard.margin;
   const confidenceScore = calculateConfidence(input);
   const confidenceLevel = getConfidenceLevel(confidenceScore);
+  const { positive: confidenceReasonsPositive, negative: confidenceReasonsNegative } = getConfidenceReasons(input);
+  const { reviewRiskScore, reviewRiskLabel, riskReasons } = calculateReviewRisk(input);
+  const { leadQuality, recommendedFollowUp } = calculateLeadQuality(input, confidenceScore, reviewRiskScore);
   // Increase contingency when confidence is low
   let contingencyFactor = activeRateCard.contingencyBase;
   if (confidenceLevel === 'medium') contingencyFactor += 0.05;
@@ -507,6 +610,13 @@ export function calculatePricing(input: QuoteInput, activeRateCard: RateCard = r
     confidenceScore,
     confidenceLabel,
     confidenceLevel,
+    confidenceReasonsPositive,
+    confidenceReasonsNegative,
+    reviewRiskScore,
+    reviewRiskLabel,
+    riskReasons,
+    leadQuality,
+    recommendedFollowUp,
     assumptions,
     exclusions,
     manualReviewFlags,

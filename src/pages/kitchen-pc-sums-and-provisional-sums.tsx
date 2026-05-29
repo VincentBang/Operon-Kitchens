@@ -1,6 +1,5 @@
-import SeoEducationPage from '@/components/SeoEducationPage';
-import { getEducationPage } from '@/lib/seoEducation';
+import EducationRoutePage from '@/components/EducationRoutePage';
 
 export default function KitchenPcSumsAndProvisionalSumsPage() {
-  return <SeoEducationPage page={getEducationPage('kitchen-pc-sums-and-provisional-sums')!} />;
+  return <EducationRoutePage slug="kitchen-pc-sums-and-provisional-sums" />;
 }

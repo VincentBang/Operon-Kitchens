@@ -33,6 +33,11 @@ describe('pricing engine', () => {
     expect(result.estimateHigh).toBeGreaterThan(result.estimateLow);
     expect(result.confidenceLevel).toBe('high');
     expect(result.confidenceLabel).toBe('high');
+    expect(result.confidenceReasonsPositive).toContain('Kitchen layout selected');
+    expect(result.reviewRiskLabel).toBe('low');
+    expect(result.riskReasons).toContain('No unusual complexity has been identified beyond normal site measure and written scope confirmation.');
+    expect(result.leadQuality).toMatch(/hot|medium|low/);
+    expect(result.recommendedFollowUp).toMatch(/follow-up|guidance|same-day/i);
     expect(result.includedScope).toContain('Base cabinets');
     expect(result.assumptions).toContain('This is a planning estimate range for scope review, not a contract price.');
     expect(result.complianceFlags).toContain('Final site measure required before price confirmation');
@@ -130,6 +135,9 @@ describe('pricing engine', () => {
     expect(complex.complianceFlags).toContain('Strata/apartment approval review required');
     expect(complex.complianceFlags).toContain('Older-property/asbestos review likely requires confirmation');
     expect(complex.complianceFlags).toContain('DBP/class 2 screening may be required for apartment work');
+    expect(complex.reviewRiskScore).toBeGreaterThan(simple.reviewRiskScore);
+    expect(complex.reviewRiskLabel).toBe('high');
+    expect(complex.riskReasons).toEqual(expect.arrayContaining(['Apartment or strata approval pathway needs review']));
   });
 
   it('rewards clearer scope details with higher confidence', () => {
@@ -166,5 +174,60 @@ describe('pricing engine', () => {
 
     expect(unclear.confidenceLabel).toBe('low');
     expect(clear.confidenceScore).toBeGreaterThan(unclear.confidenceScore);
+    expect(clear.confidenceReasonsPositive).toContain('Photos or plans supplied');
+    expect(unclear.confidenceReasonsNegative).toContain('No photos or plans attached');
+    expect(unclear.confidenceReasonsNegative).toContain('Appliance selections or allowance level unclear');
+  });
+
+  it('tightens estimate ranges as confidence improves', () => {
+    const unclear = calculatePricing({
+      ...defaultQuoteInput,
+      projectType: 'notSure',
+      layoutType: 'notSure',
+      kitchenSize: 'notSure',
+      baseLinearMetres: 4,
+      overheadLinearMetres: 2,
+      doorQty: 8,
+      panelQty: 4,
+      benchtopMetres: 3,
+      splashbackArea: 2,
+      measurementsProvided: false,
+      photosProvided: false,
+      applianceAllowance: 'notSure',
+      plumbingMovement: 'notSure',
+      electricalScope: 'notSure',
+    });
+    const clear = calculatePricing({
+      ...defaultQuoteInput,
+      projectType: 'fullRenovation',
+      suburb: 'Mosman',
+      roughTiming: 'readySoon',
+      budgetBand: '45kTo70k',
+      layoutType: 'lShape',
+      kitchenSize: 'medium',
+      baseLinearMetres: 4,
+      overheadLinearMetres: 2,
+      doorQty: 8,
+      panelQty: 4,
+      benchtopMetres: 3,
+      splashbackArea: 2,
+      measurementsProvided: true,
+      photosProvided: true,
+      supportingFiles: [{ id: 'quote-1', name: 'quote.pdf', category: 'currentQuote' }],
+      hasExistingQuote: true,
+      applianceAllowance: 'exactModelsKnown',
+      plumbingMovement: 'sameLocation',
+      electricalScope: 'similar',
+      gasInvolved: 'no',
+      waterproofingChanges: 'no',
+      widerRenovationThresholdRisk: 'no',
+      olderPropertyAsbestosConcern: 'no',
+      preferredContactMethod: 'phone',
+    });
+
+    const unclearRatio = (unclear.estimateHigh - unclear.estimateLow) / Math.max(unclear.total, 1);
+    const clearRatio = (clear.estimateHigh - clear.estimateLow) / Math.max(clear.total, 1);
+    expect(clearRatio).toBeLessThan(unclearRatio);
+    expect(clear.leadQuality).toBe('hot');
   });
 });

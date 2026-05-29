@@ -2,7 +2,6 @@ import { FormEvent, useMemo, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { answerKitchenPlanningQuestion } from '@/lib/planningAssistant';
-import { getLocalizedMessage, supportedLocales, SupportedLocale } from '@/lib/i18n';
 
 const sampleQuestions = [
   'How much deposit should I pay?',
@@ -14,7 +13,6 @@ const sampleQuestions = [
 export default function AdvicePage() {
   const [question, setQuestion] = useState(sampleQuestions[0]);
   const [submittedQuestion, setSubmittedQuestion] = useState(sampleQuestions[0]);
-  const [locale, setLocale] = useState<SupportedLocale>('en-AU');
   const answer = useMemo(() => answerKitchenPlanningQuestion(submittedQuestion), [submittedQuestion]);
 
   const handleSubmit = (event: FormEvent) => {
@@ -25,7 +23,7 @@ export default function AdvicePage() {
   return (
     <main>
       <Head>
-        <title>Kitchen renovation advice | Operon Kitchens</title>
+        <title>Kitchen planning assistant | Operon Kitchens</title>
         <meta
           name="description"
           content="Customer-safe kitchen renovation planning guidance for estimates, measurements, compliance prompts, materials and quote review preparation."
@@ -34,7 +32,7 @@ export default function AdvicePage() {
       <section className="section">
         <Link href="/" className="textLink">Back to Operon Kitchens</Link>
         <p className="eyebrow">Planning support</p>
-        <h1>Kitchen renovation guidance before professional review.</h1>
+        <h1>Kitchen planning assistant.</h1>
         <p className="muted">
           Ask a planning question about budget, materials, compliance or measurements. Answers are guidance only and do not replace site review, trade confirmation or legal advice.
         </p>
@@ -73,19 +71,6 @@ export default function AdvicePage() {
 
       <section className="section cardGrid">
         <article className="infoCard">
-          <h2>Language readiness</h2>
-          <p>{getLocalizedMessage(locale, 'estimateNotice')}</p>
-          <label className="field">
-            <span>Preview language</span>
-            <select value={locale} onChange={(event) => setLocale(event.target.value as SupportedLocale)}>
-              {supportedLocales.map((option) => (
-                <option key={option.code} value={option.code}>{option.label}</option>
-              ))}
-            </select>
-          </label>
-        </article>
-
-        <article className="infoCard">
           <h2>What this guidance can do</h2>
           <p>It can help you prepare better measurements, clearer scope notes and safer questions for professional review.</p>
           <ul>
@@ -93,6 +78,11 @@ export default function AdvicePage() {
             <li>Point you to estimate or quote review pathways.</li>
             <li>Flag where licensed trades or site review may be needed.</li>
           </ul>
+        </article>
+        <article className="infoCard">
+          <h2>What it cannot do</h2>
+          <p>It cannot provide confirmed pricing, legal advice, compliance certainty or a substitute for site inspection.</p>
+          <Link href="/quote/review" className="textLink">Use professional quote review</Link>
         </article>
       </section>
     </main>

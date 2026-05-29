@@ -1,27 +1,31 @@
-import { GetServerSideProps } from 'next';
+import { GetStaticPaths, GetStaticProps } from 'next';
+import Head from 'next/head';
 import Link from 'next/link';
-import { getGuideBySlug, GuideRecord } from '@/lib/adminData';
+import { guides, Guide } from '@/data/guides';
 
 interface Props {
-  guide: GuideRecord | null;
+  guide: Guide;
 }
 
-export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
-  const slug = typeof context.params?.slug === 'string' ? context.params.slug : '';
-  return { props: { guide: slug ? getGuideBySlug(slug) : null } };
+export const getStaticPaths: GetStaticPaths = async () => ({
+  paths: guides.map((guide) => ({ params: { slug: guide.slug } })),
+  fallback: false,
+});
+
+export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+  const slug = typeof params?.slug === 'string' ? params.slug : '';
+  const guide = guides.find((item) => item.slug === slug);
+  if (!guide) return { notFound: true };
+  return { props: { guide } };
 };
 
 export default function GuidePage({ guide }: Props) {
-  if (!guide) {
-    return (
-      <main className="contentPage">
-        <h1 className="contentTitle">Guide not found</h1>
-        <Link href="/" className="textLink">Return home</Link>
-      </main>
-    );
-  }
   return (
     <main>
+      <Head>
+        <title>{guide.title} | Operon Kitchens</title>
+        <meta name="description" content={`${guide.title} from Operon Kitchens, with practical quote clarity and site-measure guidance.`} />
+      </Head>
       <section className="contentHero slim">
         <div>
           <p className="eyebrow">Kitchen guide</p>
@@ -31,7 +35,18 @@ export default function GuidePage({ guide }: Props) {
       </section>
       <article className="contentPage articleBody">
         <p>{guide.content}</p>
-        <p className="contentCta">For a personalised estimate, <Link href="/quote" className="textLink">start your quote</Link>.</p>
+        <section className="compliancePanel">
+          <h2>Review reminder</h2>
+          <p>Online guidance does not replace site inspection, licensed trade confirmation or written scope confirmation.</p>
+        </section>
+        <section className="contentCta">
+          <h2>Make this project-specific</h2>
+          <p>Start an estimate or upload an existing quote so the guide can become a clearer review checklist.</p>
+          <div className="flexActions">
+            <Link href="/quote" className="button primary">Start kitchen estimate</Link>
+            <Link href="/quote/review" className="button ghost">Review existing quote</Link>
+          </div>
+        </section>
       </article>
     </main>
   );

@@ -13,6 +13,8 @@ const quoteTools = [
   ['Review existing kitchen quote', '/quote/review'],
   ['Kitchen quote Sydney', '/kitchen-quote-sydney'],
   ['Kitchen renovation cost Sydney', '/kitchen-renovation-cost-sydney'],
+  ['Quote vs estimate', '/kitchen-quote-vs-estimate'],
+  ['Quote checklist', '/kitchen-renovation-quote-checklist'],
 ];
 
 const planningGuides = [
@@ -21,14 +23,16 @@ const planningGuides = [
   ['Benchtop options after engineered stone restrictions', '/kitchen-benchtop-options-after-engineered-stone-ban'],
   ['Apartment kitchen renovation Sydney', '/apartment-kitchen-renovation-sydney'],
   ['Kitchen renovation glossary', '/kitchen-renovation-glossary'],
+  ['Why kitchen quotes vary', '/why-kitchen-quotes-vary'],
+  ['Questions before accepting a quote', '/questions-before-accepting-kitchen-quote'],
   ['FAQ', '/faqs'],
 ];
 
 const projectTypes = [
-  ['Full kitchen renovation', '/quote?projectType=full-renovation'],
-  ['Cabinetry and benchtop refresh', '/quote?projectType=refresh'],
+  ['Full kitchen renovation', '/full-kitchen-renovation-sydney'],
+  ['Cabinetry and benchtop refresh', '/kitchen-cabinetry-benchtop-refresh'],
   ['Apartment kitchen renovation', '/apartment-kitchen-renovation-sydney'],
-  ['Benchtop replacement', '/kitchen-benchtop-options-after-engineered-stone-ban'],
+  ['Benchtop replacement', '/kitchen-benchtop-replacement-sydney'],
   ['Quote review', '/quote/review'],
 ];
 
@@ -131,6 +135,12 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
             <span>Planning guidance only. Site measure and written scope confirmation are required before contract pricing.</span>
           </div>
         </footer>
+        {!router.pathname.startsWith('/quote') && (
+          <div className="stickyMobileCta" aria-label="Quick actions">
+            <Link href="/quote">Start estimate</Link>
+            <Link href="/quote/review">Review quote</Link>
+          </div>
+        )}
       </div>
     </>
   );

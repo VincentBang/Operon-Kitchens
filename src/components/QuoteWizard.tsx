@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import ProjectBasicsStep from '@/components/steps/ProjectBasicsStep';
 import PropertyDetails from '@/components/steps/PropertyDetails';
 import KitchenLayoutSizeStep from '@/components/steps/KitchenLayoutSizeStep';
@@ -131,6 +132,10 @@ const QuoteWizard = () => {
   return (
     <div className="wizardShell">
       <div className="wizardHeader">
+        <div className="wizardTopLinks">
+          <Link href="/" className="brand">Operon Kitchens</Link>
+          <Link href="/quote/review" className="textLink">Review existing quote</Link>
+        </div>
         <p className="eyebrow">Estimate builder</p>
         <h1>Kitchen quote wizard</h1>
         <p className="muted">Build a planning estimate range with confidence, assumptions, exclusions and review flags before a professional review.</p>
@@ -150,13 +155,16 @@ const QuoteWizard = () => {
               style={{ width: `${((step + 1) / steps.length) * 100}%` }}
             />
           </div>
-          <ol className="stepNav" aria-label="Quote wizard steps">
-            {stepLabels.map((label, index) => (
-              <li key={label} className={index === step ? 'active' : index < step ? 'complete' : ''} aria-current={index === step ? 'step' : undefined}>
-                <span>{index + 1}</span><em>{label}</em>
-              </li>
-            ))}
-          </ol>
+          <details className="stepListDisclosure">
+            <summary>View all steps</summary>
+            <ol className="stepNav" aria-label="Quote wizard steps">
+              {stepLabels.map((label, index) => (
+                <li key={label} className={index === step ? 'active' : index < step ? 'complete' : ''} aria-current={index === step ? 'step' : undefined}>
+                  <span>{index + 1}</span><em>{label}</em>
+                </li>
+              ))}
+            </ol>
+          </details>
         </div>
         {steps[step]}
       </div>

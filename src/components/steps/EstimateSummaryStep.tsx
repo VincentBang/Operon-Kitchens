@@ -1,9 +1,11 @@
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { summarizeDesignPlan } from '@/lib/designPlan';
 import { calculatePricing, PricingResult, QuoteInput, RateCard } from '@/lib/pricing';
 import { createKitchenRecommendations } from '@/lib/recommendations';
 import { WizardContact } from '@/components/steps/ContactPrivacyStep';
+import { scoreKitchenLead } from '@/lib/leadScoring';
+import { trackKitchenEvent } from '@/lib/analytics';
 
 interface Props {
   data: QuoteInput;
@@ -17,10 +19,23 @@ interface Props {
 export default function EstimateSummaryStep({ data, contact, rateCard, quoteId, onBack, onSaved }: Props) {
   const quoteResult: PricingResult = calculatePricing(data, rateCard);
   const recommendations = createKitchenRecommendations(data, quoteResult);
+  const leadScore = scoreKitchenLead(data, quoteResult);
   const [submitted, setSubmitted] = useState(false);
   const [savedQuoteId, setSavedQuoteId] = useState(quoteId ?? '');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
+
+  useEffect(() => {
+    trackKitchenEvent('estimate_summary_view', {
+      confidence_label: quoteResult.confidenceLabel,
+      manual_review_count: quoteResult.manualReviewFlags.length,
+    });
+    trackKitchenEvent('lead_score_generated', {
+      lead_quality: quoteResult.leadQuality,
+      confidence_label: quoteResult.confidenceLabel,
+      review_risk_label: quoteResult.reviewRiskLabel,
+    });
+  }, [quoteResult.confidenceLabel, quoteResult.leadQuality, quoteResult.manualReviewFlags.length, quoteResult.reviewRiskLabel]);
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -66,7 +81,38 @@ export default function EstimateSummaryStep({ data, contact, rateCard, quoteId, 
           </div>
           <span className={`confidence ${quoteResult.confidenceLabel}`}>{quoteResult.confidenceLabel} confidence · {quoteResult.confidenceScore}/100</span>
         </div>
-        <p className="muted">This is a planning estimate, subject to site measure, confirmed selections and written scope confirmation.</p>
+        <p className="muted">This is a planning estimate report, subject to site measure, confirmed selections and written scope confirmation.</p>
+        <div className="summaryMetricGrid">
+          <article>
+            <span>Information completeness</span>
+            <strong>{quoteResult.confidenceScore}/100</strong>
+            <p>{quoteResult.confidenceLabel} confidence</p>
+          </article>
+          <article>
+            <span>Review risk</span>
+            <strong>{quoteResult.reviewRiskLabel} · {quoteResult.reviewRiskScore}/100</strong>
+            <p>Complexity and manual review need</p>
+          </article>
+          <article>
+            <span>Lead priority</span>
+            <strong>{leadScore.label}</strong>
+            <p>{leadScore.recommendedFollowUp}</p>
+          </article>
+        </div>
+        <div className="guideSummary">
+          <article>
+            <h3>What improved confidence</h3>
+            <ul>{(quoteResult.confidenceReasonsPositive.length ? quoteResult.confidenceReasonsPositive : ['Add measurements, photos and selection direction to improve confidence.']).map((item) => <li key={item}>{item}</li>)}</ul>
+          </article>
+          <article>
+            <h3>What reduced confidence</h3>
+            <ul>{(quoteResult.confidenceReasonsNegative.length ? quoteResult.confidenceReasonsNegative : ['No major completeness gaps were identified from the supplied information.']).map((item) => <li key={item}>{item}</li>)}</ul>
+          </article>
+          <article>
+            <h3>Review risk reasons</h3>
+            <ul>{quoteResult.riskReasons.map((item) => <li key={item}>{item}</li>)}</ul>
+          </article>
+        </div>
         <h3>Included scope</h3>
         <ul className="lineItemList">
           {quoteResult.includedScope.map((item) => <li key={item}><span>{item}</span><span>Included</span></li>)}
@@ -103,9 +149,15 @@ export default function EstimateSummaryStep({ data, contact, rateCard, quoteId, 
           <ul>{quoteResult.exclusions.map((item) => <li key={item}>{item}</li>)}</ul>
         </details>
         <details className="advancedPanel" open>
-          <summary>Manual review and compliance flags</summary>
+          <summary>Manual review flags</summary>
           <ul className="warningList">
-            {[...quoteResult.manualReviewFlags, ...quoteResult.complianceFlags].map((item) => <li key={item}>{item}</li>)}
+            {(quoteResult.manualReviewFlags.length ? quoteResult.manualReviewFlags : ['No major manual review flags beyond normal site measure.']).map((item) => <li key={item}>{item}</li>)}
+          </ul>
+        </details>
+        <details className="advancedPanel" open>
+          <summary>Compliance prompts</summary>
+          <ul className="warningList">
+            {quoteResult.complianceFlags.map((item) => <li key={item}>{item}</li>)}
           </ul>
         </details>
       </div>

@@ -39,7 +39,9 @@ describe('kitchen quote review intake', () => {
     });
 
     expect(result.status).toBe('notReady');
-    expect(result.disclaimer).toContain('does not perform full AI document review');
+    expect(result.disclaimer).toContain('does not replace full document review');
+    expect(result.reviewScores.reviewReadiness).toBe(result.confidenceScore);
+    expect(result.reviewScores.missingInformation).toBeGreaterThan(0);
     expect(result.manualReviewFlags).toEqual(
       expect.arrayContaining([
         'Existing quote document still needs to be supplied or described',
@@ -75,6 +77,8 @@ describe('kitchen quote review intake', () => {
 
     expect(result.status).toBe('reviewReady');
     expect(result.confidenceScore).toBe(100);
+    expect(result.reviewScores.scopeClarity).toBe(85);
+    expect(result.reviewScores.allowanceRisk).toBe(0);
     expect(result.missingItems).toHaveLength(0);
     expect(result.manualReviewFlags).not.toContain('Existing quote document still needs to be supplied or described');
   });
@@ -100,6 +104,7 @@ describe('kitchen quote review intake', () => {
     });
 
     expect(result.status).toBe('partial');
+    expect(result.reviewScores.allowanceRisk).toBeGreaterThan(0);
     expect(result.complianceFlags).toEqual(
       expect.arrayContaining([
         'Licensed electrical, plumbing or gas trade confirmation may be required',

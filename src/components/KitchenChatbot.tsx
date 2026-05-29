@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { FormEvent, useMemo, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { trackKitchenEvent } from '@/lib/analytics';
 import { getKitchenChatbotResponse, kitchenChatbotWelcome, KitchenChatbotResponse } from '@/lib/chatbot';
 
 interface ChatMessage {
@@ -36,6 +37,13 @@ export default function KitchenChatbot() {
     if (messages.length <= 1) return 'Ask about scope, materials or next steps.';
     return `${messages.filter((message) => message.role === 'user').length} question(s) asked`;
   }, [messages]);
+
+  useEffect(() => {
+    document.body.dataset.kitchenChatbotOpen = open ? 'true' : 'false';
+    return () => {
+      delete document.body.dataset.kitchenChatbotOpen;
+    };
+  }, [open]);
 
   const submitQuestion = (question: string) => {
     const cleanQuestion = question.trim();
@@ -104,23 +112,21 @@ export default function KitchenChatbot() {
           <button type="submit">Send</button>
         </form>
 
-        <Link className="kitchenChatbotRoute" href={currentResponse.route.href}>
+        <Link className="kitchenChatbotRoute" href={currentResponse.route.href} onClick={() => trackKitchenEvent('chatbot_cta_click', { intent: currentResponse.intent, href: currentResponse.route.href })}>
           {currentResponse.route.label}
         </Link>
       </section>
-
-      {!open && (
-        <button className="kitchenChatbotNudge" type="button" onClick={() => setOpen(true)}>
-          Need help with scope?
-        </button>
-      )}
 
       <button
         className="kitchenChatbotToggle"
         type="button"
         aria-expanded={open}
         aria-controls="kitchen-chatbot-panel"
-        onClick={() => setOpen((value) => !value)}
+        onClick={() => setOpen((value) => {
+          const next = !value;
+          if (next) trackKitchenEvent('chatbot_open');
+          return next;
+        })}
       >
         <span>?</span>
         Ask Operon

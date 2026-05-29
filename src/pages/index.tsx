@@ -1,13 +1,14 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
+import SchemaJsonLd from '@/components/SchemaJsonLd';
 import { getAreaHref, priorityFooterAreas } from '@/lib/areas';
 
 const pathCards = [
-  ['Start estimate', 'Build a planning budget range with confidence scoring and review flags.', '/quote'],
-  ['Review existing quote', 'Upload a current quote and check inclusions, allowances and exclusions.', '/quote/review'],
-  ['Browse guides', 'Understand process, PC sums, benchtop options and apartment risks.', '/kitchen-renovation-process'],
-  ['View areas', 'See kitchen quote guidance for Sydney suburbs and project types.', '/areas'],
+  ['I need a new kitchen estimate', 'Build a planning budget range with confidence scoring and review flags.', '/quote'],
+  ['I already have a quote', 'Upload a current quote and check inclusions, allowances and exclusions.', '/quote/review'],
+  ['I’m researching kitchen cost', 'Understand process, PC sums, benchtop options and budget drivers.', '/kitchen-renovation-cost-sydney'],
+  ['I’m in an apartment or strata property', 'See access, approval and class 2 screening items before review.', '/apartment-kitchen-renovation-sydney'],
 ];
 
 const quoteChangeDrivers = [
@@ -33,6 +34,26 @@ const finishTiers = [
   ['Apartment kitchen', 'Extra attention to strata, access, lift bookings, work hours, class 2 screening and waste.'],
 ];
 
+const estimateOutputs = [
+  'Budget range',
+  'Confidence score',
+  'Assumptions',
+  'Exclusions',
+  'Manual review flags',
+  'Compliance prompts',
+  'Recommended next step',
+];
+
+const sampleReportSections = [
+  ['Planning range', '$38k - $52k example range'],
+  ['Confidence score', '72/100 · medium confidence'],
+  ['Included scope', 'Cabinetry, benchtop, splashback, selected trade allowances'],
+  ['Assumptions', 'Services mostly stay in place and photos match site conditions'],
+  ['Exclusions', 'Structural work, strata approval and final selections not confirmed'],
+  ['Review flags', 'Apartment access, licensed trades, HBC/deposit prompt'],
+  ['Next step', 'Upload plans or book site measure for written scope confirmation'],
+];
+
 const projectExamples = [
   ['Apartment quote review', 'Strata access, lift bookings, appliance assumptions and unclear rubbish removal were the key review items.'],
   ['Family kitchen refresh', 'The scope separated cabinetry fronts, hardware, benchtop and painting/patching boundaries.'],
@@ -46,6 +67,22 @@ const faqs = [
 ];
 
 export default function Home() {
+  const schema = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: 'Operon Kitchens',
+      url: 'https://operonkitchens.com.au',
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'LocalBusiness',
+      name: 'Operon Kitchens',
+      areaServed: 'Sydney, NSW',
+      url: 'https://operonkitchens.com.au',
+    },
+  ];
+
   return (
     <main>
       <Head>
@@ -55,17 +92,32 @@ export default function Home() {
           content="Clear Sydney kitchen renovation estimate ranges, quote confidence, scope clarity, assumptions, exclusions and professional review pathways."
         />
       </Head>
+      <SchemaJsonLd data={schema} />
 
       <section className="hero">
-        <div className="heroContent">
-          <p className="eyebrow">Sydney kitchen quote clarity</p>
-          <h1>Clear kitchen renovation estimates before you book a site visit.</h1>
-          <p className="heroLead">
-            Operon Kitchens helps Sydney homeowners understand likely budget range, scope, allowances, exclusions and review items before site measure.
-          </p>
-          <div className="heroActions">
-            <Link href="/quote" className="button primary">Start kitchen estimate</Link>
-            <Link href="/quote/review" className="button secondary">Review existing quote</Link>
+        <div className="heroContent heroGrid">
+          <div>
+            <p className="eyebrow">Sydney kitchen quote clarity</p>
+            <h1>Clear kitchen renovation estimates for Sydney homes — before the site visit.</h1>
+            <p className="heroLead">
+              Build a planning range, understand assumptions and exclusions, then move toward professional review and site measure.
+            </p>
+            <div className="heroActions">
+              <Link href="/quote" className="button primary">Start kitchen estimate</Link>
+              <Link href="/quote/review" className="button secondary">Review existing quote</Link>
+            </div>
+          </div>
+          <div className="estimatePreviewCard" aria-label="Example estimate preview">
+            <span className="eyebrow">Example only</span>
+            <h2>Planning range preview</h2>
+            <strong>$38k - $52k</strong>
+            <p>Medium confidence · 72/100</p>
+            <ul>
+              <li>Apartment access review</li>
+              <li>Benchtop compliance confirmation</li>
+              <li>Site measure required</li>
+            </ul>
+            <small>Example only — actual range depends on scope and site review.</small>
           </div>
         </div>
       </section>
@@ -75,6 +127,22 @@ export default function Home() {
         <span>Scope and allowance clarity</span>
         <span>Photos and plans improve confidence</span>
         <span>NSW compliance-aware prompts</span>
+      </section>
+
+      <section className="section">
+        <div className="sectionIntro">
+          <p className="eyebrow">Sample estimate output</p>
+          <h2>Know what you receive before completing the wizard.</h2>
+          <p className="muted">The summary is designed like a mini planning report, not a vague calculator result.</p>
+        </div>
+        <div className="reportPreviewGrid">
+          {sampleReportSections.map(([title, body]) => (
+            <article className="infoCard" key={title}>
+              <h3>{title}</h3>
+              <p>{body}</p>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className="section">
@@ -91,6 +159,20 @@ export default function Home() {
             </Link>
           ))}
         </div>
+      </section>
+
+      <section className="section twoColumn">
+        <div>
+          <p className="eyebrow">What the estimate gives you</p>
+          <h2>A clearer planning view before site measure.</h2>
+          <p className="muted">
+            The online estimate is built to show uncertainty clearly, so the next professional review can focus on the right questions.
+          </p>
+          <Link href="/quote" className="textLink">Start the estimate wizard</Link>
+        </div>
+        <ul className="checkList">
+          {estimateOutputs.map((item) => <li key={item}>{item}</li>)}
+        </ul>
       </section>
 
       <section className="section splitFeature">

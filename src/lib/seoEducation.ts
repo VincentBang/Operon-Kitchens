@@ -106,7 +106,7 @@ export const educationPages: SeoEducationPage[] = [
       },
     ],
     faqs: [
-      { question: 'Does the review automatically approve a quote?', answer: 'No. Phase 1 captures structured intake and review flags. A person still needs to review the scope before advice or next steps are confirmed.' },
+      { question: 'Does the review automatically approve a quote?', answer: 'No. The intake captures structured review flags. A person still needs to review the scope before advice or next steps are confirmed.' },
       { question: 'Can the review identify missing items?', answer: 'It is designed to capture likely missing or unclear items so they can be checked professionally before you rely on the quote.' },
     ],
   },
@@ -224,6 +224,180 @@ export const educationPages: SeoEducationPage[] = [
     faqs: [
       { question: 'Should I avoid every allowance?', answer: 'No. Some allowances are practical early on. The important thing is to know what is provisional and what could change.' },
       { question: 'Can Operon Kitchens check allowances?', answer: 'The quote review intake captures unclear PC sums and provisional sums so they can be professionally reviewed.' },
+    ],
+  },
+  {
+    slug: 'kitchen-quote-vs-estimate',
+    eyebrow: 'Quote vs estimate',
+    title: 'Kitchen quote vs estimate: what each one should tell you.',
+    summary: 'Understand the difference between an early planning range, a quote for defined scope and the written confirmation needed after site measure.',
+    primaryCta: 'Review existing quote',
+    primaryHref: '/quote/review',
+    secondaryCta: 'Start kitchen estimate',
+    secondaryHref: '/quote',
+    sections: [
+      {
+        heading: 'An estimate shows planning direction',
+        body: 'A kitchen estimate is useful when it shows a range, confidence score, assumptions, exclusions and items that still need professional review.',
+      },
+      {
+        heading: 'A quote should show defined scope',
+        body: 'A useful kitchen quote should make demolition, cabinetry, surfaces, appliances, trades, delivery, waste, GST, exclusions and allowances clear enough to compare.',
+      },
+      {
+        heading: 'Why this matters before accepting',
+        body: 'A lower number can be misleading if it leaves trade relocation, PC sums, provisional sums, splashback, rubbish removal or access conditions unresolved.',
+        expandable: true,
+      },
+    ],
+    faqs: [
+      { question: 'Can I compare an estimate with a quote?', answer: 'Only carefully. Compare scope, assumptions and missing items first, then compare the range or total.' },
+      { question: 'When should I request review?', answer: 'Request review when you have a quote, photos, plans or enough scope detail to identify unclear inclusions.' },
+    ],
+  },
+  {
+    slug: 'pc-sums-vs-provisional-sums',
+    eyebrow: 'PC sums vs provisional sums',
+    title: 'PC sums vs provisional sums in kitchen quotes.',
+    summary: 'Learn how item allowances and uncertain work allowances can change the real cost of a kitchen renovation.',
+    primaryCta: 'Review allowance clarity',
+    primaryHref: '/quote/review',
+    secondaryCta: 'Read PC sums guide',
+    secondaryHref: '/kitchen-pc-sums-and-provisional-sums',
+    sections: [
+      {
+        heading: 'PC sums are usually item allowances',
+        body: 'Appliances, fixtures, sinks, taps or selected products may be shown as PC sums when the exact product has not been chosen.',
+      },
+      {
+        heading: 'Provisional sums are usually work allowances',
+        body: 'Demolition, service relocation, preparation or access-sensitive work may be provisional when the final scope is not known yet.',
+      },
+      {
+        heading: 'The check before comparing totals',
+        body: 'Ask whether the allowance is realistic, what happens if it is exceeded, and whether the quote explains the labour or installation attached to that allowance.',
+        expandable: true,
+      },
+    ],
+    faqs: [
+      { question: 'Are allowances a warning sign?', answer: 'Not always. They are useful when honest and realistic. The risk is unclear or low allowances that shift cost later.' },
+      { question: 'Can Operon Kitchens check allowances?', answer: 'The review intake captures allowance wording so it can be checked against the rest of the scope.' },
+    ],
+  },
+  {
+    slug: 'flatpack-kitchen-vs-custom-kitchen',
+    eyebrow: 'Flatpack vs custom kitchen',
+    title: 'Flatpack kitchen vs custom kitchen: compare scope, not just price.',
+    summary: 'Understand where flatpack, modular and custom joinery quotes differ in design fit, installation, trades, finish and review risk.',
+    primaryCta: 'Start kitchen estimate',
+    primaryHref: '/quote',
+    secondaryCta: 'Review existing quote',
+    secondaryHref: '/quote/review',
+    sections: [
+      {
+        heading: 'Flatpack can work when scope is simple',
+        body: 'Flatpack or modular kitchens may suit straightforward layouts, standard sizes and customers who understand what is included and what is by others.',
+      },
+      {
+        heading: 'Custom joinery changes the comparison',
+        body: 'Custom kitchens can handle uneven walls, premium finishes, exact storage needs, integrated appliances and design detail, but the quote needs clearer documentation.',
+      },
+      {
+        heading: 'What to check',
+        body: 'Compare installation, delivery, waste, trade disconnection, benchtop cut-outs, splashback, make-good, warranty boundaries and who coordinates site issues.',
+        expandable: true,
+      },
+    ],
+    faqs: [
+      { question: 'Is custom always better?', answer: 'No. The right path depends on layout, finish goals, budget, timeline and how much coordination the project needs.' },
+      { question: 'Can I use the wizard for both?', answer: 'Yes. Use the estimate to clarify scope and confidence before choosing a delivery model.' },
+    ],
+  },
+  {
+    slug: 'kitchen-renovation-quote-checklist',
+    eyebrow: 'Kitchen quote checklist',
+    title: 'Kitchen renovation quote checklist before you accept.',
+    summary: 'Use this checklist to check inclusions, exclusions, allowances, trade scope and review flags before relying on a kitchen quote total.',
+    primaryCta: 'Review my quote',
+    primaryHref: '/quote/review',
+    secondaryCta: 'Start estimate',
+    secondaryHref: '/quote',
+    sections: [
+      {
+        heading: 'Inclusions to confirm',
+        body: 'Check demolition, delivery, cabinetry, benchtop, splashback, sink, tap, appliances, plumbing, electrical, gas, painting, patching, waste and final clean.',
+      },
+      {
+        heading: 'Allowances to question',
+        body: 'Ask whether PC sums and provisional sums are realistic, what they include and what changes if the final selection or work scope differs.',
+      },
+      {
+        heading: 'Approval and compliance prompts',
+        body: 'Check HBC and deposit guidance, licensed trades, strata approval, DBP/class 2 screening, engineered-stone restrictions and site measure requirements where relevant.',
+        expandable: true,
+      },
+    ],
+    faqs: [
+      { question: 'Should I accept the cheapest kitchen quote?', answer: 'Not until you understand whether the cheaper quote includes the same scope, quality, allowances and risk items.' },
+      { question: 'What should I upload for review?', answer: 'Upload the quote, photos, plans, appliance list and any strata or approval notes.' },
+    ],
+  },
+  {
+    slug: 'why-kitchen-quotes-vary',
+    eyebrow: 'Why quotes vary',
+    title: 'Why kitchen renovation quotes vary so much.',
+    summary: 'Kitchen quotes can vary because they are often pricing different assumptions. Learn the common differences before comparing totals.',
+    primaryCta: 'Review quote differences',
+    primaryHref: '/quote/review',
+    secondaryCta: 'Build a planning range',
+    secondaryHref: '/quote',
+    sections: [
+      {
+        heading: 'The total hides many choices',
+        body: 'Cabinet quantity, finish tier, hardware, benchtop, splashback, appliances, trades, access and approvals can all change the same-looking kitchen brief.',
+      },
+      {
+        heading: 'Exclusions change the real comparison',
+        body: 'One quote may include demolition, rubbish removal, delivery, patching and final clean while another leaves them as by others or provisional.',
+      },
+      {
+        heading: 'Confidence changes the range',
+        body: 'A quote based on site measure, photos, known selections and clear service assumptions should be treated differently from a quote with many unknowns.',
+        expandable: true,
+      },
+    ],
+    faqs: [
+      { question: 'Why is one quote much cheaper?', answer: 'It may be a genuine efficiency, or it may exclude scope, use lower allowances or leave risk unresolved.' },
+      { question: 'How do I compare fairly?', answer: 'Normalise inclusions, exclusions, allowances and review flags before comparing the total.' },
+    ],
+  },
+  {
+    slug: 'questions-before-accepting-kitchen-quote',
+    eyebrow: 'Questions before accepting',
+    title: 'Questions to ask before accepting a kitchen quote.',
+    summary: 'Use these questions to clarify scope, allowances, services, approvals and site-measure requirements before you proceed.',
+    primaryCta: 'Upload quote for review',
+    primaryHref: '/quote/review',
+    secondaryCta: 'Start estimate',
+    secondaryHref: '/quote',
+    sections: [
+      {
+        heading: 'Scope questions',
+        body: 'Is demolition included? Is rubbish removal included? Are appliances included or PC sums? Is splashback included? What painting or patching is excluded?',
+      },
+      {
+        heading: 'Trade questions',
+        body: 'Is plumbing relocation included? Is electrical upgrade work included? Is gas involved? Which licensed trades will confirm the work?',
+      },
+      {
+        heading: 'Decision questions',
+        body: 'What happens after site measure? What assumptions could change the price? Are deposit, HBC, strata and material compliance prompts clearly addressed?',
+        expandable: true,
+      },
+    ],
+    faqs: [
+      { question: 'Should every answer be in writing?', answer: 'Important scope, allowance and exclusion answers should be documented before you rely on them.' },
+      { question: 'Can I continue without a quote file?', answer: 'Yes. The quote review page includes a no-file checklist path for early comparison.' },
     ],
   },
 ];

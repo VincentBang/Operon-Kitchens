@@ -8,6 +8,12 @@ const requiredSlugs = [
   'kitchen-benchtop-options-after-engineered-stone-ban',
   'kitchen-renovation-process',
   'kitchen-pc-sums-and-provisional-sums',
+  'kitchen-quote-vs-estimate',
+  'pc-sums-vs-provisional-sums',
+  'flatpack-kitchen-vs-custom-kitchen',
+  'kitchen-renovation-quote-checklist',
+  'why-kitchen-quotes-vary',
+  'questions-before-accepting-kitchen-quote',
 ];
 
 describe('SEO education content', () => {
@@ -34,5 +40,14 @@ describe('SEO education content', () => {
   it('includes glossary terms for allowances and compliance-aware review', () => {
     const terms = renovationGlossaryTerms.map(([term]) => term);
     expect(terms).toEqual(expect.arrayContaining(['PC sum', 'Provisional sum', 'HBC', 'Engineered stone restriction']));
+  });
+
+  it('has configured content for every required guide slug', () => {
+    requiredSlugs.forEach((slug) => {
+      const page = educationPages.find((item) => item.slug === slug);
+      expect(page).toBeDefined();
+      expect(page?.sections.length).toBeGreaterThanOrEqual(3);
+      expect(page?.faqs.length).toBeGreaterThanOrEqual(2);
+    });
   });
 });

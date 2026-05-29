@@ -11,6 +11,7 @@ function isPublicPage(pathname: string) {
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const publicPage = isPublicPage(router.pathname);
+  const showChatbot = publicPage && !['/privacy', '/terms'].includes(router.pathname);
 
   return (
     <>
@@ -21,7 +22,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       ) : (
         <Component {...pageProps} />
       )}
-      {publicPage && <KitchenChatbot />}
+      {showChatbot && <KitchenChatbot />}
     </>
   );
 }

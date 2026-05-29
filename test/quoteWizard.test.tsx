@@ -91,6 +91,9 @@ describe('QuoteWizard', () => {
     expect(screen.getByText(/Customer design plan attached/)).toBeInTheDocument();
     expect(screen.getByText(/Recommended maximum deposit/)).toBeInTheDocument();
     expect(screen.getByText(/Planning budget range/)).toBeInTheDocument();
+    expect(screen.getByText(/What improved confidence/)).toBeInTheDocument();
+    expect(screen.getAllByText(/Review risk/).length).toBeGreaterThan(0);
+    expect(screen.getByText(/Compliance prompts/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Request professional review' }));
 
     expect(await screen.findByText(/your estimate has been saved/i)).toBeInTheDocument();

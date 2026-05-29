@@ -22,6 +22,19 @@ const reviewValueCards = [
   ['Quote confidence', 'The review separates what is clear, what is missing and what needs professional confirmation.'],
 ];
 
+const sampleReviewResult = [
+  ['Scope clarity', 'Cabinetry and benchtop included, but delivery and final clean need confirmation.'],
+  ['Allowance risk', 'Appliance PC allowance and provisional electrical items need clearer wording.'],
+  ['Missing items', 'Rubbish removal, wall patching and splashback cut-outs should be checked.'],
+  ['Recommended next step', 'Request revised written scope before comparing totals.'],
+];
+
+function readinessLabel(status: 'notReady' | 'partial' | 'reviewReady') {
+  if (status === 'reviewReady') return 'Strong review ready';
+  if (status === 'partial') return 'Basic review ready';
+  return 'Needs more detail';
+}
+
 export default function QuoteReview() {
   const [checked, setChecked] = useState<Partial<Record<ReviewCheckKey, boolean>>>({});
   const [files, setFiles] = useState<ReviewFileSummary[]>([]);
@@ -121,13 +134,14 @@ export default function QuoteReview() {
           <p className="eyebrow">Quote review</p>
           <h1>Review your kitchen quote</h1>
           <p className="muted">Understand what is included, what is provisional and what needs confirmation before relying on a kitchen quote.</p>
+          <p className="heroLead reviewLead">Already received a kitchen quote? Don’t compare totals until the scope is clear.</p>
         </div>
 
         <div className="wizardPanel stepStack">
           <section className="quoteResult">
             <h2>What a quote review can uncover</h2>
             <p className="muted">
-              Phase 1 captures structured review intake. You can upload files now or continue with the checklist if documents are not ready.
+              This intake captures the information needed for professional quote review. It does not replace site inspection, legal advice or a final written quote.
             </p>
             <div className="choiceGrid compact">
               {reviewValueCards.map(([title, body]) => (
@@ -139,12 +153,13 @@ export default function QuoteReview() {
           </section>
 
           <section className="quoteResult">
-            <h2>Detailed review checks</h2>
-            <p className="muted">These are the specific items captured for professional review. This is not legal advice or automated document approval.</p>
-            <div className="choiceGrid compact">
-              {reviewChecks.map((check) => (
-                <article className="checkCard tall" key={check.key}>
-                  <span><strong>{check.label}</strong><small>{check.explanation}</small></span>
+            <h2>Sample review result</h2>
+            <p className="muted">A review should turn a quote into clear decisions, not just another total.</p>
+            <div className="reportPreviewGrid compact">
+              {sampleReviewResult.map(([title, body]) => (
+                <article className="infoCard" key={title}>
+                  <h3>{title}</h3>
+                  <p>{body}</p>
                 </article>
               ))}
             </div>
@@ -243,11 +258,33 @@ export default function QuoteReview() {
             <div className="resultTopline">
               <div>
                 <span className="eyebrow">Review readiness</span>
-                <strong>{result.status === 'reviewReady' ? 'Ready for review' : result.status === 'partial' ? 'Partly clear' : 'Needs more detail'}</strong>
+                <strong>{readinessLabel(result.status)}</strong>
               </div>
-              <span className={`confidence ${result.confidenceScore >= 80 ? 'high' : result.confidenceScore >= 45 ? 'medium' : 'low'}`}>{result.confidenceScore}/100</span>
+              <span className={`confidence ${result.confidenceScore >= 80 ? 'high' : result.confidenceScore >= 45 ? 'medium' : 'low'}`}>Review score {result.confidenceScore}/100</span>
             </div>
             <p className="muted">{result.disclaimer}</p>
+            <div className="summaryMetricGrid">
+              <article>
+                <span>Scope clarity</span>
+                <strong>{result.reviewScores.scopeClarity}/100</strong>
+                <p>How clearly the quote describes included work.</p>
+              </article>
+              <article>
+                <span>Allowance risk</span>
+                <strong>{result.reviewScores.allowanceRisk}/100</strong>
+                <p>Higher means more allowance wording needs review.</p>
+              </article>
+              <article>
+                <span>Missing information</span>
+                <strong>{result.reviewScores.missingInformation}/100</strong>
+                <p>Checklist items still unclear or missing.</p>
+              </article>
+              <article>
+                <span>Review readiness</span>
+                <strong>{result.reviewScores.reviewReadiness}/100</strong>
+                <p>Document and checklist completeness.</p>
+              </article>
+            </div>
             <p><strong>Recommended next step:</strong> {result.recommendedNextStep}</p>
             {result.missingItems.length > 0 && (
               <details className="advancedPanel" open>

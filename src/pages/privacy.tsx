@@ -23,6 +23,14 @@ const privacySections = [
     body: 'We take reasonable steps to keep submitted information secure and limit access to people or service providers who need it for the kitchen estimate, quote review or follow-up process.',
   },
   {
+    title: 'File retention and deletion requests',
+    body: 'Uploaded photos, plans and quote documents are kept only for as long as reasonably needed for estimate, review, follow-up, record keeping or dispute-prevention purposes. You can request deletion of uploaded files or personal information through the contact path, subject to lawful retention requirements.',
+  },
+  {
+    title: 'Cookies and analytics readiness',
+    body: 'The website may use basic cookies, logs or privacy-conscious analytics to understand estimate starts, quote review requests, page performance and form issues. Production tracking services should be configured with appropriate consent and notice before activation.',
+  },
+  {
     title: 'Marketing opt-in',
     body: 'Marketing emails are optional. The marketing checkbox is separate from the collection notice and can be left unticked without stopping an estimate or quote review request.',
   },
@@ -47,6 +55,7 @@ export default function PrivacyPage() {
       <p>
         This policy explains how Operon Kitchens collects and uses information submitted through the kitchen estimate, quote review, planning and contact pathways.
       </p>
+      <p className="muted">Last updated: 28 May 2026.</p>
 
       {privacySections.map((section) => (
         <section key={section.title}>
