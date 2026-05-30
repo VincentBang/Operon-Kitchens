@@ -1,6 +1,7 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
+import TrackedCtaLink from '@/components/TrackedCtaLink';
 import { getAreaHref, getKitchenArea, KitchenArea, kitchenAreas } from '@/lib/areas';
 
 interface Props {
@@ -44,8 +45,9 @@ export default function AreaPage({ area }: Props) {
         <div>
           <p className="muted">{area.intro}</p>
           <div className="flexActions">
-            <Link href="/quote" className="button primary">Start {area.name} estimate</Link>
+            <TrackedCtaLink href="/quote" className="button primary" eventName="area_cta_click" eventProperties={{ area: area.name, cta_type: 'estimate_hero' }}>Start {area.name} estimate</TrackedCtaLink>
             <Link href="/quote/review" className="button ghost">Review existing quote</Link>
+            <Link href="/how-it-works" className="button ghost">How it works</Link>
           </div>
         </div>
       </section>
@@ -111,8 +113,8 @@ export default function AreaPage({ area }: Props) {
           <h2>Start with clearer scope in {area.name}</h2>
           <p>Build a planning estimate or upload an existing quote before booking site measure.</p>
           <div className="flexActions">
-            <Link href="/quote" className="button primary">Start kitchen estimate</Link>
-            <Link href="/quote/review" className="button ghost">Review existing quote</Link>
+            <TrackedCtaLink href="/quote" className="button primary" eventName="area_cta_click" eventProperties={{ area: area.name, cta_type: 'estimate_bottom' }}>Start kitchen estimate</TrackedCtaLink>
+            <TrackedCtaLink href="/request-review" className="button ghost" eventName="area_cta_click" eventProperties={{ area: area.name, cta_type: 'request_review_bottom' }}>Request review</TrackedCtaLink>
           </div>
         </section>
       </section>

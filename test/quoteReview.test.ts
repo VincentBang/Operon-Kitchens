@@ -42,6 +42,8 @@ describe('kitchen quote review intake', () => {
     expect(result.disclaimer).toContain('does not replace full document review');
     expect(result.reviewScores.reviewReadiness).toBe(result.confidenceScore);
     expect(result.reviewScores.missingInformation).toBeGreaterThan(0);
+    expect(result.unclearItems).toEqual(expect.arrayContaining(['Quote document', 'Photos or plans']));
+    expect(result.customerQuestions).toEqual(expect.arrayContaining(['Are deposit terms, HBC review items and written contract requirements clearly stated?']));
     expect(result.manualReviewFlags).toEqual(
       expect.arrayContaining([
         'Existing quote document still needs to be supplied or described',
@@ -51,9 +53,10 @@ describe('kitchen quote review intake', () => {
     expect(result.complianceFlags).toEqual(
       expect.arrayContaining([
         'Final site measure required before price confirmation',
-        'Deposit and HBC terms need confirmation',
+        'Deposit and HBC terms need confirmation, including 10% maximum deposit guidance and HBC review over $20,000 including GST',
       ]),
     );
+    expect(result.compliancePrompts).toEqual(result.complianceFlags);
   });
 
   it('marks the intake review-ready when quote, visuals and clarity checks are supplied', () => {
@@ -109,9 +112,10 @@ describe('kitchen quote review intake', () => {
       expect.arrayContaining([
         'Licensed electrical, plumbing or gas trade confirmation may be required',
         'Strata/apartment approval and DBP/class 2 screening may require review',
-        'Benchtop/splashback material and engineered-stone compliance need confirmation',
+        'Benchtop/splashback material and engineered-stone restriction needs confirmation',
       ]),
     );
+    expect(result.customerQuestions).toEqual(expect.arrayContaining(['Does the quote allow for strata approval, lift booking, access protection and building rules?']));
     expect(result.missingItems).toEqual(
       expect.arrayContaining(['Deposit / HBC flags', 'Benchtop/splashback clarity', 'Final site measure requirement']),
     );

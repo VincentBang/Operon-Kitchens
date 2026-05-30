@@ -52,6 +52,7 @@ export default function FaqsPage() {
           <div className="flexActions">
             <Link href="/quote" className="button primary">Start kitchen estimate</Link>
             <Link href="/quote/review" className="button ghost">Review existing quote</Link>
+            <Link href="/how-it-works" className="button ghost">How it works</Link>
           </div>
         </div>
       </section>
@@ -75,7 +76,7 @@ export default function FaqsPage() {
           <p>Use the estimate or quote-review path to turn general questions into project-specific review items.</p>
           <div className="flexActions">
             <Link href="/quote" className="button primary">Start kitchen estimate</Link>
-            <Link href="/quote/review" className="button ghost">Review existing quote</Link>
+            <Link href="/request-review" className="button ghost">Request review</Link>
           </div>
         </section>
       </section>

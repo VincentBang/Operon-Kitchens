@@ -14,7 +14,7 @@ This is a kitchen-only event naming plan. It does not connect to production anal
 | `area_cta_click` | Measure suburb and area page conversion intent. |
 | `chatbot_open` | Track use of the planning assistant widget. |
 | `chatbot_cta_click` | Track chatbot handoff to estimate or quote review routes. |
-| `lead_score_generated` | Track kitchen-only lead quality bands after estimate summary generation. |
+| `lead_score_generated` | Track kitchen-only lead quality bands in internal/admin or server-side contexts only. Do not expose lead quality to customers. |
 
 Recommended common properties:
 - `route`

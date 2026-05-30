@@ -41,6 +41,7 @@ describe('pricing engine', () => {
     expect(result.includedScope).toContain('Base cabinets');
     expect(result.assumptions).toContain('This is a planning estimate range for scope review, not a contract price.');
     expect(result.complianceFlags).toContain('Final site measure required before price confirmation');
+    expect(result.complianceFlags).toContain('Written contract review may be required for residential building work over $5,000 including GST');
     expect(result.complianceFlags).toContain('NSW deposit guidance: maximum deposit should be 10% of the final home building contract price');
     expect(result.recommendedNextStep).toContain('professional');
   });

@@ -91,7 +91,7 @@ export default function FinishesAllowancesStep({ data, onChange, onNext, onBack 
         {hasBannedSelection && (
           <div className="warningNotice">
             <strong>Restricted material selected</strong>
-            <p>Engineered stone containing more than 1% crystalline silica is restricted for ordinary new work. Select a compliant alternative or mark the transition claim for manual review.</p>
+            <p>Engineered stone containing more than 1% crystalline silica is restricted for ordinary new work. Select a supplier-confirmed alternative or mark the transition claim for manual review.</p>
             <label className="checkCard">
               <input type="checkbox" checked={data.engineeredStoneTransitionClaimed} onChange={(event) => onChange({ ...data, engineeredStoneTransitionClaimed: event.target.checked })} />
               <span>Transition provision may apply</span>

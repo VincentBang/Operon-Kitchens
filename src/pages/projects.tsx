@@ -23,7 +23,7 @@ const projectProfiles: ProjectProfile[] = [
     problem: 'The customer needed to compare a quote where access, waste removal and strata conditions were not clearly separated.',
     scope: 'Cabinetry replacement, benchtop, splashback, appliance allowance and licensed trade coordination.',
     finish: 'Painted/profiled door direction with premium soft-close hardware.',
-    benchtop: 'Porcelain or supplier-confirmed compliant surface.',
+    benchtop: 'Porcelain or supplier-confirmed surface.',
     timeframe: 'Typical planning window: 6-8 weeks subject to approvals and selections.',
     costDrivers: ['Lift and parking access', 'Strata approval pathway', 'Benchtop material confirmation', 'Electrical and plumbing review'],
     result: 'The estimate would flag strata, service and allowance items before site measure.',

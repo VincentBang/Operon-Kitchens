@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import PrivacyCollectionNotice from '@/components/PrivacyCollectionNotice';
+import { trackKitchenEvent } from '@/lib/analytics';
 import {
   createDefaultReviewJobDetails,
   evaluateKitchenQuoteReview,
@@ -68,6 +69,7 @@ export default function QuoteReview() {
       size: file.size,
     }));
     setFiles((current) => [...current, ...nextFiles]);
+    trackKitchenEvent('file_upload_added', { file_category: category, route: '/quote/review' });
   };
 
   const handleLookup = async () => {
@@ -112,6 +114,10 @@ export default function QuoteReview() {
       });
       const payload = await response.json();
       if (!response.ok) throw new Error(payload.error || 'Could not save review request.');
+      trackKitchenEvent('quote_review_submit', {
+        readiness_label: readinessLabel(result.status),
+        file_count: files.length,
+      });
       setReviewSubmitted(true);
     } catch (error) {
       setLeadError(error instanceof Error ? error.message : 'Could not save review request.');
@@ -135,18 +141,40 @@ export default function QuoteReview() {
           <h1>Review your kitchen quote</h1>
           <p className="muted">Understand what is included, what is provisional and what needs confirmation before relying on a kitchen quote.</p>
           <p className="heroLead reviewLead">Already received a kitchen quote? Don’t compare totals until the scope is clear.</p>
+          <div className="flexActions">
+            <Link href="/quote-review-service" className="button primary">How quote review works</Link>
+            <Link href="/site-measure" className="button ghost">Prepare for site measure</Link>
+          </div>
         </div>
 
         <div className="wizardPanel stepStack">
           <section className="quoteResult">
             <h2>What a quote review can uncover</h2>
             <p className="muted">
-              This intake captures the information needed for professional quote review. It does not replace site inspection, legal advice or a final written quote.
+              Upload your quote or answer the checklist. Operon Kitchens identifies unclear inclusions, allowances, exclusions and review items before you rely on the total.
             </p>
             <div className="choiceGrid compact">
               {reviewValueCards.map(([title, body]) => (
                 <article className="checkCard tall" key={title}>
                   <span><strong>{title}</strong><small>{body}</small></span>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="quoteResult">
+            <h2>Questions worth answering first</h2>
+            <div className="choiceGrid compact">
+              {(result.customerQuestions.length ? result.customerQuestions : [
+                'Is demolition included?',
+                'Are appliances included or PC sums?',
+                'Is electrical relocation included?',
+                'Is splashback included?',
+                'Is rubbish removal included?',
+                'Are deposit/HBC items clear?',
+              ]).slice(0, 8).map((question) => (
+                <article className="checkCard tall" key={question}>
+                  <span><strong>{question}</strong><small>Clear written answers make quote totals easier to compare.</small></span>
                 </article>
               ))}
             </div>
@@ -163,6 +191,7 @@ export default function QuoteReview() {
                 </article>
               ))}
             </div>
+            <Link href="/quote-review-service" className="textLink">See the review service pathway</Link>
           </section>
 
           <section className="quoteResult">
@@ -260,7 +289,7 @@ export default function QuoteReview() {
                 <span className="eyebrow">Review readiness</span>
                 <strong>{readinessLabel(result.status)}</strong>
               </div>
-              <span className={`confidence ${result.confidenceScore >= 80 ? 'high' : result.confidenceScore >= 45 ? 'medium' : 'low'}`}>Review score {result.confidenceScore}/100</span>
+              <span className={`confidence ${result.confidenceScore >= 80 ? 'high' : result.confidenceScore >= 45 ? 'medium' : 'low'}`}>Completeness score {result.confidenceScore}/100</span>
             </div>
             <p className="muted">{result.disclaimer}</p>
             <div className="summaryMetricGrid">
@@ -289,13 +318,13 @@ export default function QuoteReview() {
             {result.missingItems.length > 0 && (
               <details className="advancedPanel" open>
                 <summary>Missing or unclear items</summary>
-                <ul>{result.missingItems.map((item) => <li key={item}>{item}</li>)}</ul>
+                <ul>{result.unclearItems.map((item) => <li key={item}>{item}</li>)}</ul>
               </details>
             )}
             <details className="advancedPanel" open>
               <summary>Manual review and compliance flags</summary>
               <ul className="warningList">
-                {[...result.manualReviewFlags, ...result.complianceFlags].map((flag) => <li key={flag}>{flag}</li>)}
+                {[...result.manualReviewFlags, ...result.compliancePrompts].map((flag) => <li key={flag}>{flag}</li>)}
               </ul>
             </details>
           </section>
@@ -314,9 +343,10 @@ export default function QuoteReview() {
           />
 
           {leadError && <div className="errorPanel">{leadError}</div>}
-          {reviewSubmitted && <div className="successPanel">Your structured quote review intake has been saved. We will follow up with next steps.</div>}
+          {reviewSubmitted && <div className="successPanel">Your quote review request has been saved. We will follow up with next steps.</div>}
           <div className="wizardActions">
             <Link href="/quote" className="button ghost">Start estimate instead</Link>
+            <Link href="/request-review" className="button ghost">Ask about site measure</Link>
             <button onClick={saveReviewLead} className="button primary" disabled={!contactReady || isSubmittingLead}>
               {isSubmittingLead ? 'Saving...' : 'Request quote review'}
             </button>

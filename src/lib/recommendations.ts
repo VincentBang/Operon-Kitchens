@@ -83,7 +83,7 @@ export function createKitchenRecommendations(
       id: 'replace-engineered-stone',
       type: 'material',
       priority: 'high',
-      title: 'Replace restricted engineered stone with compliant alternatives',
+      title: 'Replace restricted engineered stone with supplier-confirmed alternatives',
       reason: 'The selected material needs review under engineered-stone restrictions.',
       action: 'Shortlist porcelain, stainless steel, laminate, timber or supplier-confirmed low-silica composite options before quote review.',
     });
@@ -107,7 +107,7 @@ export function createKitchenRecommendations(
       priority: 'low',
       title: 'Balance warm finishes with durable work surfaces',
       reason: 'Warm kitchens can feel premium without relying on high-risk or hard-to-maintain materials.',
-      action: 'Pair timber-look cabinetry or handles with compliant stone-look porcelain, stainless accents or a restrained splashback.',
+      action: 'Pair timber-look cabinetry or handles with supplier-confirmed stone-look porcelain, stainless accents or a restrained splashback.',
     });
   }
 

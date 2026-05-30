@@ -50,7 +50,10 @@ export interface KitchenQuoteReviewResult {
   };
   checksExplained: { key: ReviewCheckKey; label: string; explanation: string; checked: boolean }[];
   missingItems: string[];
+  unclearItems: string[];
+  customerQuestions: string[];
   manualReviewFlags: string[];
+  compliancePrompts: string[];
   complianceFlags: string[];
   recommendedNextStep: string;
   disclaimer: string;
@@ -91,29 +94,55 @@ export function evaluateKitchenQuoteReview(intake: KitchenQuoteReviewIntake): Ki
     checked: Boolean(intake.checkedItems[check.key]),
   }));
   const missingItems = checksExplained.filter((check) => !check.checked).map((check) => check.label);
+  const unclearItems: string[] = [];
+  const customerQuestions: string[] = [];
   const manualReviewFlags: string[] = [];
-  const complianceFlags: string[] = ['Final site measure required before price confirmation'];
+  const compliancePrompts: string[] = [
+    'Final site measure required before price confirmation',
+    'This review is planning guidance only and is not legal advice',
+  ];
   const quoteFileSupplied = intake.files.some((file) => file.category === 'existingQuote');
   const supportingVisualsSupplied = intake.files.some((file) => file.category === 'photo' || file.category === 'plan');
 
-  if (!quoteFileSupplied) manualReviewFlags.push('Existing quote document still needs to be supplied or described');
-  if (!supportingVisualsSupplied) manualReviewFlags.push('Photos or plans would improve review confidence');
+  if (!quoteFileSupplied) {
+    manualReviewFlags.push('Existing quote document still needs to be supplied or described');
+    unclearItems.push('Quote document');
+  }
+  if (!supportingVisualsSupplied) {
+    manualReviewFlags.push('Photos or plans would improve review confidence');
+    unclearItems.push('Photos or plans');
+  }
   if (intake.jobDetails.servicesRelocated || !intake.checkedItems.serviceRelocation) {
-    complianceFlags.push('Licensed electrical, plumbing or gas trade confirmation may be required');
+    compliancePrompts.push('Licensed electrical, plumbing or gas trade confirmation may be required');
+    customerQuestions.push('Is plumbing, electrical or gas being moved, upgraded or reconnected by licensed trades?');
   }
   if (intake.jobDetails.strataOrApartment || intake.jobDetails.propertyType === 'strataApartment' || !intake.checkedItems.strataApartment) {
-    complianceFlags.push('Strata/apartment approval and DBP/class 2 screening may require review');
+    compliancePrompts.push('Strata/apartment approval and DBP/class 2 screening may require review');
+    customerQuestions.push('Does the quote allow for strata approval, lift booking, access protection and building rules?');
   }
-  if (!intake.checkedItems.depositHbc) complianceFlags.push('Deposit and HBC terms need confirmation');
+  if (!intake.checkedItems.depositHbc) {
+    compliancePrompts.push('Deposit and HBC terms need confirmation, including 10% maximum deposit guidance and HBC review over $20,000 including GST');
+    customerQuestions.push('Are deposit terms, HBC review items and written contract requirements clearly stated?');
+  }
   if (!intake.checkedItems.benchtopSplashback || !intake.jobDetails.benchtopKnown || !intake.jobDetails.splashbackKnown) {
-    complianceFlags.push('Benchtop/splashback material and engineered-stone compliance need confirmation');
+    compliancePrompts.push('Benchtop/splashback material and engineered-stone restriction needs confirmation');
+    unclearItems.push('Benchtop or splashback material');
+    customerQuestions.push('Does the quote state benchtop and splashback material, cut-outs, joins, edge details and compliance review items?');
   }
   if (!intake.jobDetails.demolitionIncluded || !intake.jobDetails.wasteIncluded || !intake.checkedItems.demolitionWaste) {
     manualReviewFlags.push('Demolition, protection and waste removal scope needs confirmation');
+    unclearItems.push('Demolition, protection or waste removal');
+    customerQuestions.push('Is demolition, rubbish removal, protection and final clean included or excluded?');
   }
   if (!intake.jobDetails.appliancesSpecified || !intake.checkedItems.applianceAssumptions) {
     manualReviewFlags.push('Appliance assumptions need confirmation');
+    unclearItems.push('Appliance allowance or exact models');
+    customerQuestions.push('Are appliances excluded, included as PC sums, or listed by exact model and installation requirement?');
   }
+  if (!intake.checkedItems.pcSums) customerQuestions.push('Are all PC sums clearly described with realistic allowance amounts and selection responsibilities?');
+  if (!intake.checkedItems.provisionalSums) customerQuestions.push('Are provisional sums limited to genuinely uncertain work and explained clearly?');
+  if (!intake.checkedItems.exclusions) customerQuestions.push('What exclusions could become variations after work starts?');
+  if (!intake.checkedItems.siteMeasure) customerQuestions.push('Does the quote state that final site measure and written scope confirmation are required?');
 
   const completedCount = checksExplained.filter((check) => check.checked).length;
   const hasScopeChecks = Boolean(intake.checkedItems.missingInclusions && intake.checkedItems.exclusions && intake.checkedItems.demolitionWaste && intake.checkedItems.siteMeasure);
@@ -148,8 +177,11 @@ export function evaluateKitchenQuoteReview(intake: KitchenQuoteReviewIntake): Ki
     },
     checksExplained,
     missingItems,
+    unclearItems: Array.from(new Set(unclearItems.length ? unclearItems : missingItems)),
+    customerQuestions: Array.from(new Set(customerQuestions)),
     manualReviewFlags: Array.from(new Set(manualReviewFlags)),
-    complianceFlags: Array.from(new Set(complianceFlags)),
+    compliancePrompts: Array.from(new Set(compliancePrompts)),
+    complianceFlags: Array.from(new Set(compliancePrompts)),
     recommendedNextStep,
     disclaimer: 'This intake does not replace full document review, legal advice, site inspection or written quote confirmation.',
   };

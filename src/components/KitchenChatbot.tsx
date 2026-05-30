@@ -128,8 +128,8 @@ export default function KitchenChatbot() {
           return next;
         })}
       >
-        <span>?</span>
-        Ask Operon
+        <span className="chatbotIcon" aria-hidden="true" />
+        Need help with scope? Ask Operon
       </button>
     </div>
   );

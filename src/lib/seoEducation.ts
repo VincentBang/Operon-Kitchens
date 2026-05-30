@@ -143,7 +143,7 @@ export const educationPages: SeoEducationPage[] = [
     slug: 'kitchen-benchtop-options-after-engineered-stone-ban',
     eyebrow: 'Benchtop options after engineered stone ban',
     title: 'Kitchen benchtop options after engineered stone restrictions.',
-    summary: 'Compare compliant benchtop directions such as porcelain, stainless steel, timber, laminate, natural stone and supplier-confirmed low-silica products.',
+    summary: 'Compare benchtop directions such as porcelain, stainless steel, timber, laminate, natural stone and supplier-confirmed low-silica products.',
     primaryCta: 'Start estimate',
     primaryHref: '/quote',
     secondaryCta: 'Review benchtop quote',

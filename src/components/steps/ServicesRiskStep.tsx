@@ -18,7 +18,7 @@ export default function ServicesRiskStep({ data, onChange, onNext, onBack }: Pro
     <div className="stepStack">
       <div className="stepIntro">
         <h2>Services and risk flags</h2>
-        <p>Flag items that need licensed trades, approvals or manual review before final pricing.</p>
+        <p>Flag items that need licensed trades, approvals or manual review before written scope confirmation.</p>
       </div>
       <div className="choiceGrid compact">
         {Object.keys(data.trades).map((trade) => (

@@ -1,4 +1,5 @@
 import { QuoteAttachment, QuoteInput } from '@/lib/pricing';
+import { trackKitchenEvent } from '@/lib/analytics';
 
 interface Props {
   data: QuoteInput;
@@ -28,6 +29,7 @@ export default function UploadDocumentsStep({ data, onChange, onNext, onBack }: 
       supportingFiles: [...data.supportingFiles, ...nextFiles],
       photosProvided: data.photosProvided || category === 'photo' || category === 'plan',
     });
+    trackKitchenEvent('file_upload_added', { file_category: category, route: '/quote' });
   };
 
   return (

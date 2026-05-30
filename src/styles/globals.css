@@ -12,6 +12,8 @@
   --accent-dark: #124235;
   --gold: #c79645;
   --soft: #eef3ee;
+  --shadow-soft: 0 18px 52px rgba(23, 33, 29, 0.08);
+  --shadow-lift: 0 26px 72px rgba(23, 33, 29, 0.13);
 }
 
 * {
@@ -27,6 +29,8 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
 }
 
 button,
@@ -89,13 +93,15 @@ a {
 .desktopNav {
   align-items: center;
   display: flex;
-  gap: 20px;
+  gap: clamp(12px, 2vw, 22px);
   justify-content: center;
 }
 
 .desktopNav a {
   color: var(--muted);
+  font-size: 0.94rem;
   font-weight: 750;
+  line-height: 1;
 }
 
 .desktopNav a:hover,
@@ -113,6 +119,7 @@ a {
   justify-content: center;
   min-height: 42px;
   padding: 0 16px;
+  white-space: nowrap;
 }
 
 .mobileNav {
@@ -146,6 +153,7 @@ a {
   position: absolute;
   right: 0;
   top: calc(100% + 8px);
+  z-index: 80;
 }
 
 .mobileNav a {
@@ -220,12 +228,15 @@ label span:first-child {
 }
 
 .hero {
-  min-height: calc(92vh - 76px);
+  min-height: min(820px, calc(88vh - 76px));
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  background-image: linear-gradient(90deg, rgba(9, 20, 16, 0.86), rgba(9, 20, 16, 0.42), rgba(9, 20, 16, 0.08)), url("/images/kitchen-hero.png");
+  background-image:
+    radial-gradient(circle at 82% 18%, rgba(199, 150, 69, 0.16), transparent 30%),
+    linear-gradient(90deg, rgba(9, 20, 16, 0.9), rgba(9, 20, 16, 0.5), rgba(9, 20, 16, 0.14)),
+    url("/images/kitchen-hero.png");
   background-size: cover;
   background-position: center;
   color: #fff;
@@ -289,8 +300,8 @@ label span:first-child {
 .hero h1 {
   max-width: 740px;
   margin: 0;
-  font-size: clamp(3.2rem, 9vw, 6.7rem);
-  line-height: 0.95;
+  font-size: clamp(3rem, 7vw, 5.8rem);
+  line-height: 0.98;
   letter-spacing: 0;
 }
 
@@ -368,10 +379,7 @@ label span:first-child {
 
 .footerBottom {
   border-top: 1px solid rgba(255, 255, 255, 0.14);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px 24px;
-  justify-content: space-between;
+  display: block;
   padding-top: 22px;
   font-size: 0.86rem;
   line-height: 1.55;
@@ -383,6 +391,11 @@ label span:first-child {
   color: rgba(255, 255, 255, 0.88);
   font-size: 1.17rem;
   line-height: 1.65;
+}
+
+.wizardHeader .heroLead,
+.contentHero .heroLead {
+  color: var(--muted);
 }
 
 .heroActions,
@@ -444,17 +457,22 @@ label span:first-child {
 
 .proofStrip span {
   background: var(--surface);
-  min-height: 82px;
+  min-height: 78px;
   display: flex;
   align-items: center;
   padding: 18px;
   font-weight: 750;
+  line-height: 1.35;
 }
 
 .section {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 82px 0;
+  padding: clamp(58px, 8vw, 92px) 0;
+}
+
+.section + .section {
+  border-top: 1px solid rgba(217, 223, 218, 0.72);
 }
 
 .twoColumn {
@@ -595,8 +613,18 @@ h3 {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 8px;
+  box-shadow: 0 1px 0 rgba(23, 33, 29, 0.03);
   padding: 24px;
   min-height: 190px;
+  min-width: 0;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+a.infoCard:hover,
+.infoCard:hover {
+  border-color: rgba(31, 111, 91, 0.28);
+  box-shadow: var(--shadow-soft);
+  transform: translateY(-2px);
 }
 
 .linkedCard {
@@ -677,16 +705,34 @@ h3 {
   background: var(--ink);
   color: #fff;
   border-radius: 8px;
+  overflow: hidden;
+  position: relative;
 }
 
 .finalCta h2 {
   max-width: 780px;
+  position: relative;
+  z-index: 1;
+}
+
+.finalCta .heroActions,
+.finalCta .eyebrow {
+  position: relative;
+  z-index: 1;
+}
+
+.finalCta::after {
+  background: linear-gradient(135deg, rgba(199, 150, 69, 0.2), transparent 44%);
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
 }
 
 .contentHero {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 76px 0 42px;
+  padding: clamp(52px, 7vw, 84px) 0 42px;
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(280px, 0.75fr);
   gap: 46px;
@@ -700,7 +746,7 @@ h3 {
 .contentPage {
   width: min(920px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 58px 0 86px;
+  padding: clamp(42px, 6vw, 68px) 0 86px;
 }
 
 .contentPage.wide {
@@ -834,7 +880,7 @@ h3 {
 }
 
 .wizardShell {
-  width: min(980px, 100%);
+  width: min(1060px, 100%);
   margin: 0 auto;
 }
 
@@ -862,7 +908,7 @@ h3 {
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: clamp(22px, 4vw, 38px);
-  box-shadow: 0 24px 70px rgba(23, 33, 29, 0.08);
+  box-shadow: var(--shadow-soft);
 }
 
 .progressText {
@@ -950,6 +996,16 @@ h3 {
 .reviewAccordions {
   display: grid;
   gap: 18px;
+  min-width: 0;
+}
+
+.stepStack > *,
+.reviewAccordions > *,
+.choiceGrid > *,
+.formGrid > *,
+.reportPreviewGrid > *,
+.summaryMetricGrid > * {
+  min-width: 0;
 }
 
 .stepIntro h2,
@@ -971,6 +1027,20 @@ h3 {
   margin: 8px 0 0;
 }
 
+.stepMiniSection {
+  background: #fbfcfa;
+  border: 1px solid rgba(217, 223, 218, 0.78);
+  border-radius: 8px;
+  display: grid;
+  gap: 12px;
+  padding: clamp(14px, 2vw, 18px);
+}
+
+.stepMiniSection h3 {
+  font-size: 1.05rem;
+  margin: 0;
+}
+
 .formGrid,
 .choiceGrid {
   display: grid;
@@ -986,6 +1056,10 @@ h3 {
 .formGrid.three,
 .choiceGrid.compact {
   grid-template-columns: repeat(3, 1fr);
+}
+
+.stepMiniSection .choiceGrid.compact {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .field,
@@ -1054,10 +1128,22 @@ h3 {
   gap: 10px;
   min-height: 50px;
   padding: 13px;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.checkCard:hover {
+  border-color: rgba(31, 111, 91, 0.3);
+  box-shadow: 0 10px 28px rgba(23, 33, 29, 0.06);
 }
 
 .checkCard.tall {
   min-height: 112px;
+}
+
+.optionCard:has(input:checked) {
+  background: #eef7f4;
+  border-color: rgba(31, 111, 91, 0.45);
+  box-shadow: inset 0 0 0 1px rgba(31, 111, 91, 0.2);
 }
 
 .checkCard input {
@@ -1210,7 +1296,15 @@ h3 {
   border-radius: 8px;
   display: grid;
   gap: 10px;
+  min-width: 0;
   padding: 18px;
+}
+
+.uploadBox input,
+.uploadBox span {
+  max-width: 100%;
+  min-width: 0;
+  width: 100%;
 }
 
 .tooltipWrap {
@@ -1284,6 +1378,7 @@ h3 {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #f8faf7;
+  min-width: 0;
   padding: 20px;
 }
 
@@ -1721,7 +1816,9 @@ h3 {
   gap: 8px;
   margin-top: 10px;
   min-height: 46px;
+  max-width: min(330px, calc(100vw - 28px));
   padding: 0 16px 0 10px;
+  white-space: normal;
 }
 
 .kitchenChatbotToggle span {
@@ -1732,6 +1829,10 @@ h3 {
   height: 30px;
   justify-content: center;
   width: 30px;
+}
+
+.kitchenChatbotToggle .chatbotIcon::before {
+  content: "?";
 }
 
 .kitchenChatbotNudge {
@@ -1762,11 +1863,12 @@ h3 {
   }
 
   .hero {
-    min-height: 86vh;
+    min-height: auto;
+    padding-top: 48px;
   }
 
   .heroContent {
-    margin-bottom: 12vh;
+    margin: 0 auto 96px;
   }
 
   .proofStrip,
@@ -1798,7 +1900,7 @@ h3 {
   }
 
   .section {
-    padding: 54px 0;
+    padding: 48px 0;
   }
 
   .proofStrip {
@@ -1840,11 +1942,22 @@ h3 {
   .kitchenChatbotToggle {
     min-height: 42px;
     padding-right: 12px;
+    font-size: 0.84rem;
   }
 
   .kitchenChatbotPanel {
     max-height: min(620px, calc(100vh - 92px));
     width: min(360px, calc(100vw - 20px));
+  }
+
+  .stepMiniSection .choiceGrid.compact {
+    grid-template-columns: 1fr;
+  }
+
+  .cardGrid,
+  .stepsGrid,
+  .processGrid {
+    gap: 12px;
   }
 }
 
@@ -1856,6 +1969,26 @@ h3 {
   .wizardHeader h1,
   .contentTitle {
     font-size: clamp(2.1rem, 14vw, 3.4rem);
+  }
+
+  .hero h1 {
+    font-size: clamp(2.45rem, 13vw, 3.45rem);
+    line-height: 1.02;
+  }
+
+  .heroLead {
+    font-size: 1rem;
+  }
+
+  .heroActions,
+  .flexActions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .heroActions .button,
+  .flexActions .button {
+    width: 100%;
   }
 
   .wizardPanel,
@@ -1874,7 +2007,8 @@ h3 {
 
   .siteHeaderInner {
     gap: 10px;
-    min-height: 68px;
+    grid-template-columns: 1fr auto;
+    min-height: 66px;
     width: min(100% - 24px, 1180px);
   }
 
@@ -1883,23 +2017,37 @@ h3 {
   }
 
   .headerCta {
-    font-size: 0.88rem;
+    display: none;
+  }
+
+  .mobileNav div {
+    min-width: min(260px, calc(100vw - 24px));
   }
 
   .footerGrid {
     gap: 22px;
+  }
+
+  .estimatePreviewCard {
+    padding: 22px 18px 18px;
+  }
+
+  .infoCard,
+  .guideSummary article,
+  .areaGroup {
+    padding: 18px;
   }
 }
 
 .heroGrid {
   align-items: end;
   display: grid;
-  gap: 34px;
-  grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+  gap: clamp(28px, 5vw, 54px);
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 440px);
 }
 
 .estimatePreviewCard {
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.96);
   border: 1px solid rgba(255, 255, 255, 0.38);
   border-radius: 8px;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.28);
@@ -1907,6 +2055,18 @@ h3 {
   display: grid;
   gap: 12px;
   padding: 24px;
+  position: relative;
+}
+
+.estimatePreviewCard::before {
+  background: linear-gradient(90deg, var(--accent), var(--gold));
+  border-radius: 999px;
+  content: "";
+  height: 4px;
+  left: 24px;
+  position: absolute;
+  right: 24px;
+  top: 14px;
 }
 
 .estimatePreviewCard h2 {
@@ -1939,7 +2099,7 @@ h3 {
 }
 
 .reportPreviewGrid {
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
 .reportPreviewGrid.compact {
@@ -1947,7 +2107,7 @@ h3 {
 }
 
 .summaryMetricGrid {
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
 }
 
 .summaryMetricGrid article {
@@ -2046,6 +2206,10 @@ h3 {
     display: none;
   }
 
+  body:has(input:focus, textarea:focus, select:focus) .stickyMobileCta {
+    display: none;
+  }
+
   .stickyMobileCta a {
     align-items: center;
     background: var(--accent);
@@ -2065,10 +2229,11 @@ h3 {
 
 @media (max-width: 520px) {
   .hero h1 {
-    font-size: clamp(2.7rem, 15vw, 4.2rem);
+    font-size: clamp(2.45rem, 13vw, 3.45rem);
+    line-height: 1.02;
   }
 
   .estimatePreviewCard {
-    padding: 18px;
+    padding: 22px 18px 18px;
   }
 }

@@ -13,6 +13,7 @@ import EstimateSummaryStep from '@/components/steps/EstimateSummaryStep';
 import { designStorageKey } from '@/lib/designPlan';
 import { QuoteInput, RateCard } from '@/lib/pricing';
 import { defaultQuoteInput } from '@/lib/quoteDefaults';
+import { trackKitchenEvent } from '@/lib/analytics';
 
 interface LoadedContact {
   name: string;
@@ -20,6 +21,8 @@ interface LoadedContact {
   phone: string;
   marketingOptIn: boolean;
 }
+
+const stepLabels = ['Basics', 'Access', 'Layout', 'Scope', 'Finishes', 'Services', 'Uploads', 'Contact', 'Summary'];
 
 const QuoteWizard = () => {
   const router = useRouter();
@@ -38,7 +41,17 @@ const QuoteWizard = () => {
   const [loadError, setLoadError] = useState('');
   const [activeRateCard, setActiveRateCard] = useState<RateCard | undefined>();
   const [step, setStep] = useState(0);
-  const stepLabels = ['Basics', 'Access', 'Layout', 'Scope', 'Finishes', 'Services', 'Uploads', 'Contact', 'Summary'];
+
+  useEffect(() => {
+    trackKitchenEvent('wizard_step_view', { step_index: step + 1, step_name: stepLabels[step] });
+  }, [step]);
+
+  const goToStep = (nextStep: number) => {
+    if (nextStep > step) {
+      trackKitchenEvent('wizard_step_complete', { step_index: step + 1, step_name: stepLabels[step] });
+    }
+    setStep(nextStep);
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -111,21 +124,21 @@ const QuoteWizard = () => {
   }, [router.isReady, routeQuoteId]);
 
   const steps = [
-    <ProjectBasicsStep key="step1" data={quoteData} onChange={setQuoteData} onNext={() => setStep(step + 1)} />,
-    <PropertyDetails key="step2" data={quoteData} onChange={setQuoteData} onNext={() => setStep(step + 1)} onBack={() => setStep(step - 1)} />,
-    <KitchenLayoutSizeStep key="step3" data={quoteData} onChange={setQuoteData} onNext={() => setStep(step + 1)} onBack={() => setStep(step - 1)} />,
-    <ScopeInclusionsStep key="step4" data={quoteData} onChange={setQuoteData} onNext={() => setStep(step + 1)} onBack={() => setStep(step - 1)} />,
-    <FinishesAllowancesStep key="step5" data={quoteData} onChange={setQuoteData} onNext={() => setStep(step + 1)} onBack={() => setStep(step - 1)} />,
-    <ServicesRiskStep key="step6" data={quoteData} onChange={setQuoteData} onNext={() => setStep(step + 1)} onBack={() => setStep(step - 1)} />,
-    <UploadDocumentsStep key="step7" data={quoteData} onChange={setQuoteData} onNext={() => setStep(step + 1)} onBack={() => setStep(step - 1)} />,
-    <ContactPrivacyStep key="step8" contact={contact} onChange={setContact} onNext={() => setStep(step + 1)} onBack={() => setStep(step - 1)} />,
+    <ProjectBasicsStep key="step1" data={quoteData} onChange={setQuoteData} onNext={() => goToStep(step + 1)} />,
+    <PropertyDetails key="step2" data={quoteData} onChange={setQuoteData} onNext={() => goToStep(step + 1)} onBack={() => goToStep(step - 1)} />,
+    <KitchenLayoutSizeStep key="step3" data={quoteData} onChange={setQuoteData} onNext={() => goToStep(step + 1)} onBack={() => goToStep(step - 1)} />,
+    <ScopeInclusionsStep key="step4" data={quoteData} onChange={setQuoteData} onNext={() => goToStep(step + 1)} onBack={() => goToStep(step - 1)} />,
+    <FinishesAllowancesStep key="step5" data={quoteData} onChange={setQuoteData} onNext={() => goToStep(step + 1)} onBack={() => goToStep(step - 1)} />,
+    <ServicesRiskStep key="step6" data={quoteData} onChange={setQuoteData} onNext={() => goToStep(step + 1)} onBack={() => goToStep(step - 1)} />,
+    <UploadDocumentsStep key="step7" data={quoteData} onChange={setQuoteData} onNext={() => goToStep(step + 1)} onBack={() => goToStep(step - 1)} />,
+    <ContactPrivacyStep key="step8" contact={contact} onChange={setContact} onNext={() => goToStep(step + 1)} onBack={() => goToStep(step - 1)} />,
     <EstimateSummaryStep
       key="step9"
       data={quoteData}
       contact={contact}
       rateCard={activeRateCard}
       quoteId={loadedQuoteId}
-      onBack={() => setStep(step - 1)}
+      onBack={() => goToStep(step - 1)}
       onSaved={(quoteId) => setLoadedQuoteId(quoteId)}
     />,
   ];
@@ -169,7 +182,7 @@ const QuoteWizard = () => {
         {steps[step]}
       </div>
       <aside className="notePanel">
-        Estimates are planning guides only. Price confirmation depends on a site measure, approved selections, licensed trade checks and written scope confirmation.
+        Estimates are planning guides only. Price confirmation depends on a site measure, confirmed selections, licensed trade checks and written scope confirmation.
       </aside>
     </div>
   );

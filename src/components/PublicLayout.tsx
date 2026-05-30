@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ReactNode } from 'react';
 import { getAreaHref, priorityFooterAreas } from '@/lib/areas';
+import TrackedCtaLink from '@/components/TrackedCtaLink';
 
 interface PublicLayoutProps {
   children: ReactNode;
@@ -11,6 +12,9 @@ interface PublicLayoutProps {
 const quoteTools = [
   ['Start kitchen estimate', '/quote'],
   ['Review existing kitchen quote', '/quote/review'],
+  ['How it works', '/how-it-works'],
+  ['Quote review service', '/quote-review-service'],
+  ['Request site measure', '/site-measure'],
   ['Kitchen quote Sydney', '/kitchen-quote-sydney'],
   ['Kitchen renovation cost Sydney', '/kitchen-renovation-cost-sydney'],
   ['Quote vs estimate', '/kitchen-quote-vs-estimate'],
@@ -33,12 +37,14 @@ const projectTypes = [
   ['Cabinetry and benchtop refresh', '/kitchen-cabinetry-benchtop-refresh'],
   ['Apartment kitchen renovation', '/apartment-kitchen-renovation-sydney'],
   ['Benchtop replacement', '/kitchen-benchtop-replacement-sydney'],
+  ['Design/specification package', '/design-specification-package'],
   ['Quote review', '/quote/review'],
 ];
 
 const companyLinks = [
   ['Projects/examples', '/projects'],
-  ['Request review', '/quote/review'],
+  ['Contact', '/contact'],
+  ['Request review', '/request-review'],
   ['Privacy Policy', '/privacy'],
   ['Terms', '/terms'],
 ];
@@ -79,16 +85,19 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
             <nav className="desktopNav" aria-label="Primary navigation">
               <Link href="/quote">Estimate</Link>
               <Link href="/quote/review">Review quote</Link>
+              <Link href="/how-it-works">How it works</Link>
               <Link href="/kitchen-renovation-process">Guides</Link>
               <Link href="/areas">Areas</Link>
               <Link href="/faqs">FAQ</Link>
             </nav>
-            <Link href="/quote" className="headerCta">Start estimate</Link>
+            <TrackedCtaLink href="/quote" className="headerCta" eventName="estimate_start_click" eventProperties={{ route: router.pathname, cta_location: 'header' }}>Start estimate</TrackedCtaLink>
             <details className="mobileNav">
               <summary>Menu</summary>
               <div>
                 <Link href="/quote">Estimate</Link>
                 <Link href="/quote/review">Review quote</Link>
+                <Link href="/how-it-works">How it works</Link>
+                <Link href="/request-review">Request review</Link>
                 <Link href="/kitchen-renovation-process">Guides</Link>
                 <Link href="/areas">Areas</Link>
                 <Link href="/faqs">FAQ</Link>
@@ -107,8 +116,8 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
               <h2>Kitchen renovation estimate and quote review support for Sydney homes, apartments and renovation projects.</h2>
             </div>
             <div className="footerActions">
-              <Link href="/quote" className="button primary">Start kitchen estimate</Link>
-              <Link href="/quote/review" className="button ghost">Review existing quote</Link>
+              <TrackedCtaLink href="/quote" className="button primary" eventName="estimate_start_click" eventProperties={{ route: router.pathname, cta_location: 'footer' }}>Start kitchen estimate</TrackedCtaLink>
+              <TrackedCtaLink href="/request-review" className="button ghost" eventName="quote_review_start_click" eventProperties={{ route: router.pathname, cta_location: 'footer_request_review' }}>Request review</TrackedCtaLink>
             </div>
           </div>
 
@@ -130,15 +139,14 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
             <FooterColumn title="Company/legal" links={companyLinks} />
           </div>
 
-          <div className="footerBottom">
-            <span>Operon Kitchens is a separate customer-facing kitchen renovation brand.</span>
-            <span>Planning guidance only. Site measure and written scope confirmation are required before contract pricing.</span>
-          </div>
+          <p className="footerBottom">
+            Operon Kitchens is a separate customer-facing kitchen renovation brand. Planning guidance only. Site measure and written scope confirmation are required before contract pricing.
+          </p>
         </footer>
         {!router.pathname.startsWith('/quote') && (
           <div className="stickyMobileCta" aria-label="Quick actions">
-            <Link href="/quote">Start estimate</Link>
-            <Link href="/quote/review">Review quote</Link>
+            <TrackedCtaLink href="/quote" eventName="estimate_start_click" eventProperties={{ route: router.pathname, cta_location: 'mobile_sticky' }}>Start estimate</TrackedCtaLink>
+            <TrackedCtaLink href="/quote/review" eventName="quote_review_start_click" eventProperties={{ route: router.pathname, cta_location: 'mobile_sticky' }}>Review quote</TrackedCtaLink>
           </div>
         )}
       </div>

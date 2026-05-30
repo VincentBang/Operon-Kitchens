@@ -53,9 +53,9 @@ export const productCategories: { [key: string]: ProductCategory } = {
   },
   splashbacks: {
     title: 'Splashbacks',
-    summary: 'Tile, glass, stainless steel and supplier-confirmed compliant slab splashbacks.',
+    summary: 'Tile, glass, stainless steel and supplier-confirmed slab splashbacks.',
     details: [
-      'Tile, glass and stainless steel splashbacks are common compliant alternatives to engineered-stone slab splashbacks.',
+      'Tile, glass and stainless steel splashbacks are common alternatives to engineered-stone slab splashbacks.',
       'Engineered stone slab splashbacks containing more than 1% crystalline silica are restricted for new work.',
       'Stone, acrylic/composite or custom slab splashbacks require supplier documentation before compliance can be confirmed.',
     ],

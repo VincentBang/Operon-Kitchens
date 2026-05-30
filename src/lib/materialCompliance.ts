@@ -73,7 +73,7 @@ const benchtopMaterials: Record<string, MaterialCompliance> = {
     silicaLabel: '0% crystalline silica',
     crystallineSilicaPercent: 0,
     status: 'allowed',
-    message: 'Stainless steel is a compliant, durable benchtop alternative.',
+    message: 'Stainless steel is a durable benchtop alternative that still needs project-specific selection confirmation.',
     alternatives: [],
   },
   custom: {
@@ -82,7 +82,7 @@ const benchtopMaterials: Record<string, MaterialCompliance> = {
     silicaLabel: 'Supplier documentation required before quoting',
     crystallineSilicaPercent: null,
     status: 'review',
-    message: 'Custom materials require supplier documentation before they can be treated as compliant.',
+    message: 'Custom materials require supplier documentation before they can be treated as suitable for the project.',
     alternatives: commonAlternatives,
   },
 };
@@ -103,7 +103,7 @@ const splashbackMaterials: Record<string, MaterialCompliance> = {
     silicaLabel: '0% crystalline silica',
     crystallineSilicaPercent: 0,
     status: 'allowed',
-    message: 'Glass is a compliant splashback option.',
+    message: 'Glass is a common splashback option, subject to project-specific selection confirmation.',
     alternatives: [],
   },
   engineeredStone: {
@@ -117,7 +117,7 @@ const splashbackMaterials: Record<string, MaterialCompliance> = {
   },
   stone: {
     key: 'stone',
-    label: 'Natural stone / compliant slab',
+    label: 'Natural stone / supplier-confirmed slab',
     silicaLabel: 'Natural or slab material; supplier documentation required',
     crystallineSilicaPercent: null,
     status: 'review',
@@ -130,7 +130,7 @@ const splashbackMaterials: Record<string, MaterialCompliance> = {
     silicaLabel: '0% crystalline silica',
     crystallineSilicaPercent: 0,
     status: 'allowed',
-    message: 'Stainless steel is a compliant splashback option.',
+    message: 'Stainless steel is a common splashback option, subject to project-specific selection confirmation.',
     alternatives: [],
   },
   acrylic: {
@@ -148,7 +148,7 @@ const splashbackMaterials: Record<string, MaterialCompliance> = {
     silicaLabel: 'Supplier documentation required before quoting',
     crystallineSilicaPercent: null,
     status: 'review',
-    message: 'Other splashback materials require supplier documentation before they can be treated as compliant.',
+    message: 'Other splashback materials require supplier documentation before they can be treated as suitable for the project.',
     alternatives: ['Tile', 'Glass', 'Stainless steel'],
   },
 };

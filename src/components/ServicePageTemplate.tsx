@@ -101,6 +101,24 @@ export default function ServicePageTemplate({ page }: Props) {
         </section>
 
         <section>
+          <h2>Service pathway</h2>
+          <div className="linkGrid">
+            <Link href="/how-it-works" className="infoCard linkedCard">
+              How Operon Kitchens works
+              <span>See the staged estimate, review and site measure path</span>
+            </Link>
+            <Link href="/quote-review-service" className="infoCard linkedCard">
+              Quote review service
+              <span>Check scope, allowances, exclusions and review items</span>
+            </Link>
+            <Link href="/site-measure" className="infoCard linkedCard">
+              Site measure and scope review
+              <span>Understand what must be confirmed before contract pricing</span>
+            </Link>
+          </div>
+        </section>
+
+        <section>
           <h2>Related Sydney areas</h2>
           <div className="tagList">
             {page.relatedAreas.map((area) => (
@@ -126,7 +144,7 @@ export default function ServicePageTemplate({ page }: Props) {
           <p>Use the estimate wizard or upload a current kitchen quote so assumptions, exclusions and review flags can be captured clearly.</p>
           <div className="flexActions">
             <Link href="/quote" className="button primary">Start kitchen estimate</Link>
-            <Link href="/quote/review" className="button ghost">Review existing quote</Link>
+            <Link href="/request-review" className="button ghost">Request review</Link>
           </div>
         </section>
       </section>

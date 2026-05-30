@@ -2,6 +2,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import SchemaJsonLd from '@/components/SchemaJsonLd';
+import TrackedCtaLink from '@/components/TrackedCtaLink';
 import { getAreaHref, priorityFooterAreas } from '@/lib/areas';
 
 const pathCards = [
@@ -103,8 +104,9 @@ export default function Home() {
               Build a planning range, understand assumptions and exclusions, then move toward professional review and site measure.
             </p>
             <div className="heroActions">
-              <Link href="/quote" className="button primary">Start kitchen estimate</Link>
-              <Link href="/quote/review" className="button secondary">Review existing quote</Link>
+              <TrackedCtaLink href="/quote" className="button primary" eventName="estimate_start_click" eventProperties={{ route: '/', cta_location: 'home_hero' }}>Start kitchen estimate</TrackedCtaLink>
+              <TrackedCtaLink href="/quote/review" className="button secondary" eventName="quote_review_start_click" eventProperties={{ route: '/', cta_location: 'home_hero' }}>Review existing quote</TrackedCtaLink>
+              <Link href="/how-it-works" className="button ghost">See how it works</Link>
             </div>
           </div>
           <div className="estimatePreviewCard" aria-label="Example estimate preview">
@@ -204,6 +206,7 @@ export default function Home() {
             </article>
           ))}
         </div>
+        <Link href="/how-it-works" className="textLink">See the staged customer journey</Link>
       </section>
 
       <section className="section twoColumn">
@@ -214,8 +217,8 @@ export default function Home() {
             The review intake checks missing inclusions, PC sums, provisional sums, service relocation, appliance assumptions, benchtop clarity, strata risks and site measure requirements.
           </p>
           <div className="flexActions">
-            <Link href="/quote/review" className="button primary">Review existing quote</Link>
-            <Link href="/kitchen-quote-review" className="button ghost">Read review guide</Link>
+            <TrackedCtaLink href="/quote/review" className="button primary" eventName="quote_review_start_click" eventProperties={{ route: '/', cta_location: 'home_quote_review_section' }}>Review existing quote</TrackedCtaLink>
+            <Link href="/quote-review-service" className="button ghost">View quote review service</Link>
           </div>
         </div>
         <div className="valueStack">
@@ -308,8 +311,9 @@ export default function Home() {
         <p className="eyebrow">Ready to clarify the scope?</p>
         <h2>Start with a planning estimate range, then move to professional review and site measure.</h2>
         <div className="heroActions">
-          <Link href="/quote" className="button primary">Start kitchen estimate</Link>
-          <Link href="/quote/review" className="button secondary">Review existing quote</Link>
+          <TrackedCtaLink href="/quote" className="button primary" eventName="estimate_start_click" eventProperties={{ route: '/', cta_location: 'home_final' }}>Start kitchen estimate</TrackedCtaLink>
+          <TrackedCtaLink href="/quote/review" className="button secondary" eventName="quote_review_start_click" eventProperties={{ route: '/', cta_location: 'home_final' }}>Review existing quote</TrackedCtaLink>
+          <Link href="/site-measure" className="button ghost">Prepare for site measure</Link>
         </div>
       </section>
     </main>

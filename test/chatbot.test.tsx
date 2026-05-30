@@ -39,6 +39,8 @@ describe('Operon Kitchens chatbot', () => {
 
   it('states the chatbot does not provide legal advice or compliance certainty', () => {
     render(<KitchenChatbot />);
+    expect(screen.getByRole('button', { name: /Need help with scope\? Ask Operon/i })).toBeInTheDocument();
+    expect(document.body.textContent).not.toContain('??');
     fireEvent.click(screen.getByRole('button', { name: /Ask Operon/i }));
     expect(screen.getByText(/I do not provide confirmed pricing, legal advice or compliance certainty/i)).toBeInTheDocument();
   });

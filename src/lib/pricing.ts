@@ -509,6 +509,7 @@ export function calculatePricing(input: QuoteInput, activeRateCard: RateCard = r
   const estimateLow = Math.max(0, total * (1 - rangeFactor));
   const estimateHigh = total * (1 + rangeFactor);
   const hbcRequired = estimateHigh > 20000;
+  const writtenContractReviewRequired = estimateHigh > 5000;
   const depositWarning =
     offeredDepositAmount > recommendedDeposit
       ? `The proposed deposit is ${offeredDepositPercent.toFixed(1)}% of the estimate. NSW home building deposit guidance caps deposits at 10% and should be reviewed before contract issue.`
@@ -519,6 +520,7 @@ export function calculatePricing(input: QuoteInput, activeRateCard: RateCard = r
       : null;
   const complianceFlags: string[] = [];
   complianceFlags.push('Final site measure required before price confirmation');
+  if (writtenContractReviewRequired) complianceFlags.push('Written contract review may be required for residential building work over $5,000 including GST');
   complianceFlags.push('NSW deposit guidance: maximum deposit should be 10% of the final home building contract price');
   if (depositWarning) complianceFlags.push('Proposed deposit exceeds 10% guidance');
   if (hbcRequired) complianceFlags.push('HBC likely required if residential work exceeds $20,000 including GST');
@@ -559,6 +561,7 @@ export function calculatePricing(input: QuoteInput, activeRateCard: RateCard = r
   if (input.applianceAllowance === 'notSure') assumptions.push('Appliance allowance needs confirmation before the estimate confidence can improve.');
   if (input.flooring.included) assumptions.push('Flooring allowance is included for the nominated kitchen area only and should be reconciled with any flooring-specific quote.');
   assumptions.push('Deposit on a final NSW home building contract must not exceed 10%.');
+  if (writtenContractReviewRequired) assumptions.push('Residential building work over $5,000 including GST may require written contract review before proceeding.');
   if (hbcRequired) assumptions.push('Projects over $20,000 including GST need Home Building Compensation insurance reviewed and confirmed before taking money or starting work.');
   assumptions.push(...materialComplianceSummary);
   if (transitionApplies) assumptions.push('Engineered-stone transition provision has been claimed and must be manually verified against contract and installation dates.');

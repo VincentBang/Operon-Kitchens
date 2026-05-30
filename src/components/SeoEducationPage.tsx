@@ -51,6 +51,25 @@ export default function SeoEducationPage({ page }: Props) {
           </article>
         </section>
 
+        <section className="guideSummary">
+          <article>
+            <h2>Who this helps</h2>
+            <ul>
+              <li>Sydney homeowners checking whether a kitchen budget range is realistic.</li>
+              <li>Apartment and strata owners who need access, approval and service assumptions reviewed.</li>
+              <li>Customers comparing kitchen quotes where inclusions, PC sums or exclusions are unclear.</li>
+            </ul>
+          </article>
+          <article>
+            <h2>What improves confidence</h2>
+            <ul>
+              <li>Photos of every wall, service point, access path and existing cabinetry.</li>
+              <li>Measurements, plans, appliance direction and benchtop or splashback preferences.</li>
+              <li>A current quote or scope document that shows inclusions, allowances and exclusions.</li>
+            </ul>
+          </article>
+        </section>
+
         {page.sections.map((section) => (
           section.expandable ? (
             <details className="faqItem" key={section.heading}>
@@ -89,6 +108,17 @@ export default function SeoEducationPage({ page }: Props) {
           </p>
         </section>
 
+        <section>
+          <h2>Related Sydney areas</h2>
+          <div className="tagList">
+            {['Mosman', 'Double Bay', 'Chatswood', 'Randwick', 'Parramatta', 'Balmain'].map((area) => (
+              <Link href={`/areas/${area.toLowerCase().replace(/\s+/g, '-')}`} className="miniPill" key={area}>
+                {area}
+              </Link>
+            ))}
+          </div>
+        </section>
+
         <aside className="compliancePanel">
           <h2>Review note</h2>
           <p>
@@ -120,6 +150,24 @@ export default function SeoEducationPage({ page }: Props) {
           </div>
         </section>
 
+        <section>
+          <h2>Plan the next step</h2>
+          <div className="linkGrid">
+            <Link href="/how-it-works" className="infoCard linkedCard">
+              How the staged process works
+              <span>From planning range to review, site measure and written scope</span>
+            </Link>
+            <Link href="/quote-review-service" className="infoCard linkedCard">
+              Review an existing quote
+              <span>Check inclusions, allowances and exclusions before comparing totals</span>
+            </Link>
+            <Link href="/site-measure" className="infoCard linkedCard">
+              Prepare for site measure
+              <span>Understand what gets confirmed before contract pricing</span>
+            </Link>
+          </div>
+        </section>
+
         <section className="contentCta">
           <h2>Next step</h2>
           <p>
@@ -127,7 +175,7 @@ export default function SeoEducationPage({ page }: Props) {
           </p>
           <div className="flexActions">
             <Link href="/quote" className="button primary">Start kitchen estimate</Link>
-            <Link href="/quote/review" className="button ghost">Review existing quote</Link>
+            <Link href="/request-review" className="button ghost">Request review</Link>
           </div>
         </section>
       </section>

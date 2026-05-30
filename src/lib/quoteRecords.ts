@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { db } from '@/lib/db';
 import { calculatePricing, PricingResult, QuoteInput } from '@/lib/pricing';
+import { toCustomerQuoteSummary } from '@/lib/quotePresentation';
 import { getActiveRateCardData, seedDefaultRateCard } from '@/lib/rateCards';
 
 export interface ContactInput {
@@ -63,26 +64,7 @@ function serializeLead(row: any) {
 
 function toPublicPricing(pricing: PricingResult | null) {
   if (!pricing) return null;
-  return {
-    estimateLow: pricing.estimateLow,
-    estimateHigh: pricing.estimateHigh,
-    confidenceScore: pricing.confidenceScore,
-    confidenceLabel: pricing.confidenceLabel,
-    confidenceLevel: pricing.confidenceLevel,
-    includedScope: pricing.includedScope,
-    assumptions: pricing.assumptions,
-    exclusions: pricing.exclusions,
-    manualReviewFlags: pricing.manualReviewFlags,
-    flags: pricing.manualReviewFlags,
-    complianceFlags: pricing.complianceFlags,
-    recommendedNextStep: pricing.recommendedNextStep,
-    recommendedDeposit: pricing.recommendedDeposit,
-    recommendedDepositPercent: pricing.recommendedDepositPercent,
-    hbcRequired: pricing.hbcRequired,
-    depositWarning: pricing.depositWarning,
-    hbcWarning: pricing.hbcWarning,
-    materialCompliance: pricing.materialCompliance,
-  };
+  return toCustomerQuoteSummary(pricing);
 }
 
 function serializeQuote(row: any) {
@@ -100,7 +82,6 @@ function serializeQuote(row: any) {
     quoteInput: parseJson<QuoteInput | null>(row.input_json, null),
     pricing: publicPricing,
     totals: {
-      total: row.total,
       estimateLow: publicPricing?.estimateLow ?? row.total,
       estimateHigh: publicPricing?.estimateHigh ?? row.total,
       confidenceScore: row.confidence_score,
@@ -262,7 +243,17 @@ export async function getLeadWithQuotes(email: string) {
   const lead = getLeadByEmail(email);
   if (!lead) return null;
   const quotes = await getQuotesByEmail(email);
-  return { ...serializeLead(lead), quotes: quotes.map((quote) => ({ id: quote.id, status: quote.status, total: quote.totals.total, confidenceLevel: quote.totals.confidenceLevel, updatedAt: quote.updatedAt })) };
+  return {
+    ...serializeLead(lead),
+    quotes: quotes.map((quote) => ({
+      id: quote.id,
+      status: quote.status,
+      estimateLow: quote.totals.estimateLow,
+      estimateHigh: quote.totals.estimateHigh,
+      confidenceLevel: quote.totals.confidenceLevel,
+      updatedAt: quote.updatedAt,
+    })),
+  };
 }
 
 export async function getAdminDashboardData() {

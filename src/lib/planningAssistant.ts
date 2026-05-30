@@ -36,9 +36,9 @@ export function answerKitchenPlanningQuestion(question: string): PlanningAssista
   if (text.includes('engineered stone') || text.includes('silica') || text.includes('benchtop') || text.includes('splashback')) {
     return {
       topic: 'materials',
-      answer: 'The quote flow should steer restricted engineered-stone selections into review and suggest compliant alternatives such as porcelain, stainless steel, timber, laminate or supplier-confirmed low-silica composites.',
+      answer: 'The quote flow should steer restricted engineered-stone selections into review and suggest alternatives such as porcelain, stainless steel, timber, laminate or supplier-confirmed low-silica composites.',
       suggestedNextSteps: [
-        'Select a compliant benchtop and splashback option in the quote wizard.',
+        'Select a supplier-confirmed benchtop and splashback option in the quote wizard.',
         'Ask suppliers to confirm silica and compliance information in writing.',
         'Keep any transition-claim documents attached for manual review.',
       ],
