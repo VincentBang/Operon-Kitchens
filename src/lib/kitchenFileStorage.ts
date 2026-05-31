@@ -168,12 +168,12 @@ export async function storeKitchenRequestReviewFiles(
 
 function safeStorageError(detail: string) {
   const lowered = detail.toLowerCase();
-  if (lowered.includes('bucket not found') || lowered.includes('bucket')) return 'bucket_check_required';
-  if (lowered.includes('mime') || lowered.includes('type')) return 'mime_type_check_required';
-  if (lowered.includes('size') || lowered.includes('limit')) return 'file_size_check_required';
   if (lowered.includes('permission') || lowered.includes('policy') || lowered.includes('row-level security') || lowered.includes('rls')) {
     return 'permission_check_required';
   }
+  if (lowered.includes('bucket not found') || lowered.includes('bucket')) return 'bucket_check_required';
+  if (lowered.includes('mime') || lowered.includes('type')) return 'mime_type_check_required';
+  if (lowered.includes('size') || lowered.includes('limit')) return 'file_size_check_required';
   if (lowered.includes('column') || lowered.includes('schema') || lowered.includes('relation') || lowered.includes('table')) {
     return 'metadata_schema_check_required';
   }

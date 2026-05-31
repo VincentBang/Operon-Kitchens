@@ -132,6 +132,16 @@ function getFileDeliveryIssue(fileStorage: {
   return fileStorage.safeError || 'upload_storage_check_required';
 }
 
+function getFileDeliveryStatusCode(fileStorage: {
+  fileCount: number;
+  configured: boolean;
+  stored: boolean;
+  status?: number;
+}) {
+  if (fileStorage.fileCount === 0 || fileStorage.stored || !fileStorage.configured) return undefined;
+  return fileStorage.status;
+}
+
 async function notifyByResend(lead: KitchenRequestReviewLead) {
   const apiKey = process.env.OPERON_KITCHENS_RESEND_API_KEY;
   const to = process.env.OPERON_KITCHENS_REQUEST_REVIEW_TO_EMAIL;
@@ -259,6 +269,7 @@ export async function handler(event: NetlifyEvent): Promise<NetlifyResponse> {
       filesStored: fileStorage.stored,
       fileDeliveryStatus: getFileDeliveryStatus(fileStorage),
       fileDeliveryIssue: getFileDeliveryIssue(fileStorage),
+      fileDeliveryStatusCode: getFileDeliveryStatusCode(fileStorage),
       fileCount: lead.files.length,
       notificationPrepared,
     },

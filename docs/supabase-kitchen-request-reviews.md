@@ -248,6 +248,7 @@ For controlled upload verification, the safe browser response includes `delivery
 - `metadata_insert_failed`: file metadata table insert needs review.
 
 When a file is attached and storage fails, the response may also include `delivery.fileDeliveryIssue` with a safe category such as `bucket_check_required`, `permission_check_required`, `mime_type_check_required`, `file_size_check_required` or `metadata_schema_check_required`.
+It may also include `delivery.fileDeliveryStatusCode`, the numeric HTTP status returned by Supabase Storage. This is safe to expose and helps distinguish missing bucket/project setup from permission or request-format issues.
 
 These statuses are diagnostic categories only. They do not expose service keys, bucket secrets, file contents, supplier costs, lead scores, internal notes or admin priority.
 

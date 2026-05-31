@@ -426,6 +426,7 @@ describe('kitchen-request-review Netlify function', () => {
       filesStored: false,
       fileDeliveryStatus: 'object_upload_failed',
       fileDeliveryIssue: 'bucket_check_required',
+      fileDeliveryStatusCode: 404,
       fileCount: 1,
       notificationPrepared: false,
     }));
