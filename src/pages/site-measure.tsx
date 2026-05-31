@@ -2,12 +2,13 @@ import Head from 'next/head';
 import Link from 'next/link';
 
 const measureChecks = [
-  ['Measurements', 'Room dimensions, cabinet runs, ceiling heights, openings, corners and out-of-square conditions.'],
-  ['Access', 'Parking, loading, lift access, stairs, protection, work hours and rubbish removal path.'],
-  ['Services', 'Plumbing, electrical, gas, ventilation, lighting and whether services stay in place or move.'],
-  ['Selections', 'Appliance list, sink/tap, benchtop, splashback, door finish, hardware and accessory direction.'],
-  ['Site conditions', 'Existing cabinetry, walls, floors, substrate, older-property risk and possible asbestos review items.'],
-  ['Approvals', 'Strata, apartment, DBP/class 2, BASIX or other review prompts where the scope suggests they may matter.'],
+  ['Room dimensions', 'Cabinet runs, ceiling heights, openings, corners, walls and out-of-square conditions.'],
+  ['Walls, floors and levels', 'Substrate condition, floor level changes, wall straightness and any make-good assumptions.'],
+  ['Services location', 'Plumbing, electrical, gas, ventilation, lighting and whether services stay in place or move.'],
+  ['Appliance fit', 'Nominated appliance sizes, clearances, ventilation, connection points and installation assumptions.'],
+  ['Demolition and access', 'Existing cabinetry, protection, parking, loading, stairs, lift access, work hours and rubbish path.'],
+  ['Strata and apartment issues', 'Owners corporation rules, lift bookings, parking, work-hour limits and class 2 review prompts.'],
+  ['Installation constraints', 'Benchtop access, join positions, splashback details, older-property risk and possible asbestos review items.'],
 ];
 
 export default function SiteMeasurePage() {
@@ -23,11 +24,11 @@ export default function SiteMeasurePage() {
       <section className="contentHero">
         <div>
           <p className="eyebrow">Site measure</p>
-          <h1 className="contentTitle">Site measure turns an estimate into quote-ready scope.</h1>
+          <h1 className="contentTitle">Confirm the kitchen scope before locking in price.</h1>
         </div>
         <div>
           <p className="muted">
-            A site measure checks the details that cannot be confirmed online: dimensions, access, services, existing conditions, selections and project-specific review prompts.
+            A site measure checks the details that cannot be confirmed online: dimensions, access, services, appliance fit, existing conditions, selections and project-specific review prompts.
           </p>
           <div className="flexActions">
             <Link href="/request-review" className="button primary">Request site measure</Link>
@@ -49,7 +50,7 @@ export default function SiteMeasurePage() {
         </section>
 
         <section>
-          <h2>What should be checked</h2>
+          <h2>What gets checked</h2>
           <div className="cardGrid">
             {measureChecks.map(([title, body]) => (
               <article className="infoCard" key={title}>
@@ -61,8 +62,8 @@ export default function SiteMeasurePage() {
         </section>
 
         <aside className="compliancePanel">
-          <h2>Before contract decisions</h2>
-          <p>Final written scope should confirm dimensions, selections, trade assumptions, approvals, exclusions and any compliance review items. This page is planning guidance, not legal advice.</p>
+          <h2>What site measure is not</h2>
+          <p>Site measure is not contract approval, legal advice, automatic project acceptance or a substitute for licensed trade confirmation. It supports clearer written scope before project commitment.</p>
         </aside>
 
         <section className="contentCta">

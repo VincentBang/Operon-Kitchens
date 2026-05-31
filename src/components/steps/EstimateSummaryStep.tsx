@@ -74,7 +74,7 @@ export default function EstimateSummaryStep({ data, contact, rateCard, quoteId, 
           </div>
           <span className={`confidence ${quoteSummary.confidenceLabel}`}>{quoteSummary.confidenceLabel} confidence · {quoteSummary.confidenceScore}/100</span>
         </div>
-        <p className="muted">This is a planning estimate report, subject to site measure, confirmed selections and written scope confirmation.</p>
+        <p className="muted">This is a planning estimate report and indicative range only, subject to site measure, confirmed selections, licensed trade review where needed and written scope confirmation.</p>
         <div className="summaryMetricGrid">
           <article>
             <span>Information completeness</span>
@@ -89,7 +89,7 @@ export default function EstimateSummaryStep({ data, contact, rateCard, quoteId, 
           <article>
             <span>Next action</span>
             <strong>Professional review</strong>
-            <p>Use this report to prepare site measure and written scope confirmation.</p>
+          <p>Use this report to prepare site measure and confirmed written scope.</p>
           </article>
         </div>
         <div className="guideSummary">
@@ -120,7 +120,7 @@ export default function EstimateSummaryStep({ data, contact, rateCard, quoteId, 
         </div>
         <div className="compliancePanel">
           <h3>Deposit and HBC guidance</h3>
-          <p>Recommended maximum deposit guidance is 10% for NSW home building contracts. HBC and contract thresholds must be reviewed against the final written scope before money is taken or work starts.</p>
+          <p>Recommended maximum deposit guidance is 10% for NSW home building contracts. HBC, written contract and deposit thresholds require project-specific review against the confirmed written scope before money is taken or work starts.</p>
         </div>
         {data.designPlan && <div className="compliancePanel"><h3>Design plan</h3><p>{summarizeDesignPlan(data.designPlan)}</p></div>}
         {data.supportingFiles.length > 0 && (
@@ -140,7 +140,7 @@ export default function EstimateSummaryStep({ data, contact, rateCard, quoteId, 
         <details className="advancedPanel" open>
           <summary>Manual review flags</summary>
           <ul className="warningList">
-            {(quoteSummary.manualReviewFlags.length ? quoteSummary.manualReviewFlags : ['No major manual review flags beyond normal site measure.']).map((item) => <li key={item}>{item}</li>)}
+            {(quoteSummary.manualReviewFlags.length ? quoteSummary.manualReviewFlags : ['No major manual review flags beyond normal site measure and written scope confirmation.']).map((item) => <li key={item}>{item}</li>)}
           </ul>
         </details>
         <details className="advancedPanel" open>

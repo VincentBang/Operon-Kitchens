@@ -26,7 +26,7 @@ describe('kitchen quote review intake', () => {
         'Benchtop/splashback clarity',
         'Strata/apartment risks',
         'Demolition and waste scope',
-        'Final site measure requirement',
+        'Site measure requirement',
       ]),
     );
   });
@@ -52,7 +52,7 @@ describe('kitchen quote review intake', () => {
     );
     expect(result.complianceFlags).toEqual(
       expect.arrayContaining([
-        'Final site measure required before price confirmation',
+        'Site measure required before project-specific pricing confirmation',
         'Deposit and HBC terms need confirmation, including 10% maximum deposit guidance and HBC review over $20,000 including GST',
       ]),
     );
@@ -117,7 +117,7 @@ describe('kitchen quote review intake', () => {
     );
     expect(result.customerQuestions).toEqual(expect.arrayContaining(['Does the quote allow for strata approval, lift booking, access protection and building rules?']));
     expect(result.missingItems).toEqual(
-      expect.arrayContaining(['Deposit / HBC flags', 'Benchtop/splashback clarity', 'Final site measure requirement']),
+      expect.arrayContaining(['Deposit / HBC flags', 'Benchtop/splashback clarity', 'Site measure requirement']),
     );
   });
 });

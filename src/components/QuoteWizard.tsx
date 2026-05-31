@@ -151,7 +151,7 @@ const QuoteWizard = () => {
         </div>
         <p className="eyebrow">Estimate builder</p>
         <h1>Kitchen quote wizard</h1>
-        <p className="muted">Build a planning estimate range with confidence, assumptions, exclusions and review flags before a professional review.</p>
+        <p className="muted">Build a planning estimate range with confidence, assumptions, exclusions and review flags before professional review, site measure and written scope confirmation.</p>
       </div>
       <div className="wizardPanel">
         {loadError && <div className="p-4 mb-4 bg-red-50 border border-red-200 rounded text-red-700">{loadError}</div>}
@@ -182,7 +182,7 @@ const QuoteWizard = () => {
         {steps[step]}
       </div>
       <aside className="notePanel">
-        Estimates are planning guides only. Price confirmation depends on a site measure, confirmed selections, licensed trade checks and written scope confirmation.
+        Estimates are planning guides and indicative ranges only. Project-specific pricing depends on site measure, confirmed selections, licensed trade checks where needed and written scope confirmation.
       </aside>
     </div>
   );

@@ -61,16 +61,16 @@ export interface KitchenQuoteReviewResult {
 
 export const reviewChecks: { key: ReviewCheckKey; label: string; explanation: string }[] = [
   { key: 'missingInclusions', label: 'Missing inclusions', explanation: 'Checks whether cabinetry, hardware, labour, trades, GST and site work are clearly included.' },
-  { key: 'pcSums', label: 'Unclear PC sums', explanation: 'Prime cost allowances should identify what is provisional and what final selections may change.' },
+  { key: 'pcSums', label: 'Unclear PC sums', explanation: 'Prime cost allowances should identify what is provisional and what later selections may change.' },
   { key: 'provisionalSums', label: 'Unclear provisional sums', explanation: 'Provisional sums should explain uncertain work such as services, demolition or preparation.' },
   { key: 'depositHbc', label: 'Deposit / HBC flags', explanation: 'Looks for deposit terms and whether HBC review may be needed for residential work over $20,000 including GST.' },
   { key: 'exclusions', label: 'Exclusions', explanation: 'Confirms what is excluded so the quote is not compared on headline total alone.' },
   { key: 'serviceRelocation', label: 'Service relocation', explanation: 'Plumbing, electrical and gas relocation require licensed trade confirmation.' },
   { key: 'applianceAssumptions', label: 'Appliance assumptions', explanation: 'Appliance model, size, connection and installation assumptions should be visible.' },
-  { key: 'benchtopSplashback', label: 'Benchtop/splashback clarity', explanation: 'Material, thickness, compliance and fabrication assumptions should be clear.' },
+  { key: 'benchtopSplashback', label: 'Benchtop/splashback clarity', explanation: 'Material, thickness, restrictions and fabrication assumptions should be clear.' },
   { key: 'strataApartment', label: 'Strata/apartment risks', explanation: 'Apartment work may need strata approval, access booking and class 2 screening.' },
   { key: 'demolitionWaste', label: 'Demolition and waste scope', explanation: 'Removal, disposal, protection and make-good work should not be assumed.' },
-  { key: 'siteMeasure', label: 'Final site measure requirement', explanation: 'Price confirmation should follow site measure and confirmed selections.' },
+  { key: 'siteMeasure', label: 'Site measure requirement', explanation: 'Project-specific pricing should follow site measure and confirmed selections.' },
 ];
 
 export function createDefaultReviewJobDetails(): KitchenQuoteReviewJobDetails {
@@ -98,7 +98,7 @@ export function evaluateKitchenQuoteReview(intake: KitchenQuoteReviewIntake): Ki
   const customerQuestions: string[] = [];
   const manualReviewFlags: string[] = [];
   const compliancePrompts: string[] = [
-    'Final site measure required before price confirmation',
+    'Site measure required before project-specific pricing confirmation',
     'This review is planning guidance only and is not legal advice',
   ];
   const quoteFileSupplied = intake.files.some((file) => file.category === 'existingQuote');
@@ -127,7 +127,7 @@ export function evaluateKitchenQuoteReview(intake: KitchenQuoteReviewIntake): Ki
   if (!intake.checkedItems.benchtopSplashback || !intake.jobDetails.benchtopKnown || !intake.jobDetails.splashbackKnown) {
     compliancePrompts.push('Benchtop/splashback material and engineered-stone restriction needs confirmation');
     unclearItems.push('Benchtop or splashback material');
-    customerQuestions.push('Does the quote state benchtop and splashback material, cut-outs, joins, edge details and compliance review items?');
+    customerQuestions.push('Does the quote state benchtop and splashback material, cut-outs, joins, edge details and material restriction review items?');
   }
   if (!intake.jobDetails.demolitionIncluded || !intake.jobDetails.wasteIncluded || !intake.checkedItems.demolitionWaste) {
     manualReviewFlags.push('Demolition, protection and waste removal scope needs confirmation');
@@ -142,7 +142,7 @@ export function evaluateKitchenQuoteReview(intake: KitchenQuoteReviewIntake): Ki
   if (!intake.checkedItems.pcSums) customerQuestions.push('Are all PC sums clearly described with realistic allowance amounts and selection responsibilities?');
   if (!intake.checkedItems.provisionalSums) customerQuestions.push('Are provisional sums limited to genuinely uncertain work and explained clearly?');
   if (!intake.checkedItems.exclusions) customerQuestions.push('What exclusions could become variations after work starts?');
-  if (!intake.checkedItems.siteMeasure) customerQuestions.push('Does the quote state that final site measure and written scope confirmation are required?');
+  if (!intake.checkedItems.siteMeasure) customerQuestions.push('Does the quote state that site measure and written scope confirmation are required before commitment?');
 
   const completedCount = checksExplained.filter((check) => check.checked).length;
   const hasScopeChecks = Boolean(intake.checkedItems.missingInclusions && intake.checkedItems.exclusions && intake.checkedItems.demolitionWaste && intake.checkedItems.siteMeasure);

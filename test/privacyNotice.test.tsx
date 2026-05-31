@@ -19,6 +19,7 @@ describe('privacy collection notice', () => {
     expect(screen.getByText('Privacy collection notice')).toBeTruthy();
     expect(screen.getByText(/collects your contact, project/i)).toBeInTheDocument();
     expect(screen.getByText(/Only upload files you are authorised to share/i)).toBeInTheDocument();
+    expect(screen.getByText(/quotes, plans, screenshots, photos and documents/i)).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /privacy policy/i }).getAttribute('href')).toBe('/privacy');
     expect(screen.getByLabelText(/I acknowledge this collection notice/i).hasAttribute('checked')).toBe(false);
     expect(screen.getByLabelText(/optional planning tips/i).hasAttribute('checked')).toBe(false);

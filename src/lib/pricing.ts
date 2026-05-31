@@ -352,7 +352,7 @@ function getRecommendedNextStep(confidenceLevel: PricingResult['confidenceLevel'
   if (confidenceLevel !== 'high') {
     return 'Add photos, measurements in millimetres and product selections to tighten the estimate range before review.';
   }
-  return 'Proceed to professional site measure and written quote confirmation before making contract decisions.';
+  return 'Proceed to professional site measure and written scope confirmation before making contract decisions.';
 }
 
 /**
@@ -512,16 +512,16 @@ export function calculatePricing(input: QuoteInput, activeRateCard: RateCard = r
   const writtenContractReviewRequired = estimateHigh > 5000;
   const depositWarning =
     offeredDepositAmount > recommendedDeposit
-      ? `The proposed deposit is ${offeredDepositPercent.toFixed(1)}% of the estimate. NSW home building deposit guidance caps deposits at 10% and should be reviewed before contract issue.`
+      ? `The proposed deposit is ${offeredDepositPercent.toFixed(1)}% of the estimate. NSW home building deposit guidance caps deposits at 10% and requires review before contract issue.`
       : null;
   const hbcWarning =
     hbcRequired && (!input.hbcInsuranceIncluded || !input.hbcCertificateConfirmed)
       ? 'Home Building Compensation cover is flagged for review because this residential project estimate is over $20,000 including GST. Cover should be confirmed before taking money or commencing work.'
       : null;
   const complianceFlags: string[] = [];
-  complianceFlags.push('Final site measure required before price confirmation');
+  complianceFlags.push('Site measure required before project-specific pricing confirmation');
   if (writtenContractReviewRequired) complianceFlags.push('Written contract review may be required for residential building work over $5,000 including GST');
-  complianceFlags.push('NSW deposit guidance: maximum deposit should be 10% of the final home building contract price');
+  complianceFlags.push('NSW deposit guidance: maximum deposit should be 10% of the confirmed home building contract price');
   if (depositWarning) complianceFlags.push('Proposed deposit exceeds 10% guidance');
   if (hbcRequired) complianceFlags.push('HBC likely required if residential work exceeds $20,000 including GST');
   if (hbcWarning) complianceFlags.push('HBC cover not confirmed');
@@ -544,7 +544,7 @@ export function calculatePricing(input: QuoteInput, activeRateCard: RateCard = r
         complianceFlags.push(`${material.label} transition claim requires manual documentation review`);
       }
     }
-    if (material.status === 'review') complianceFlags.push(`${material.label} requires supplier compliance confirmation`);
+    if (material.status === 'review') complianceFlags.push(`${material.label} requires supplier and trade documentation review`);
   });
   // Assumptions and exclusions
   const assumptions: string[] = [];
@@ -560,21 +560,21 @@ export function calculatePricing(input: QuoteInput, activeRateCard: RateCard = r
   if (input.applianceAllowance === 'exactModelsKnown') assumptions.push('Exact appliance models have been nominated for review, subject to installation confirmation.');
   if (input.applianceAllowance === 'notSure') assumptions.push('Appliance allowance needs confirmation before the estimate confidence can improve.');
   if (input.flooring.included) assumptions.push('Flooring allowance is included for the nominated kitchen area only and should be reconciled with any flooring-specific quote.');
-  assumptions.push('Deposit on a final NSW home building contract must not exceed 10%.');
+  assumptions.push('Deposit on a confirmed NSW home building contract should not exceed 10%.');
   if (writtenContractReviewRequired) assumptions.push('Residential building work over $5,000 including GST may require written contract review before proceeding.');
   if (hbcRequired) assumptions.push('Projects over $20,000 including GST need Home Building Compensation insurance reviewed and confirmed before taking money or starting work.');
   assumptions.push(...materialComplianceSummary);
   if (transitionApplies) assumptions.push('Engineered-stone transition provision has been claimed and must be manually verified against contract and installation dates.');
   if (input.highRiskItems) exclusions.push('Structural changes, wall removal, and major service relocations require separate quote.');
   if (!input.flooring.included) exclusions.push('Flooring is excluded unless selected in the advanced scope.');
-  if (input.structuralWorks.wallRemoval || input.structuralWorks.beamRequired || input.structuralWorks.windowDoorChanges) exclusions.push('Structural engineering, approvals and final building work pricing require manual review.');
+  if (input.structuralWorks.wallRemoval || input.structuralWorks.beamRequired || input.structuralWorks.windowDoorChanges) exclusions.push('Structural engineering, approvals and project-specific building work pricing require manual review.');
   if (input.strataApprovalRequired) exclusions.push('Strata approval, by-law requirements and building management conditions are not confirmed by this estimate.');
   // Flags
   const flags: string[] = [];
   if (confidenceLevel === 'low') flags.push('Low confidence – wide estimate range recommended');
-  if (!input.measurementsProvided) flags.push('Final site measure required');
+  if (!input.measurementsProvided) flags.push('Site measure required before written scope confirmation');
   if (!input.photosProvided) flags.push('Photos or plans needed for tighter review');
-  if (input.benchtopType === 'naturalStone') flags.push('Benchtop subject to supplier compliance confirmation');
+  if (input.benchtopType === 'naturalStone') flags.push('Benchtop subject to supplier and trade documentation review');
   if (input.zones.length > 0) flags.push('Multiple zones require manual scope review');
   if (selectedApplianceCount(input) > 0) flags.push('Appliance selections require model and installation confirmation');
   if (input.asbestosRisk || input.olderPropertyAsbestosConcern !== 'no' || input.propertyAgeBand === 'pre1980') flags.push('Older-property/asbestos risk requires site review');

@@ -40,9 +40,9 @@ describe('pricing engine', () => {
     expect(result.recommendedFollowUp).toMatch(/follow-up|guidance|same-day/i);
     expect(result.includedScope).toContain('Base cabinets');
     expect(result.assumptions).toContain('This is a planning estimate range for scope review, not a contract price.');
-    expect(result.complianceFlags).toContain('Final site measure required before price confirmation');
+    expect(result.complianceFlags).toContain('Site measure required before project-specific pricing confirmation');
     expect(result.complianceFlags).toContain('Written contract review may be required for residential building work over $5,000 including GST');
-    expect(result.complianceFlags).toContain('NSW deposit guidance: maximum deposit should be 10% of the final home building contract price');
+    expect(result.complianceFlags).toContain('NSW deposit guidance: maximum deposit should be 10% of the confirmed home building contract price');
     expect(result.recommendedNextStep).toContain('professional');
   });
 
@@ -94,7 +94,7 @@ describe('pricing engine', () => {
     expect(result.lineItems.some((item) => item.name === 'Kitchen flooring allowance')).toBe(true);
     expect(result.lineItems.some((item) => item.name === 'Structural works review allowance')).toBe(true);
     expect(result.manualReviewFlags).toContain('Multiple zones require manual scope review');
-    expect(result.exclusions).toContain('Structural engineering, approvals and final building work pricing require manual review.');
+    expect(result.exclusions).toContain('Structural engineering, approvals and project-specific building work pricing require manual review.');
   });
 
   it('reduces confidence and increases contingency for apartment and approval risks', () => {

@@ -6,16 +6,16 @@ const collectedInformation = [
   'Suburb, address information if supplied, property type, access notes and project timing.',
   'Budget band, measurements, layout answers, finish selections and project scope notes.',
   'Estimate answers, quote-review checklist answers, risk flags and preferred next steps.',
-  'Uploaded photos, plans, drawings, appliance lists and existing quote documents.',
+  'Uploaded quotes, plans, photos, screenshots, drawings, appliance lists and other project documents.',
   'Communication records, support requests, chatbot or planning assistant interactions.',
   'Website analytics, cookies, page progress, conversion events and device/browser information.',
 ];
 
 const collectionReasons = [
-  'Prepare planning estimate ranges and confidence scoring.',
+  'Prepare planning estimate ranges, indicative range outputs and confidence scoring.',
   'Review existing kitchen quotes and identify missing or unclear scope items.',
   'Flag assumptions, exclusions, risk items and compliance prompts for professional review.',
-  'Coordinate follow-up, quote review, site measure interest or future service enquiries.',
+  'Coordinate follow-up, quote review, site measure interest, written scope discussions or future service enquiries.',
   'Improve the website, estimate logic, review checklist and user experience.',
   'Manage security, support, record keeping and applicable legal or regulatory obligations.',
 ];
@@ -61,7 +61,7 @@ export default function PrivacyPage() {
       <section>
         <h2>Uploaded files</h2>
         <p>
-          Uploaded quotes, photos, plans, drawings and appliance lists may contain personal information, property information or third-party commercial information. Only upload files you are authorised to share with Operon Kitchens for estimate, quote review or project planning purposes.
+          Uploaded quotes, plans, photos, screenshots, drawings, appliance lists and other documents may contain personal information, property information or third-party commercial information. Only upload files you are authorised to share with Operon Kitchens for estimate, quote review or project planning purposes.
         </p>
       </section>
 
@@ -76,14 +76,14 @@ export default function PrivacyPage() {
       <section>
         <h2>If information is not provided</h2>
         <p>
-          If key project, contact, upload or checklist information is missing, Operon Kitchens may not be able to prepare a useful planning estimate, quote review, site measure discussion or follow-up. Missing measurements, photos, plans or service details may also lower estimate confidence.
+          If key project, contact, upload or checklist information is missing, Operon Kitchens may not be able to prepare a useful planning estimate, indicative range, quote review, site measure discussion or follow-up. Missing measurements, photos, plans or service details may also lower estimate confidence and increase review risk.
         </p>
       </section>
 
       <section>
         <h2>Who we may share information with</h2>
         <p>
-          We only share information where reasonably needed for the estimate, quote review, project review, support, security or legal purposes. This may include:
+          We only share information where reasonably needed for the estimate, quote review, project review, support, security or legal purposes. Public customer outputs are limited to planning ranges, confidence, assumptions, exclusions and review prompts rather than admin-only commercial or pipeline information. Sharing may include:
         </p>
         <ul>
           {sharingParties.map((item) => <li key={item}>{item}</li>)}
@@ -100,7 +100,7 @@ export default function PrivacyPage() {
       <section>
         <h2>Cookies and analytics</h2>
         <p>
-          The website may use cookies, logs or analytics to understand traffic, form progress, page performance, quote-tool usage and conversion events. You may disable cookies in your browser, but some website features may not work as intended.
+          The website may use cookies, logs or analytics to understand traffic, form progress, page performance, quote-tool usage, planning assistant interactions and conversion events. You may disable cookies in your browser, but some website features may not work as intended.
         </p>
       </section>
 
@@ -114,7 +114,7 @@ export default function PrivacyPage() {
       <section>
         <h2>Storage and retention</h2>
         <p>
-          Estimate and quote-review enquiries may be retained while active and for reasonable business record periods. Uploaded quotes, photos, plans and related files may be deleted on request where legally and technically possible. Future paid-service records may need to be retained for business, accounting, support or legal reasons.
+          Estimate and quote-review enquiries may be retained while active and for reasonable business record periods. Uploaded quotes, screenshots, photos, plans and related files may be deleted on request where legally and technically possible. Future paid-service records may need to be retained for business, accounting, support or legal reasons.
         </p>
       </section>
 

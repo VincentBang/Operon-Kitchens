@@ -19,7 +19,7 @@ const reviewValueCards = [
   ['Trade scope', 'Plumbing, electrical, gas and relocation assumptions need licensed trade confirmation.'],
   ['Benchtop and splashback clarity', 'Material, cut-outs, joins, waterfalls and splashback inclusions should be visible in the scope.'],
   ['Apartment/strata risk', 'Lift access, parking, strata approval and class 2 screening can affect timing and review requirements.'],
-  ['Contract/compliance prompts', 'Deposit guidance, HBC triggers and site measure requirements are flagged for professional confirmation.'],
+  ['Contract and risk prompts', 'Deposit guidance, HBC review triggers and site measure requirements are flagged for professional confirmation.'],
   ['Quote confidence', 'The review separates what is clear, what is missing and what needs professional confirmation.'],
 ];
 
@@ -139,7 +139,7 @@ export default function QuoteReview() {
         <div className="wizardHeader">
           <p className="eyebrow">Quote review</p>
           <h1>Review your kitchen quote</h1>
-          <p className="muted">Understand what is included, what is provisional and what needs confirmation before relying on a kitchen quote.</p>
+          <p className="muted">Understand what is included, what is provisional and what may require confirmation before relying on a kitchen quote.</p>
           <p className="heroLead reviewLead">Already received a kitchen quote? Don’t compare totals until the scope is clear.</p>
           <div className="flexActions">
             <Link href="/quote-review-service" className="button primary">How quote review works</Link>
@@ -151,7 +151,7 @@ export default function QuoteReview() {
           <section className="quoteResult">
             <h2>What a quote review can uncover</h2>
             <p className="muted">
-              Upload your quote or answer the checklist. Operon Kitchens identifies unclear inclusions, allowances, exclusions and review items before you rely on the total.
+              Upload your quote or answer the checklist. Operon Kitchens identifies unclear inclusions, allowances, exclusions and review items before you rely on the total. This is general guidance only, not legal advice, approval or certification.
             </p>
             <div className="choiceGrid compact">
               {reviewValueCards.map(([title, body]) => (
@@ -221,7 +221,7 @@ export default function QuoteReview() {
 
           <section className="quoteResult">
             <h2>Upload quote, photos or plans</h2>
-            <p className="muted">Upload what you have, or continue without a file and use the checklist below.</p>
+            <p className="muted">Upload what you have, or continue without a file and use the checklist below. Only upload quotes, plans, screenshots, photos or documents you are authorised to share.</p>
             <div className="formGrid two">
               <label className="uploadBox"><span>Existing quote</span><input type="file" accept=".pdf,image/*" onChange={(event) => addFiles(event.target.files, 'existingQuote')} /></label>
               <label className="uploadBox"><span>Photos</span><input type="file" multiple accept="image/*" onChange={(event) => addFiles(event.target.files, 'photo')} /></label>

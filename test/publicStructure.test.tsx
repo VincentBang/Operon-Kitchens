@@ -60,15 +60,18 @@ describe('public site structure', () => {
     expect(screen.getByText(/Online estimates are planning ranges/i)).toBeInTheDocument();
     expect(screen.getByText(/does not approve, reject, certify or legally assess/i)).toBeInTheDocument();
     expect(screen.getByText(/Site measure is required before project-specific pricing/i)).toBeInTheDocument();
+    expect(screen.getByText(/Residential kitchen work may require written contract review/i)).toBeInTheDocument();
+    expect(screen.getByText(/Older homes, previous renovations or demolition work may require asbestos/i)).toBeInTheDocument();
     expect(screen.getByText(/not legal advice/i)).toBeInTheDocument();
   });
 
   it('renders public privacy content for uploads, rights and marketing consent', () => {
     render(<PrivacyPage />);
     expect(screen.getByRole('heading', { name: /Privacy Policy/i })).toBeInTheDocument();
-    expect(screen.getByText(/Uploaded quotes, photos, plans, drawings and appliance lists/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Uploaded quotes, plans, photos, screenshots, drawings, appliance lists/i).length).toBeGreaterThan(0);
     expect(screen.getByText(/access to information held about you, ask for corrections, or request deletion/i)).toBeInTheDocument();
     expect(screen.getByText(/Marketing is optional/i)).toBeInTheDocument();
+    expect(screen.getByText(/Public customer outputs are limited to planning ranges, confidence, assumptions, exclusions and review prompts/i)).toBeInTheDocument();
     expect(screen.getByText(/Office of the Australian Information Commissioner/i)).toBeInTheDocument();
   });
 
@@ -138,26 +141,34 @@ describe('public site structure', () => {
 
   it('renders commercial conversion layer pages', () => {
     render(<HowItWorksPage />);
-    expect(screen.getByRole('heading', { name: /How Operon Kitchens works/i })).toBeInTheDocument();
-    expect(screen.getAllByRole('link', { name: /Request site measure/i }).length).toBeGreaterThan(0);
+    expect(screen.getByRole('heading', { name: /Kitchen quote clarity before commitment/i })).toBeInTheDocument();
+    expect(screen.getByText(/Get a planning estimate/i)).toBeInTheDocument();
+    expect(screen.getByText(/Review hidden scope and allowance risks/i)).toBeInTheDocument();
+    expect(screen.getAllByRole('link', { name: /Start kitchen estimate/i }).length).toBeGreaterThan(0);
 
     render(<QuoteReviewServicePage />);
     expect(screen.getByRole('heading', { name: /Review your kitchen quote before comparing totals/i })).toBeInTheDocument();
+    expect(screen.getByText(/What the customer receives/i)).toBeInTheDocument();
+    expect(screen.getByText(/Future detailed review/i)).toBeInTheDocument();
     expect(screen.getAllByRole('link', { name: /Upload existing quote/i }).length).toBeGreaterThan(0);
 
     render(<SiteMeasurePage />);
-    expect(screen.getByRole('heading', { name: /Site measure turns an estimate into quote-ready scope/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Confirm the kitchen scope before locking in price/i })).toBeInTheDocument();
+    expect(screen.getByText(/What site measure is not/i)).toBeInTheDocument();
     expect(screen.getAllByRole('link', { name: /Request site measure/i }).length).toBeGreaterThan(0);
 
     render(<DesignSpecificationPackagePage />);
-    expect(screen.getByRole('heading', { name: /Design and specification package/i })).toBeInTheDocument();
-    expect(screen.getAllByText(/quote-ready documentation/i).length).toBeGreaterThan(0);
+    expect(screen.getByRole('heading', { name: /Turn a rough kitchen idea into a clearer scope/i })).toBeInTheDocument();
+    expect(screen.getByText(/Who it is for/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/quote comparison/i).length).toBeGreaterThan(0);
 
     render(<RequestReviewPage />);
-    expect(screen.getByRole('heading', { name: /Request kitchen quote review or site measure/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Send enquiry/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Ask Operon Kitchens to review your kitchen scope/i })).toBeInTheDocument();
+    expect(screen.getByText(/Submit contact and project details only/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Submit request/i })).toBeInTheDocument();
+    expect(screen.getByText(/Privacy collection notice/i)).toBeInTheDocument();
 
     render(<ContactPage />);
-    expect(screen.getAllByRole('heading', { name: /Request kitchen quote review or site measure/i }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole('heading', { name: /Ask Operon Kitchens to review your kitchen scope/i }).length).toBeGreaterThan(0);
   });
 });

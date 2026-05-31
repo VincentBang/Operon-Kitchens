@@ -76,6 +76,27 @@ Editable admin areas:
 
 Public pages read published records from the CMS tables at request time, so admin edits can appear without code changes or redeploys. A later production version can swap this kitchen-local data layer to Supabase/Postgres, Sanity, Contentful or another hosted CMS while keeping the public page contracts similar.
 
+## Request review intake
+
+The public `/request-review` form posts to the kitchen-scoped Netlify Function `kitchen-request-review`. The endpoint validates a customer-safe payload, rejects unsupported internal fields, stores a durable lead record when Supabase environment variables are configured, and optionally sends an email notification.
+
+Environment variables:
+
+* `OPERON_KITCHENS_SUPABASE_URL` - required for durable lead storage.
+* `OPERON_KITCHENS_SUPABASE_SERVICE_ROLE_KEY` - required for server-side insert into `kitchen_request_reviews`.
+* `OPERON_KITCHENS_RESEND_API_KEY` - optional Resend API key for request notifications.
+* `OPERON_KITCHENS_REQUEST_REVIEW_TO_EMAIL` - optional recipient for request-review notifications.
+* `OPERON_KITCHENS_REQUEST_REVIEW_FROM_EMAIL` - optional sender address. Defaults to Resend onboarding sender if omitted.
+* `OPERON_KITCHENS_IP_HASH_SALT` - optional salt for privacy-safer IP hashing.
+
+If Supabase storage is absent but Resend is configured, the function can still notify by email. If neither durable storage nor email notification is configured, the function returns a controlled service-unavailable response instead of pretending the lead was captured.
+
+Supabase setup instructions and SQL are documented in `docs/supabase-kitchen-request-reviews.md`.
+
+File uploads are not enabled in this form yet; customers are directed to the quote review pathway for upload guidance until secure kitchen-scoped storage is implemented.
+
+This is request intake only. It is not a final quote, order submission, payment flow, legal advice, compliance approval or project acceptance.
+
 ## Further development
 
 This Phase 1 application focuses on structure and core quote-review logic. To move towards a production-ready system the following should be addressed:

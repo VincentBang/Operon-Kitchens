@@ -5,3 +5,6 @@
 [build.environment]
   NODE_VERSION = "22"
   OPERON_KITCHENS_BUILD_DB = "memory"
+
+[functions]
+  directory = "netlify/functions"

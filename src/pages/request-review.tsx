@@ -2,13 +2,41 @@ import Head from 'next/head';
 import { FormEvent, useState } from 'react';
 import Link from 'next/link';
 import PrivacyCollectionNotice from '@/components/PrivacyCollectionNotice';
+import {
+  preferredNextStepOptions,
+  projectStageOptions,
+  propertyTypeOptions,
+  yesNoOptions,
+} from '@/lib/requestReview';
 
-const enquiryTypes = [
-  'General kitchen enquiry',
-  'Request quote review',
-  'Request site measure',
-  'Check project suitability',
-];
+const propertyTypeLabels = {
+  house: 'House',
+  townhouse: 'Townhouse',
+  apartment: 'Apartment',
+  strataApartment: 'Strata apartment',
+  notSure: 'Not sure',
+};
+
+const projectStageLabels = {
+  planning: 'Planning',
+  quoteInHand: 'I have a quote',
+  readyForMeasure: 'Ready for site measure',
+  urgent: 'Urgent',
+  notSure: 'Not sure',
+};
+
+const yesNoLabels = {
+  yes: 'Yes',
+  no: 'No',
+  notSure: 'Not sure',
+};
+
+const nextStepLabels = {
+  planningEstimate: 'Planning estimate',
+  quoteReview: 'Quote review',
+  siteMeasure: 'Site measure',
+  scopeDiscussion: 'Scope discussion',
+};
 
 export default function RequestReviewPage() {
   const [form, setForm] = useState({
@@ -16,15 +44,23 @@ export default function RequestReviewPage() {
     email: '',
     phone: '',
     suburb: '',
-    enquiryType: enquiryTypes[0],
+    propertyType: 'notSure',
+    projectStage: 'planning',
+    hasCurrentQuote: 'notSure',
+    hasPhotosPlans: 'notSure',
+    approximateBudgetRange: '',
+    preferredNextStep: 'quoteReview',
     message: '',
+    website: '',
   });
   const [privacyAcknowledged, setPrivacyAcknowledged] = useState(false);
+  const [termsAcknowledged, setTermsAcknowledged] = useState(false);
   const [marketingOptIn, setMarketingOptIn] = useState(false);
   const [status, setStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [error, setError] = useState('');
+  const [requestId, setRequestId] = useState('');
 
-  const ready = Boolean(form.name.trim() && form.email.trim() && form.phone.trim() && privacyAcknowledged);
+  const ready = Boolean(form.name.trim() && form.email.trim() && privacyAcknowledged && termsAcknowledged && form.message.trim().length >= 10);
 
   const update = (field: keyof typeof form, value: string) => {
     setForm((current) => ({ ...current, [field]: value }));
@@ -35,24 +71,30 @@ export default function RequestReviewPage() {
     if (!ready) return;
     setStatus('saving');
     setError('');
+    setRequestId('');
+
     try {
-      const response = await fetch('/api/leads', {
+      const response = await fetch('/.netlify/functions/kitchen-request-review', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          phone: form.phone,
+          ...form,
+          privacyAcknowledged,
+          termsAcknowledged,
           marketingOptIn,
-          source: `request_review:${form.enquiryType}:${form.suburb}:${form.message}`.slice(0, 240),
+          sourceRoute: '/request-review',
         }),
       });
-      const payload = await response.json();
-      if (!response.ok) throw new Error(payload.error || 'Could not save request.');
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        const message = Array.isArray(payload.errors) ? payload.errors.join(' ') : payload.error || 'Could not submit request.';
+        throw new Error(message);
+      }
+      setRequestId(payload.request?.requestId || '');
       setStatus('saved');
     } catch (submitError) {
       setStatus('error');
-      setError(submitError instanceof Error ? submitError.message : 'Could not save request.');
+      setError(submitError instanceof Error ? submitError.message : 'Could not submit request.');
     }
   };
 
@@ -68,11 +110,11 @@ export default function RequestReviewPage() {
       <section className="contentHero">
         <div>
           <p className="eyebrow">Request review</p>
-          <h1 className="contentTitle">Request kitchen quote review or site measure.</h1>
+          <h1 className="contentTitle">Ask Operon Kitchens to review your kitchen scope.</h1>
         </div>
         <div>
           <p className="muted">
-            Use this page for general enquiries, quote review, site measure interest or project suitability questions. You can also start with the estimate wizard if the scope is early.
+            Use this page to request quote review, site measure discussion or project suitability guidance. Uploads stay in the quote review pathway until secure file storage is enabled.
           </p>
           <div className="flexActions">
             <Link href="/quote" className="button ghost">Start estimate instead</Link>
@@ -84,22 +126,62 @@ export default function RequestReviewPage() {
       <section className="contentPage articleBody">
         <form className="quoteResult" onSubmit={submit}>
           <h2>Request details</h2>
+          <p className="muted">
+            Submit contact and project details only. Do not include sensitive information unless it is needed for the kitchen scope review.
+          </p>
           <div className="formGrid two">
             <label className="field"><span>Name</span><input value={form.name} onChange={(event) => update('name', event.target.value)} required /></label>
             <label className="field"><span>Email</span><input type="email" value={form.email} onChange={(event) => update('email', event.target.value)} required /></label>
-            <label className="field"><span>Phone</span><input type="tel" value={form.phone} onChange={(event) => update('phone', event.target.value)} required /></label>
+            <label className="field"><span>Phone optional</span><input type="tel" value={form.phone} onChange={(event) => update('phone', event.target.value)} /></label>
             <label className="field"><span>Suburb</span><input value={form.suburb} onChange={(event) => update('suburb', event.target.value)} /></label>
             <label className="field">
-              <span>Enquiry type</span>
-              <select value={form.enquiryType} onChange={(event) => update('enquiryType', event.target.value)}>
-                {enquiryTypes.map((type) => <option key={type} value={type}>{type}</option>)}
+              <span>Property type</span>
+              <select value={form.propertyType} onChange={(event) => update('propertyType', event.target.value)}>
+                {propertyTypeOptions.map((type) => <option key={type} value={type}>{propertyTypeLabels[type]}</option>)}
+              </select>
+            </label>
+            <label className="field">
+              <span>Project stage</span>
+              <select value={form.projectStage} onChange={(event) => update('projectStage', event.target.value)}>
+                {projectStageOptions.map((stage) => <option key={stage} value={stage}>{projectStageLabels[stage]}</option>)}
+              </select>
+            </label>
+            <label className="field">
+              <span>Have a current quote?</span>
+              <select value={form.hasCurrentQuote} onChange={(event) => update('hasCurrentQuote', event.target.value)}>
+                {yesNoOptions.map((option) => <option key={option} value={option}>{yesNoLabels[option]}</option>)}
+              </select>
+            </label>
+            <label className="field">
+              <span>Have photos or plans?</span>
+              <select value={form.hasPhotosPlans} onChange={(event) => update('hasPhotosPlans', event.target.value)}>
+                {yesNoOptions.map((option) => <option key={option} value={option}>{yesNoLabels[option]}</option>)}
+              </select>
+            </label>
+            <label className="field">
+              <span>Approximate budget range optional</span>
+              <input value={form.approximateBudgetRange} onChange={(event) => update('approximateBudgetRange', event.target.value)} placeholder="e.g. $30k-$50k or not sure" />
+            </label>
+            <label className="field">
+              <span>Preferred next step</span>
+              <select value={form.preferredNextStep} onChange={(event) => update('preferredNextStep', event.target.value)}>
+                {preferredNextStepOptions.map((option) => <option key={option} value={option}>{nextStepLabels[option]}</option>)}
               </select>
             </label>
           </div>
           <label className="field">
             <span>Message</span>
-            <textarea value={form.message} onChange={(event) => update('message', event.target.value)} rows={5} placeholder="Tell us what you want checked, what documents you have, and whether you need quote review or site measure." />
+            <textarea value={form.message} onChange={(event) => update('message', event.target.value)} rows={5} maxLength={1500} placeholder="Tell us what you want checked, what documents you have, and whether you need quote review or site measure." required />
           </label>
+          <label className="field honeypot" aria-hidden="true">
+            <span>Website</span>
+            <input tabIndex={-1} autoComplete="off" value={form.website} onChange={(event) => update('website', event.target.value)} />
+          </label>
+          <aside className="compliancePanel">
+            <h2>Upload pathway</h2>
+            <p>Quote, photo and plan uploads are handled in the quote review pathway. This request form only sends text, contact and project details.</p>
+            <Link href="/quote/review" className="textLink">Upload existing quote or project files</Link>
+          </aside>
 
           <PrivacyCollectionNotice
             context="review"
@@ -108,13 +190,26 @@ export default function RequestReviewPage() {
             onAcknowledgedChange={setPrivacyAcknowledged}
             onMarketingChange={setMarketingOptIn}
           />
+          <label className="privacyNotice mt-2 flex items-start gap-2">
+            <input
+              type="checkbox"
+              checked={termsAcknowledged}
+              onChange={(event) => setTermsAcknowledged(event.target.checked)}
+            />
+            <span>I acknowledge the <Link href="/terms" className="textLink">Terms of Use</Link>, including that this is request intake and planning guidance only.</span>
+          </label>
 
-          {status === 'saved' && <div className="successPanel">Your request has been saved. The next step is professional follow-up, quote review or site measure discussion depending on your project details.</div>}
+          {status === 'saved' && (
+            <div className="successPanel">
+              Your request has been received for Operon Kitchens review intake. {requestId && <>Reference: <strong>{requestId}</strong>.</>} Site measure, written scope confirmation and project-specific review are still required before commitment.
+            </div>
+          )}
           {status === 'error' && <div className="errorPanel">{error}</div>}
           <div className="wizardActions">
             <button className="button primary" type="submit" disabled={!ready || status === 'saving'}>
-              {status === 'saving' ? 'Saving...' : 'Send enquiry'}
+              {status === 'saving' ? 'Submitting...' : 'Submit request'}
             </button>
+            <Link href="/quote/review" className="button ghost">Upload quote/photos/plans</Link>
           </div>
         </form>
 

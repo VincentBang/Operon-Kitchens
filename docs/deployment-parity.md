@@ -18,6 +18,85 @@ The local `.nvmrc` also pins Node `22`.
 
 The public Netlify deployment is now configured as a static export. This avoids the Netlify serverless runtime for public pages, which removes the SQLite/server-function path that caused the live Internal Server Error. Admin, account and database-backed API functionality are intentionally not active on this public static deployment.
 
+## Publish directory diagnosis
+
+Detected build mode on 2026-05-31:
+
+- `next.config.js` sets `output: 'export'`.
+- `package.json` uses `npm run build` with `next build`; it does not call `next export` separately because Next 14 writes the static export when `output: 'export'` is enabled.
+- `npm run build` creates both `.next/` and `out/`.
+- `.next/` is the intermediate Next build folder.
+- `out/` is the deployable static site output.
+- `out/deploy-check.html` exists after build and contains the expected version, hero, chatbot and footer-spacing markers.
+- `.next/server/pages/deploy-check.html` also exists as an intermediate prerendered artifact, but `.next` should not be the Netlify publish directory for the current static deployment.
+
+Correct Netlify setting for the current app:
+
+- Runtime/build framework: Next.js is fine for detection, but the publish directory must be `out`.
+- Base directory: Operon Kitchens repository root.
+- Build command: `npm run build`.
+- Publish directory: `out`.
+
+If Netlify UI shows publish directory `.next`, the UI setting is stale or overriding the repository `netlify.toml`. Change the Netlify site build setting from `.next` to `out`, then clear cache and deploy again. This is a Netlify UI/deployment setting and must be done manually by Vincent because it is outside the kitchen repository.
+
+## Live production parity confirmation
+
+Confirmed on 2026-05-31 after the Netlify publish directory was changed from `.next` to `out`:
+
+- Netlify is now serving the static export from `out`.
+- `/deploy-check` is publicly visible.
+- The homepage contains `Clear kitchen renovation estimates for Sydney homes — before the site visit.`
+- The chatbot launcher contains `Need help with scope? Ask Operon` on public pages where the chatbot is shown.
+- The stale homepage text `Clear kitchen renovation estimates before you book a site visit` was not found on checked routes.
+- The stale chatbot text `Need help with scope??Ask Operon` was not found on checked routes.
+- The stale footer spacing bug `brand.Planning guidance only` was not found on checked routes.
+
+Live URLs checked:
+
+- `https://operonkitchens.netlify.app/deploy-check` returned `200`
+- `https://operonkitchens.netlify.app/` returned `200`
+- `https://operonkitchens.netlify.app/quote` returned `200`
+- `https://operonkitchens.netlify.app/quote/review` returned `200`
+- `https://operonkitchens.netlify.app/privacy` returned `200`
+- `https://operonkitchens.netlify.app/terms` returned `200`
+- `https://operonkitchens.netlify.app/faqs` returned `200`
+- `https://operonkitchens.netlify.app/areas` returned `200`
+
+No remaining live/local production mismatch was found in this route group.
+
+## Request-review function verification
+
+Checked on 2026-05-31 after Supabase and Netlify environment variables were reported as configured:
+
+- `https://operonkitchens.netlify.app/request-review` returned `200`.
+- `https://operonkitchens.netlify.app/.netlify/functions/kitchen-request-review` returned `404`.
+- A production test payload was not submitted because the function route is not live.
+
+Local diagnosis:
+
+- `netlify.toml` declares `[functions] directory = "netlify/functions"`.
+- `netlify/functions/kitchen-request-review.ts` exists locally.
+- `src/lib/requestReview.ts` and `src/lib/kitchenLeadStorage.ts` exist locally.
+- These request-review function/storage files are currently untracked in Git, so they are not part of the latest deployed commit.
+
+Required deployment action:
+
+1. Commit and push the request-review function, storage adapter, request-review schema, docs and tests to the branch Netlify deploys.
+2. Trigger a fresh Netlify deploy.
+3. Recheck `https://operonkitchens.netlify.app/.netlify/functions/kitchen-request-review`.
+4. After the function returns from Netlify, submit a clearly labelled test lead and confirm:
+   - the response is a safe acknowledgement,
+   - `delivery.stored` is `true`,
+   - `delivery.notificationPrepared` reflects the Resend result,
+   - a row exists in `kitchen_request_reviews`,
+   - the row status defaults to `new`,
+   - no client-controlled internal notes/status/admin fields are stored,
+   - Netlify logs do not contain missing environment variable warnings, Supabase errors, Resend errors or secrets.
+
+Netlify Function note:
+
+The site can publish the static app from `out` while still deploying functions from `netlify/functions`. If the function remains `404` after the files are committed and deployed, check whether the Netlify site is connected to the correct repository/branch and whether the deploy log includes function bundling for `kitchen-request-review`.
+
 ## Local route status
 
 The latest local build completed successfully with 107 generated pages exported to `out/`. These routes are included in the successful build output:
@@ -80,7 +159,7 @@ On 2026-05-31, the same local smoke check also confirmed these visible page deta
 - The local footer sentence includes the required spacing: `brand. Planning guidance only.`
 - The local chatbot launcher reads `Need help with scope? Ask Operon`.
 
-## Live deployment mismatch checks for Vincent
+## Previous live deployment mismatch checks
 
 `https://operonkitchens.netlify.app` was checked for `/`, `/quote`, `/quote/review`, `/faqs`, `/privacy`, `/terms` and `/areas`. The homepage returned plain HTTP `500` while static Next.js chunks returned HTTP `200`, and the local built app returned `200` for the same route group.
 

@@ -1086,6 +1086,14 @@ a.infoCard:hover,
   color: var(--muted);
 }
 
+.honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 .fieldError,
 .errorPanel {
   color: #8a2a18;

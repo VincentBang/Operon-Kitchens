@@ -72,9 +72,13 @@ const forbiddenTerms = [
   'supplier rates',
   'internal costs',
   'guaranteed quote',
+  'instant final quote',
   'order instantly',
+  'order custom kitchen online',
   'approved quote',
   'certified quote',
+  'privacy guarantee',
+  'fully secure',
   'compliant alternative',
   'compliant alternatives',
 ];
