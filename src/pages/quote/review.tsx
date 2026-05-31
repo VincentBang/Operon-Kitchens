@@ -43,18 +43,18 @@ export default function QuoteReview() {
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
   const [lookup, setLookup] = useState('');
   const [lookupError, setLookupError] = useState('');
-  const [storedQuotes, setStoredQuotes] = useState<any[]>([]);
-  const [isLookingUp, setIsLookingUp] = useState(false);
+  const [isLookingUp] = useState(false);
   const [contactName, setContactName] = useState('');
   const [contactEmail, setContactEmail] = useState('');
   const [contactPhone, setContactPhone] = useState('');
   const [privacyAcknowledged, setPrivacyAcknowledged] = useState(false);
+  const [termsAcknowledged, setTermsAcknowledged] = useState(false);
   const [marketingOptIn, setMarketingOptIn] = useState(false);
   const [leadError, setLeadError] = useState('');
   const [isSubmittingLead, setIsSubmittingLead] = useState(false);
 
   const result = useMemo(() => evaluateKitchenQuoteReview({ checkedItems: checked, files, jobDetails }), [checked, files, jobDetails]);
-  const contactReady = Boolean(contactName.trim() && contactEmail.trim() && contactPhone.trim() && privacyAcknowledged);
+  const contactReady = Boolean(contactName.trim() && contactEmail.trim() && privacyAcknowledged && termsAcknowledged);
 
   const updateJobDetails = (patch: Partial<KitchenQuoteReviewJobDetails>) => {
     setJobDetails((current) => ({ ...current, ...patch }));
@@ -72,48 +72,42 @@ export default function QuoteReview() {
     trackKitchenEvent('file_upload_added', { file_category: category, route: '/quote/review' });
   };
 
-  const handleLookup = async () => {
+  const handleLookup = () => {
     setLookupError('');
-    setStoredQuotes([]);
-    setIsLookingUp(true);
-    try {
-      const trimmed = lookup.trim();
-      const query = trimmed.includes('@') ? `email=${encodeURIComponent(trimmed)}` : `id=${encodeURIComponent(trimmed)}`;
-      const response = await fetch(`/api/quotes?${query}`);
-      const payload = await response.json();
-      if (!response.ok) throw new Error(payload.error || 'Could not find stored quote.');
-      setStoredQuotes(payload.quote ? [payload.quote] : payload.quotes ?? []);
-    } catch (error) {
-      setLookupError(error instanceof Error ? error.message : 'Could not find stored quote.');
-    } finally {
-      setIsLookingUp(false);
-    }
+    setLookupError('Saved estimate lookup is not active on the public static launch. Include your quote ID or email in the request notes and continue with the review intake below.');
   };
 
   const saveReviewLead = async () => {
     setLeadError('');
     setIsSubmittingLead(true);
     try {
-      const response = await fetch('/api/leads', {
+      const response = await fetch('/.netlify/functions/kitchen-request-review', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: contactName,
           email: contactEmail,
           phone: contactPhone,
+          suburb: '',
+          propertyType: mapReviewPropertyType(jobDetails.propertyType),
+          projectStage: 'quoteInHand',
+          hasCurrentQuote: files.some((file) => file.category === 'existingQuote') ? 'yes' : 'notSure',
+          hasPhotosPlans: files.some((file) => file.category === 'photo' || file.category === 'plan') ? 'yes' : 'notSure',
+          approximateBudgetRange: '',
+          preferredNextStep: 'quoteReview',
+          message: buildReviewRequestMessage(result, jobDetails, checked, files, lookup),
           marketingOptIn,
           privacyAcknowledged,
-          source: 'quote_review_structured_intake',
-          reviewIntake: {
-            jobDetails,
-            checkedItems: checked,
-            files,
-            placeholderResult: result,
-          },
+          termsAcknowledged,
+          sourceRoute: '/quote/review',
+          ...getReviewAttributionFields(),
         }),
       });
       const payload = await response.json();
-      if (!response.ok) throw new Error(payload.error || 'Could not save review request.');
+      if (!response.ok) {
+        const message = Array.isArray(payload.errors) ? payload.errors.join(' ') : payload.error || 'Could not save review request.';
+        throw new Error(message);
+      }
       trackKitchenEvent('quote_review_submit', {
         readiness_label: readinessLabel(result.status),
         file_count: files.length,
@@ -196,32 +190,19 @@ export default function QuoteReview() {
 
           <section className="quoteResult">
             <h2>Saved Operon estimate</h2>
-            <p className="muted">Already started an Operon Kitchens estimate? Enter a quote ID or lead email.</p>
+            <p className="muted">Already started an Operon Kitchens estimate? Add your quote ID or lead email here, then continue with the review intake below. Public lookup is deferred until the next backend phase.</p>
             <div className="formInline">
               <input value={lookup} onChange={(event) => setLookup(event.target.value)} placeholder="Quote ID or email" aria-label="Quote ID or email" />
-              <button onClick={handleLookup} disabled={!lookup.trim() || isLookingUp} className="button primary">{isLookingUp ? 'Searching...' : 'Find quote'}</button>
+              <button onClick={handleLookup} disabled={!lookup.trim() || isLookingUp} className="button primary" type="button">{isLookingUp ? 'Checking...' : 'Add to review notes'}</button>
             </div>
             {lookupError && <div className="errorPanel">{lookupError}</div>}
-            {storedQuotes.length > 0 && (
-              <div className="adminList">
-                {storedQuotes.map((quote) => (
-                  <article key={quote.id} className="adminListItem">
-                    <div>
-                      <p className="font-semibold">Quote {quote.id}</p>
-                      <p className="text-sm text-gray-600">
-                        ${quote.totals.estimateLow.toLocaleString(undefined, { maximumFractionDigits: 0 })} - ${quote.totals.estimateHigh.toLocaleString(undefined, { maximumFractionDigits: 0 })} · {quote.totals.confidenceLabel ?? quote.totals.confidenceLevel} confidence
-                      </p>
-                    </div>
-                    <Link href={`/quote/${quote.id}`} className="textLink">View or edit</Link>
-                  </article>
-                ))}
-              </div>
-            )}
           </section>
 
           <section className="quoteResult">
-            <h2>Upload quote, photos or plans</h2>
-            <p className="muted">Upload what you have, or continue without a file and use the checklist below. Only upload quotes, plans, screenshots, photos or documents you are authorised to share.</p>
+            <h2>Quote, photo or plan context</h2>
+            <p className="muted">
+              Add file names locally to improve the review preview, or continue without a file and use the checklist below. Secure file storage is not enabled yet; the request sends text, checklist and project details only. Only prepare documents you are authorised to share.
+            </p>
             <div className="formGrid two">
               <label className="uploadBox"><span>Existing quote</span><input type="file" accept=".pdf,image/*" onChange={(event) => addFiles(event.target.files, 'existingQuote')} /></label>
               <label className="uploadBox"><span>Photos</span><input type="file" multiple accept="image/*" onChange={(event) => addFiles(event.target.files, 'photo')} /></label>
@@ -334,11 +315,13 @@ export default function QuoteReview() {
             email={contactEmail}
             phone={contactPhone}
             privacyAcknowledged={privacyAcknowledged}
+            termsAcknowledged={termsAcknowledged}
             marketingOptIn={marketingOptIn}
             onName={setContactName}
             onEmail={setContactEmail}
             onPhone={setContactPhone}
             onPrivacy={setPrivacyAcknowledged}
+            onTerms={setTermsAcknowledged}
             onMarketing={setMarketingOptIn}
           />
 
@@ -366,16 +349,79 @@ function ReviewToggle({ label, checked, onChange }: { label: string; checked: bo
   );
 }
 
+function mapReviewPropertyType(propertyType: KitchenQuoteReviewJobDetails['propertyType']) {
+  if (propertyType === 'house') return 'house';
+  if (propertyType === 'townhouse') return 'townhouse';
+  if (propertyType === 'strataApartment') return 'strataApartment';
+  return 'notSure';
+}
+
+function getReviewAttributionFields() {
+  if (typeof window === 'undefined') {
+    return {
+      referrer: '',
+      utmSource: '',
+      utmMedium: '',
+      utmCampaign: '',
+      utmContent: '',
+      utmTerm: '',
+      landingPage: '',
+    };
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  return {
+    referrer: document.referrer || '',
+    utmSource: params.get('utm_source') || '',
+    utmMedium: params.get('utm_medium') || '',
+    utmCampaign: params.get('utm_campaign') || '',
+    utmContent: params.get('utm_content') || '',
+    utmTerm: params.get('utm_term') || '',
+    landingPage: window.location.href,
+  };
+}
+
+function buildReviewRequestMessage(
+  result: ReturnType<typeof evaluateKitchenQuoteReview>,
+  jobDetails: KitchenQuoteReviewJobDetails,
+  checked: Partial<Record<ReviewCheckKey, boolean>>,
+  files: ReviewFileSummary[],
+  savedEstimateReference: string,
+) {
+  const checkedLabels = reviewChecks
+    .filter((check) => checked[check.key])
+    .map((check) => check.label)
+    .slice(0, 8);
+  const fileSummary = files.length
+    ? files.map((file) => `${file.category}: ${file.name}`).slice(0, 8).join('; ')
+    : 'No files selected in the browser preview.';
+
+  return [
+    'Quote review request submitted from /quote/review.',
+    `Review readiness: ${readinessLabel(result.status)} (${result.confidenceScore}/100 completeness).`,
+    `Property type: ${jobDetails.propertyType}. Project type: ${jobDetails.projectType}.`,
+    `Saved estimate reference: ${savedEstimateReference.trim() || 'not supplied'}.`,
+    `Selected local file context: ${fileSummary}`,
+    `Clearly stated checklist items: ${checkedLabels.length ? checkedLabels.join(', ') : 'none selected yet'}.`,
+    `Missing or unclear items: ${result.unclearItems.slice(0, 8).join(', ') || 'none flagged'}.`,
+    `Customer questions: ${result.customerQuestions.slice(0, 5).join(' | ') || 'none generated'}.`,
+    `Recommended next step: ${result.recommendedNextStep}`,
+    'Files are not uploaded through this submit action yet. Site measure and written scope confirmation are still required before commitment.',
+  ].join('\n');
+}
+
 interface ReviewContactFieldsProps {
   name: string;
   email: string;
   phone: string;
   privacyAcknowledged: boolean;
+  termsAcknowledged: boolean;
   marketingOptIn: boolean;
   onName: (value: string) => void;
   onEmail: (value: string) => void;
   onPhone: (value: string) => void;
   onPrivacy: (value: boolean) => void;
+  onTerms: (value: boolean) => void;
   onMarketing: (value: boolean) => void;
 }
 
@@ -384,11 +430,13 @@ function ReviewContactFields({
   email,
   phone,
   privacyAcknowledged,
+  termsAcknowledged,
   marketingOptIn,
   onName,
   onEmail,
   onPhone,
   onPrivacy,
+  onTerms,
   onMarketing,
 }: ReviewContactFieldsProps) {
   return (
@@ -397,7 +445,7 @@ function ReviewContactFields({
       <div className="formGrid">
         <label className="field"><span>Name</span><input value={name} onChange={(event) => onName(event.target.value)} required aria-invalid={!name.trim()} /></label>
         <label className="field"><span>Email</span><input type="email" value={email} onChange={(event) => onEmail(event.target.value)} required aria-invalid={!email.trim()} /></label>
-        <label className="field"><span>Phone</span><input type="tel" value={phone} onChange={(event) => onPhone(event.target.value)} required aria-invalid={!phone.trim()} /></label>
+        <label className="field"><span>Phone optional</span><input type="tel" value={phone} onChange={(event) => onPhone(event.target.value)} /></label>
       </div>
       <PrivacyCollectionNotice
         context="review"
@@ -406,6 +454,14 @@ function ReviewContactFields({
         onAcknowledgedChange={onPrivacy}
         onMarketingChange={onMarketing}
       />
+      <label className="privacyNotice mt-2 flex items-start gap-2">
+        <input
+          type="checkbox"
+          checked={termsAcknowledged}
+          onChange={(event) => onTerms(event.target.checked)}
+        />
+        <span>I acknowledge the <Link href="/terms" className="textLink">Terms of Use</Link>, including that this review request is planning guidance only and not a final quote.</span>
+      </label>
     </section>
   );
 }

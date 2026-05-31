@@ -250,6 +250,107 @@ Codex must not add or imply the following in Phase 1 unless Vincent explicitly a
 
 The online estimate must be described as a planning estimate or estimate range. Final pricing must require site review, approved selections, licensed trade confirmation where relevant, and written professional confirmation.
 
+## Current Controlled-Launch Status
+
+As of 31 May 2026:
+
+- Static export deployment is working from `out`.
+- `/request-review` posts to `/.netlify/functions/kitchen-request-review`.
+- Valid request-review leads are stored in Supabase table `public.kitchen_request_reviews`.
+- `/admin/leads` is token-protected with `OPERON_KITCHENS_ADMIN_TOKEN`.
+- Attribution fields are supported: `source_route`, `referrer`, `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`, and `landing_page`.
+- Resend email notification code exists but may be disabled until a branded sender/domain is ready.
+- File uploads are not implemented for request-review storage.
+- A known controlled-launch friction point is that `/quote/review` still has a legacy `/api/leads` submit path; for static export, prefer routing quote-review submission to `/request-review` or refactor it to the Netlify Function before sending broad traffic.
+
+## Customer-Safe Quote Rules
+
+Customer-facing pages and API responses may show only customer-safe quote fields:
+
+- planning estimate range
+- confidence score and label
+- confidence reasons
+- review risk score and label
+- risk reasons
+- included scope
+- assumptions
+- exclusions
+- manual review flags
+- compliance prompts
+- recommended next step
+
+Never expose customer-visible supplier costs, internal rates, line item cost stack, margin logic, markup, lead scores, lead priority, admin priority, internal notes, service role keys, API keys, or hidden pricing assumptions.
+
+Use the customer-safe projection layer in `src/lib/quotePresentation.ts` when rendering quote summaries. Lead scoring is internal only.
+
+## Compliance And Risk Wording
+
+Use careful language:
+
+- planning estimate
+- indicative range
+- requires review
+- may require confirmation
+- subject to site measure
+- written scope confirmation required
+- general guidance only
+- not legal advice
+- not a final quote
+
+Avoid:
+
+- final fixed quote
+- guaranteed quote
+- guaranteed savings
+- approved
+- certified
+- compliant
+- legal advice
+- compliance approval
+- order instantly
+- order a full custom kitchen online
+
+Prompts may mention written contract review over $5,000 including GST, 10% deposit guidance, HBC review over $20,000 including GST, licensed plumbing/electrical/gas review, strata/apartment review, DBP/class 2 screening, engineered-stone restrictions, older-property/asbestos review, final site measure, and written scope confirmation. These must remain general review flags, not legal/compliance certification.
+
+## Netlify Deploy Minimisation Rule
+
+Netlify credits are limited. Do not deploy unless deployment is unavoidable.
+
+Default workflow:
+
+1. Inspect local files.
+2. Run local tests.
+3. Run local lint.
+4. Run local build/static export.
+5. Verify files under `out` when route output matters.
+6. Report whether deployment is required, optional, or not needed.
+
+Do not run repeated clear-cache deploys unless production/runtime behaviour must be verified. If a deploy is requested, commit/push only when Vincent explicitly asks or the task explicitly requires it.
+
+## Standard Commands
+
+Run these before reporting completion unless the user explicitly scopes the task to documentation-only and no code behaviour changed:
+
+```bash
+npm test -- --runInBand
+npm run lint
+npm run build
+git diff --check
+```
+
+For static export route checks, inspect `out/*.html` after `npm run build`.
+
+## Repo Operating Documents
+
+Before a substantial task, read these files as needed:
+
+- `PROJECT_BRIEF.md` for strategy and product status.
+- `CODEX_TASKS.md` for current next tasks and deferrals.
+- `DEPLOYMENT_RULES.md` for deploy constraints.
+- `DECISION_LOG.md` for important decisions and rationale.
+- `docs/release-checkpoints.md` for release gates.
+- `docs/controlled-launch-checklist.md` for live controlled-test QA.
+
 ## Final Report
 
 At the end of each task, Codex must report:
