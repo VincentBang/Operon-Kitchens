@@ -44,6 +44,45 @@ describe('request review intake validation', () => {
     expect(result.data.createdAt).toEqual(expect.any(String));
   });
 
+  it('accepts and sanitises customer-safe attribution fields', () => {
+    const result = validateKitchenRequestReview({
+      ...validPayload,
+      referrer: 'https://google.com/search?q=kitchen quote',
+      utm_source: `${'newsletter '.repeat(30)}extra`,
+      utm_medium: 'email',
+      utm_campaign: 'winter-kitchens',
+      utm_content: 'hero-cta',
+      utm_term: 'kitchen quote sydney',
+      landing_page: `${'https://operonkitchens.netlify.app/request-review?'.padEnd(520, 'a')}`,
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error('Expected valid payload');
+    expect(result.data.attribution.referrer).toContain('google.com');
+    expect(result.data.attribution.utmSource).toHaveLength(120);
+    expect(result.data.attribution.utmMedium).toBe('email');
+    expect(result.data.attribution.utmCampaign).toBe('winter-kitchens');
+    expect(result.data.attribution.utmContent).toBe('hero-cta');
+    expect(result.data.attribution.utmTerm).toBe('kitchen quote sydney');
+    expect(result.data.attribution.landingPage).toHaveLength(500);
+  });
+
+  it('works without attribution fields', () => {
+    const result = validateKitchenRequestReview(validPayload);
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error('Expected valid payload');
+    expect(result.data.attribution).toEqual({
+      referrer: undefined,
+      utmSource: undefined,
+      utmMedium: undefined,
+      utmCampaign: undefined,
+      utmContent: undefined,
+      utmTerm: undefined,
+      landingPage: undefined,
+    });
+  });
+
   it('rejects missing required fields and invalid email', () => {
     const result = validateKitchenRequestReview({
       ...validPayload,
@@ -308,6 +347,9 @@ describe('kitchen request review storage adapter', () => {
       preferred_next_step: 'quoteReview',
       status: 'new',
       internal_notes: null,
+      referrer: null,
+      utm_source: null,
+      landing_page: null,
       user_agent: 'Unit test',
       ip_hash: 'hashed-ip',
     }));
@@ -345,6 +387,38 @@ describe('kitchen request review storage adapter', () => {
     expect(record).not.toHaveProperty('adminPriority');
   });
 
+  it('falls back to legacy storage columns if attribution migration has not been applied yet', async () => {
+    const validation = validateKitchenRequestReview({
+      ...validPayload,
+      utm_source: 'google',
+      landing_page: 'https://operonkitchens.netlify.app/request-review?utm_source=google',
+    });
+    if (!validation.ok) throw new Error('Expected valid payload');
+    process.env.OPERON_KITCHENS_SUPABASE_URL = 'https://kitchens.supabase.co/';
+    process.env.OPERON_KITCHENS_SUPABASE_SERVICE_ROLE_KEY = 'service-role-test-key';
+    const fetchMock = jest
+      .fn()
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        text: async () => 'PGRST204 Could not find the utm_source column of kitchen_request_reviews',
+      })
+      .mockResolvedValueOnce({ ok: true, text: async () => '' });
+    global.fetch = fetchMock as typeof fetch;
+
+    await expect(storeKitchenRequestReviewLead(validation.data)).resolves.toEqual({
+      configured: true,
+      stored: true,
+      id: validation.data.id,
+    });
+    const firstRecord = JSON.parse(String(fetchMock.mock.calls[0][1]?.body));
+    const fallbackRecord = JSON.parse(String(fetchMock.mock.calls[1][1]?.body));
+    expect(firstRecord).toHaveProperty('utm_source', 'google');
+    expect(fallbackRecord).not.toHaveProperty('utm_source');
+    expect(fallbackRecord).not.toHaveProperty('landing_page');
+    expect(fallbackRecord.status).toBe('new');
+  });
+
   it('keeps the documented Supabase SQL aligned with the storage record mapping', () => {
     const validation = validateKitchenRequestReview(validPayload);
     if (!validation.ok) throw new Error('Expected valid payload');
@@ -362,5 +436,7 @@ describe('kitchen request review storage adapter', () => {
     expect(documentedSql).toContain("project_stage text not null check (project_stage in ('planning', 'quoteInHand', 'readyForMeasure', 'urgent', 'notSure'))");
     expect(documentedSql).toContain("preferred_next_step text not null check (preferred_next_step in ('planningEstimate', 'quoteReview', 'siteMeasure', 'scopeDiscussion'))");
     expect(documentedSql).toContain("'site_measure_booked'");
+    expect(documentedSql).toContain('utm_source text');
+    expect(documentedSql).toContain('landing_page text');
   });
 });

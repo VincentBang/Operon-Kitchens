@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import LeadsAdminPage from '../src/pages/admin/leads';
 import { handler as listHandler } from '../netlify/functions/kitchen-admin-leads';
 import { handler as updateHandler } from '../netlify/functions/kitchen-admin-lead-update';
@@ -19,6 +19,13 @@ const sampleLead = {
   message: 'Please review my kitchen quote.',
   marketing_opt_in: false,
   source_route: '/request-review',
+  referrer: 'https://example.com/planning-guide',
+  utm_source: 'google',
+  utm_medium: 'cpc',
+  utm_campaign: 'controlled_launch',
+  utm_content: 'hero',
+  utm_term: 'kitchen_quote',
+  landing_page: 'https://operonkitchens.netlify.app/request-review?utm_source=google',
   status: 'new',
   internal_notes: null,
   user_agent: 'Jest',
@@ -163,5 +170,23 @@ describe('admin-lite leads page', () => {
     expect(screen.getByRole('button', { name: 'Fetch leads' })).toBeDisabled();
     expect(screen.getByText(/No lead data is loaded without a valid token/i)).toBeInTheDocument();
     expect(document.body.textContent).not.toContain('OPERON_KITCHENS_SUPABASE_SERVICE_ROLE_KEY');
+  });
+
+  it('renders attribution fields when a lead is loaded without exposing secrets', async () => {
+    global.fetch = jest.fn(async () => ({
+      ok: true,
+      json: async () => ({ ok: true, leads: [sampleLead] }),
+    })) as typeof fetch;
+
+    render(<LeadsAdminPage />);
+    fireEvent.change(screen.getByLabelText('Admin token'), { target: { value: 'admin-token' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Fetch leads' }));
+
+    expect(await screen.findByText(/1 lead loaded/i)).toBeInTheDocument();
+    expect(screen.getByText(/Source: google/i)).toBeInTheDocument();
+    expect(screen.getByText('Lead source')).toBeInTheDocument();
+    expect(screen.getByText('/request-review')).toBeInTheDocument();
+    expect(screen.getByText('google / cpc / controlled_launch')).toBeInTheDocument();
+    expect(document.body.textContent).not.toContain('service-role-test-key');
   });
 });

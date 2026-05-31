@@ -21,16 +21,38 @@ export interface KitchenRequestReviewStorageRecord {
   message: string;
   marketing_opt_in: boolean;
   source_route: string;
+  referrer: string | null;
+  utm_source: string | null;
+  utm_medium: string | null;
+  utm_campaign: string | null;
+  utm_content: string | null;
+  utm_term: string | null;
+  landing_page: string | null;
   status: 'new';
   internal_notes: null;
   user_agent: string | null;
   ip_hash: string | null;
 }
 
+type KitchenRequestReviewLegacyStorageRecord = Omit<
+  KitchenRequestReviewStorageRecord,
+  'referrer' | 'utm_source' | 'utm_medium' | 'utm_campaign' | 'utm_content' | 'utm_term' | 'landing_page'
+>;
+
 export type KitchenLeadStorageResult =
   | { configured: false; stored: false; reason: 'missing_env' }
   | { configured: true; stored: true; id: string }
   | { configured: true; stored: false; error: string };
+
+const attributionColumnNames = [
+  'referrer',
+  'utm_source',
+  'utm_medium',
+  'utm_campaign',
+  'utm_content',
+  'utm_term',
+  'landing_page',
+];
 
 function yesNoToBoolean(value: KitchenRequestReviewLead['hasCurrentQuote'] | KitchenRequestReviewLead['hasPhotosPlans']) {
   if (value === 'yes') return true;
@@ -63,11 +85,63 @@ export function createKitchenRequestReviewStorageRecord(
     message: lead.message,
     marketing_opt_in: lead.marketingOptIn,
     source_route: lead.sourceRoute,
+    referrer: lead.attribution.referrer || null,
+    utm_source: lead.attribution.utmSource || null,
+    utm_medium: lead.attribution.utmMedium || null,
+    utm_campaign: lead.attribution.utmCampaign || null,
+    utm_content: lead.attribution.utmContent || null,
+    utm_term: lead.attribution.utmTerm || null,
+    landing_page: lead.attribution.landingPage || null,
     status: 'new',
     internal_notes: null,
     user_agent: cleanMetadata(metadata.userAgent, 240),
     ip_hash: cleanMetadata(metadata.ipHash, 120),
   };
+}
+
+export function createLegacyKitchenRequestReviewStorageRecord(
+  record: KitchenRequestReviewStorageRecord,
+): KitchenRequestReviewLegacyStorageRecord {
+  const {
+    referrer,
+    utm_source,
+    utm_medium,
+    utm_campaign,
+    utm_content,
+    utm_term,
+    landing_page,
+    ...legacyRecord
+  } = record;
+  void referrer;
+  void utm_source;
+  void utm_medium;
+  void utm_campaign;
+  void utm_content;
+  void utm_term;
+  void landing_page;
+  return legacyRecord;
+}
+
+function isMissingAttributionColumnError(detail: string) {
+  const lowerDetail = detail.toLowerCase();
+  return lowerDetail.includes('pgrst204') || attributionColumnNames.some((column) => lowerDetail.includes(column));
+}
+
+async function insertKitchenLeadRecord(
+  endpoint: string,
+  serviceRoleKey: string,
+  record: KitchenRequestReviewStorageRecord | KitchenRequestReviewLegacyStorageRecord,
+) {
+  return fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      apikey: serviceRoleKey,
+      Authorization: `Bearer ${serviceRoleKey}`,
+      'Content-Type': 'application/json',
+      Prefer: 'return=minimal',
+    },
+    body: JSON.stringify(record),
+  });
 }
 
 export async function storeKitchenRequestReviewLead(
@@ -80,19 +154,27 @@ export async function storeKitchenRequestReviewLead(
   if (!supabaseUrl || !serviceRoleKey) return { configured: false, stored: false, reason: 'missing_env' };
 
   const endpoint = `${supabaseUrl.replace(/\/$/, '')}/rest/v1/kitchen_request_reviews`;
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      apikey: serviceRoleKey,
-      Authorization: `Bearer ${serviceRoleKey}`,
-      'Content-Type': 'application/json',
-      Prefer: 'return=minimal',
-    },
-    body: JSON.stringify(createKitchenRequestReviewStorageRecord(lead, metadata)),
-  });
+  const record = createKitchenRequestReviewStorageRecord(lead, metadata);
+  const response = await insertKitchenLeadRecord(endpoint, serviceRoleKey, record);
 
   if (!response.ok) {
     const detail = await response.text();
+    if (isMissingAttributionColumnError(detail)) {
+      const fallbackResponse = await insertKitchenLeadRecord(
+        endpoint,
+        serviceRoleKey,
+        createLegacyKitchenRequestReviewStorageRecord(record),
+      );
+      if (fallbackResponse.ok) return { configured: true, stored: true, id: lead.id };
+
+      const fallbackDetail = await fallbackResponse.text();
+      return {
+        configured: true,
+        stored: false,
+        error: `Supabase insert failed with ${fallbackResponse.status}: ${fallbackDetail.slice(0, 180)}`,
+      };
+    }
+
     return {
       configured: true,
       stored: false,

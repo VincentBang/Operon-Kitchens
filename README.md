@@ -96,6 +96,10 @@ For storage-only production testing, Supabase variables are enough. Resend varia
 
 Email notification is not the database. Supabase remains the source of truth, and notification emails should prompt the operator to check `/admin/leads`. Notification emails include customer-safe lead details only: request ID, contact details, project answers, message, marketing opt-in, created time and an admin follow-up reminder. They must not include supplier costs, internal rates, margin logic, lead scores, admin priority, service keys, uploaded files or final quote approval.
 
+Lead attribution is captured without cookies when available. The request-review page sends the current source route, landing page, referrer and UTM parameters (`utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`). These fields are optional, sanitised server-side and visible in `/admin/leads` for controlled-launch review. If the optional Supabase attribution migration has not been applied yet, the server falls back to the legacy lead columns so the request can still be stored; attribution persistence begins after the additive migration is applied.
+
+Controlled-launch QA is documented in `docs/controlled-launch-checklist.md`.
+
 Supabase setup instructions and SQL are documented in `docs/supabase-kitchen-request-reviews.md`.
 
 File uploads are not enabled in this form yet; customers are directed to the quote review pathway for upload guidance until secure kitchen-scoped storage is implemented.

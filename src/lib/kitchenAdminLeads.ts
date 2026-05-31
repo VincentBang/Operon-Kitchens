@@ -28,6 +28,13 @@ export interface KitchenAdminLead {
   message: string;
   marketing_opt_in: boolean;
   source_route: string;
+  referrer: string | null;
+  utm_source: string | null;
+  utm_medium: string | null;
+  utm_campaign: string | null;
+  utm_content: string | null;
+  utm_term: string | null;
+  landing_page: string | null;
   status: AdminLeadStatus | string;
   internal_notes: string | null;
   user_agent: string | null;
@@ -60,11 +67,68 @@ const adminLeadColumns = [
   'message',
   'marketing_opt_in',
   'source_route',
+  'referrer',
+  'utm_source',
+  'utm_medium',
+  'utm_campaign',
+  'utm_content',
+  'utm_term',
+  'landing_page',
   'status',
   'internal_notes',
   'user_agent',
   'ip_hash',
 ].join(',');
+
+const legacyAdminLeadColumns = [
+  'id',
+  'created_at',
+  'name',
+  'email',
+  'phone',
+  'suburb',
+  'property_type',
+  'project_stage',
+  'has_current_quote',
+  'has_photos_or_plans',
+  'budget_range',
+  'preferred_next_step',
+  'message',
+  'marketing_opt_in',
+  'source_route',
+  'status',
+  'internal_notes',
+  'user_agent',
+  'ip_hash',
+].join(',');
+
+const attributionColumnNames = [
+  'referrer',
+  'utm_source',
+  'utm_medium',
+  'utm_campaign',
+  'utm_content',
+  'utm_term',
+  'landing_page',
+];
+
+function isMissingAttributionColumnError(detail: string) {
+  const lowerDetail = detail.toLowerCase();
+  return lowerDetail.includes('pgrst204') || attributionColumnNames.some((column) => lowerDetail.includes(column));
+}
+
+function normaliseAdminLead(lead: Partial<KitchenAdminLead>): KitchenAdminLead {
+  return {
+    ...lead,
+    referrer: lead.referrer ?? null,
+    utm_source: lead.utm_source ?? null,
+    utm_medium: lead.utm_medium ?? null,
+    utm_campaign: lead.utm_campaign ?? null,
+    utm_content: lead.utm_content ?? null,
+    utm_term: lead.utm_term ?? null,
+    landing_page: lead.landing_page ?? null,
+  } as KitchenAdminLead;
+}
 
 export function isAdminLeadStatus(value: unknown): value is AdminLeadStatus {
   return typeof value === 'string' && adminLeadStatuses.includes(value as AdminLeadStatus);
@@ -131,13 +195,25 @@ export async function listKitchenAdminLeads(options: {
     params.set('status', `eq.${options.status}`);
   }
 
-  const response = await fetch(`${config.baseUrl}?${params.toString()}`, {
+  let response = await fetch(`${config.baseUrl}?${params.toString()}`, {
     method: 'GET',
     headers: serviceHeaders(config.serviceRoleKey),
   });
 
   if (!response.ok) {
     const detail = await response.text();
+    if (isMissingAttributionColumnError(detail)) {
+      params.set('select', legacyAdminLeadColumns);
+      response = await fetch(`${config.baseUrl}?${params.toString()}`, {
+        method: 'GET',
+        headers: serviceHeaders(config.serviceRoleKey),
+      });
+      if (response.ok) {
+        const legacyLeads = (await response.json()) as Partial<KitchenAdminLead>[];
+        return { configured: true, ok: true, leads: legacyLeads.map(normaliseAdminLead) };
+      }
+    }
+
     return {
       configured: true,
       ok: false,
@@ -145,8 +221,8 @@ export async function listKitchenAdminLeads(options: {
     };
   }
 
-  const leads = (await response.json()) as KitchenAdminLead[];
-  return { configured: true, ok: true, leads };
+  const leads = (await response.json()) as Partial<KitchenAdminLead>[];
+  return { configured: true, ok: true, leads: leads.map(normaliseAdminLead) };
 }
 
 export async function updateKitchenAdminLead(options: {
@@ -166,7 +242,7 @@ export async function updateKitchenAdminLead(options: {
     select: adminLeadColumns,
   });
 
-  const response = await fetch(`${config.baseUrl}?${params.toString()}`, {
+  let response = await fetch(`${config.baseUrl}?${params.toString()}`, {
     method: 'PATCH',
     headers: serviceHeaders(config.serviceRoleKey, 'return=representation'),
     body: JSON.stringify(body),
@@ -174,6 +250,19 @@ export async function updateKitchenAdminLead(options: {
 
   if (!response.ok) {
     const detail = await response.text();
+    if (isMissingAttributionColumnError(detail)) {
+      params.set('select', legacyAdminLeadColumns);
+      response = await fetch(`${config.baseUrl}?${params.toString()}`, {
+        method: 'PATCH',
+        headers: serviceHeaders(config.serviceRoleKey, 'return=representation'),
+        body: JSON.stringify(body),
+      });
+      if (response.ok) {
+        const legacyLeads = (await response.json()) as Partial<KitchenAdminLead>[];
+        return { configured: true, ok: true, lead: legacyLeads[0] ? normaliseAdminLead(legacyLeads[0]) : null };
+      }
+    }
+
     return {
       configured: true,
       ok: false,
@@ -181,6 +270,6 @@ export async function updateKitchenAdminLead(options: {
     };
   }
 
-  const leads = (await response.json()) as KitchenAdminLead[];
-  return { configured: true, ok: true, lead: leads[0] ?? null };
+  const leads = (await response.json()) as Partial<KitchenAdminLead>[];
+  return { configured: true, ok: true, lead: leads[0] ? normaliseAdminLead(leads[0]) : null };
 }

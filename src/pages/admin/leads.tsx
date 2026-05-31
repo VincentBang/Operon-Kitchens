@@ -32,6 +32,14 @@ function yesNoLabel(value: boolean | null) {
   return 'Not sure';
 }
 
+function compactAttribution(lead: KitchenAdminLead) {
+  return [
+    lead.utm_source && `Source: ${lead.utm_source}`,
+    lead.utm_medium && `Medium: ${lead.utm_medium}`,
+    lead.utm_campaign && `Campaign: ${lead.utm_campaign}`,
+  ].filter(Boolean).join(' | ');
+}
+
 export default function LeadsAdminPage() {
   const [token, setToken] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
@@ -185,6 +193,9 @@ export default function LeadsAdminPage() {
                       <p className="text-base font-semibold text-white">{lead.name}</p>
                       <p className="text-sm text-slate-300">{lead.email}{lead.phone ? ` | ${lead.phone}` : ''}</p>
                       <p className="mt-1 text-xs text-slate-400">{formatDate(lead.created_at)} | {lead.suburb || 'Suburb not supplied'}</p>
+                      {compactAttribution(lead) && (
+                        <p className="mt-1 text-xs text-emerald-200">{compactAttribution(lead)}</p>
+                      )}
                     </div>
                     <span className="w-fit rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-emerald-200">
                       {statusLabels[(lead.status as AdminLeadStatus)] || lead.status}
@@ -234,6 +245,30 @@ export default function LeadsAdminPage() {
                 <div className="mt-5 rounded-xl bg-slate-900/70 p-4">
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Message</p>
                   <p className="mt-2 text-sm leading-6 text-slate-200">{selectedLead.message}</p>
+                </div>
+
+                <div className="mt-5 rounded-xl bg-slate-900/70 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Lead source</p>
+                  <dl className="mt-3 grid gap-2 text-sm text-slate-200">
+                    <div className="flex justify-between gap-3">
+                      <dt className="text-slate-400">Source route</dt>
+                      <dd className="text-right">{selectedLead.source_route || 'not supplied'}</dd>
+                    </div>
+                    <div className="flex justify-between gap-3">
+                      <dt className="text-slate-400">Landing page</dt>
+                      <dd className="max-w-[65%] truncate text-right" title={selectedLead.landing_page || ''}>{selectedLead.landing_page || 'not supplied'}</dd>
+                    </div>
+                    <div className="flex justify-between gap-3">
+                      <dt className="text-slate-400">Referrer</dt>
+                      <dd className="max-w-[65%] truncate text-right" title={selectedLead.referrer || ''}>{selectedLead.referrer || 'not supplied'}</dd>
+                    </div>
+                    <div className="flex justify-between gap-3">
+                      <dt className="text-slate-400">UTM</dt>
+                      <dd className="max-w-[65%] truncate text-right">
+                        {[selectedLead.utm_source, selectedLead.utm_medium, selectedLead.utm_campaign].filter(Boolean).join(' / ') || 'not supplied'}
+                      </dd>
+                    </div>
+                  </dl>
                 </div>
 
                 <label className="mt-5 block text-sm text-slate-200">

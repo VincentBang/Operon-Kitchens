@@ -65,6 +65,46 @@ describe('request review page', () => {
     expect(body).not.toHaveProperty('leadScore');
   });
 
+  it('includes URL attribution fields without cookies when available', async () => {
+    const originalPath = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    Object.defineProperty(document, 'referrer', {
+      configurable: true,
+      value: 'https://example.com/planning-guide',
+    });
+    window.history.pushState(
+      {},
+      '',
+      '/request-review?utm_source=google&utm_medium=cpc&utm_campaign=controlled_launch&utm_content=hero&utm_term=kitchen_quote',
+    );
+    const fetchMock = jest.fn(async () => ({
+      ok: true,
+      json: async () => ({
+        ok: true,
+        request: { requestId: 'okr_utm_request' },
+        delivery: { stored: true, notificationPrepared: false },
+      }),
+    }));
+    global.fetch = fetchMock as typeof fetch;
+
+    render(<RequestReviewPage />);
+    fillRequiredFields();
+    fireEvent.click(screen.getByRole('button', { name: /Submit request/i }));
+
+    await screen.findByText(/okr_utm_request/i);
+    const body = JSON.parse(String(fetchMock.mock.calls[0][1]?.body));
+    expect(body).toEqual(expect.objectContaining({
+      referrer: 'https://example.com/planning-guide',
+      utmSource: 'google',
+      utmMedium: 'cpc',
+      utmCampaign: 'controlled_launch',
+      utmContent: 'hero',
+      utmTerm: 'kitchen_quote',
+      landingPage: expect.stringContaining('/request-review?utm_source=google'),
+    }));
+
+    window.history.pushState({}, '', originalPath || '/');
+  });
+
   it('shows a helpful error state when the endpoint rejects the request', async () => {
     global.fetch = jest.fn(async () => ({
       ok: false,

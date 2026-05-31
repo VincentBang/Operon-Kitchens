@@ -38,6 +38,31 @@ const nextStepLabels = {
   scopeDiscussion: 'Scope discussion',
 };
 
+function getAttributionFields() {
+  if (typeof window === 'undefined') {
+    return {
+      referrer: '',
+      utmSource: '',
+      utmMedium: '',
+      utmCampaign: '',
+      utmContent: '',
+      utmTerm: '',
+      landingPage: '',
+    };
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  return {
+    referrer: document.referrer || '',
+    utmSource: params.get('utm_source') || '',
+    utmMedium: params.get('utm_medium') || '',
+    utmCampaign: params.get('utm_campaign') || '',
+    utmContent: params.get('utm_content') || '',
+    utmTerm: params.get('utm_term') || '',
+    landingPage: window.location.href,
+  };
+}
+
 export default function RequestReviewPage() {
   const [form, setForm] = useState({
     name: '',
@@ -83,6 +108,7 @@ export default function RequestReviewPage() {
           termsAcknowledged,
           marketingOptIn,
           sourceRoute: '/request-review',
+          ...getAttributionFields(),
         }),
       });
       const payload = await response.json().catch(() => ({}));

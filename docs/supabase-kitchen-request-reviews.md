@@ -61,6 +61,13 @@ create table if not exists public.kitchen_request_reviews (
   message text not null,
   marketing_opt_in boolean not null default false,
   source_route text not null default '/request-review',
+  referrer text,
+  utm_source text,
+  utm_medium text,
+  utm_campaign text,
+  utm_content text,
+  utm_term text,
+  landing_page text,
   status text not null default 'new' check (status in (
     'new',
     'review_needed',
@@ -109,6 +116,27 @@ alter table public.kitchen_request_reviews
     'spam'
   ));
 ```
+
+If the table already exists without attribution fields, apply this additive migration:
+
+```sql
+alter table public.kitchen_request_reviews
+  add column if not exists referrer text,
+  add column if not exists utm_source text,
+  add column if not exists utm_medium text,
+  add column if not exists utm_campaign text,
+  add column if not exists utm_content text,
+  add column if not exists utm_term text,
+  add column if not exists landing_page text;
+
+create index if not exists kitchen_request_reviews_utm_source_idx
+  on public.kitchen_request_reviews (utm_source);
+
+create index if not exists kitchen_request_reviews_utm_campaign_idx
+  on public.kitchen_request_reviews (utm_campaign);
+```
+
+Until this optional attribution migration is applied, the live request-review function falls back to the legacy lead columns so valid leads are still stored. Apply the migration before expecting `/admin/leads` to show referrer, landing page or UTM details.
 
 ## RLS Guidance
 
@@ -164,6 +192,7 @@ The public form sends only customer-safe fields:
 - preferred next step
 - message
 - privacy and terms acknowledgements
+- simple attribution fields from the current URL/referrer when available
 
 The server creates:
 
@@ -172,6 +201,17 @@ The server creates:
 - `status = 'new'`
 - optional `user_agent`
 - optional `ip_hash` when `OPERON_KITCHENS_IP_HASH_SALT` is configured
+
+Attribution fields are optional and customer-safe:
+
+- `source_route`
+- `referrer`
+- `utm_source`
+- `utm_medium`
+- `utm_campaign`
+- `utm_content`
+- `utm_term`
+- `landing_page`
 
 The browser must not send or receive supplier costs, internal rates, margin logic, lead scores, admin priority or internal notes.
 

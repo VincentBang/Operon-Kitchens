@@ -8,6 +8,16 @@ export type ProjectStageOption = typeof projectStageOptions[number];
 export type YesNoOption = typeof yesNoOptions[number];
 export type PreferredNextStepOption = typeof preferredNextStepOptions[number];
 
+export interface RequestReviewAttribution {
+  referrer?: string;
+  utmSource?: string;
+  utmMedium?: string;
+  utmCampaign?: string;
+  utmContent?: string;
+  utmTerm?: string;
+  landingPage?: string;
+}
+
 export interface KitchenRequestReviewLead {
   id: string;
   name: string;
@@ -25,6 +35,7 @@ export interface KitchenRequestReviewLead {
   termsAcknowledged: true;
   marketingOptIn: boolean;
   sourceRoute: string;
+  attribution: RequestReviewAttribution;
   createdAt: string;
 }
 
@@ -122,7 +133,14 @@ export function validateKitchenRequestReview(input: unknown): RequestReviewValid
   const approximateBudgetRange = cleanString(input.approximateBudgetRange, 80);
   const preferredNextStep = cleanString(input.preferredNextStep, 40);
   const message = cleanString(input.message, 1500);
-  const sourceRoute = cleanString(input.sourceRoute, 120) || '/request-review';
+  const sourceRoute = cleanString(input.sourceRoute ?? input.source_route, 120) || '/request-review';
+  const referrer = cleanString(input.referrer, 500);
+  const utmSource = cleanString(input.utmSource ?? input.utm_source, 120);
+  const utmMedium = cleanString(input.utmMedium ?? input.utm_medium, 120);
+  const utmCampaign = cleanString(input.utmCampaign ?? input.utm_campaign, 160);
+  const utmContent = cleanString(input.utmContent ?? input.utm_content, 160);
+  const utmTerm = cleanString(input.utmTerm ?? input.utm_term, 160);
+  const landingPage = cleanString(input.landingPage ?? input.landing_page, 500);
   const marketingOptIn = input.marketingOptIn === true;
 
   const errors: string[] = [];
@@ -159,6 +177,15 @@ export function validateKitchenRequestReview(input: unknown): RequestReviewValid
       termsAcknowledged: true,
       marketingOptIn,
       sourceRoute,
+      attribution: {
+        referrer: referrer || undefined,
+        utmSource: utmSource || undefined,
+        utmMedium: utmMedium || undefined,
+        utmCampaign: utmCampaign || undefined,
+        utmContent: utmContent || undefined,
+        utmTerm: utmTerm || undefined,
+        landingPage: landingPage || undefined,
+      },
       createdAt: new Date().toISOString(),
     },
   };
