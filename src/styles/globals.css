@@ -2176,6 +2176,33 @@ a.infoCard:hover,
   display: none;
 }
 
+.deployCheckList {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.deployCheckList div {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(160px, 0.32fr) 1fr;
+  padding: 14px 16px;
+}
+
+.deployCheckList div + div {
+  border-top: 1px solid var(--line);
+}
+
+.deployCheckList dt {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.deployCheckList dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
 @media (max-width: 820px) {
   .heroGrid,
   .reportPreviewGrid,
@@ -2224,6 +2251,10 @@ a.infoCard:hover,
 
   .stickyMobileCta a + a {
     background: var(--ink);
+  }
+
+  .deployCheckList div {
+    grid-template-columns: 1fr;
   }
 }
 

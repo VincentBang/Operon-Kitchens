@@ -9,15 +9,18 @@ This note documents the local build state for Operon Kitchens and the likely cau
 The Operon Kitchens repository contains its own `netlify.toml`:
 
 - Build command: `npm run build`
-- Publish directory: `.next`
+- Publish directory: `out`
 - Node version: `22`
 - Build database mode: `OPERON_KITCHENS_BUILD_DB=memory`
+- Next output mode: `output: 'export'`
 
 The local `.nvmrc` also pins Node `22`.
 
+The public Netlify deployment is now configured as a static export. This avoids the Netlify serverless runtime for public pages, which removes the SQLite/server-function path that caused the live Internal Server Error. Admin, account and database-backed API functionality are intentionally not active on this public static deployment.
+
 ## Local route status
 
-The latest local build completed successfully with 96 generated pages. These routes are included in the successful build output:
+The latest local build completed successfully with 107 generated pages exported to `out/`. These routes are included in the successful build output:
 
 - `/`
 - `/how-it-works`
@@ -34,9 +37,10 @@ The latest local build completed successfully with 96 generated pages. These rou
 - `/areas`
 - `/areas/[slug]`
 - key service and guide pages
-- `/admin/faqs`
+- `/deploy-check`
+- `/admin/faqs` as a static noindex admin-disabled notice
 
-This means the previous Netlify `/admin/faqs` page-data failure and the reported live `/faqs` 500 are not reproducible from the current local kitchen source.
+This means the previous Netlify `/admin/faqs` page-data failure and the reported live `/faqs` 500 are not reproducible from the current local kitchen source. Netlify should publish static HTML from `out/` for the customer-facing app.
 
 ## Local production smoke check
 
@@ -90,11 +94,24 @@ If the live site still shows older copy, a 6-step wizard, “Recent projects,”
 2. The deploy timestamp is newer than the latest pushed commit.
 3. Base directory points to the Operon Kitchens repository root, not the old Operon Flooring project.
 4. Build command is `npm run build`.
-5. Publish directory is `.next`.
+5. Publish directory is `out`.
 6. Node version is `22`.
 7. `@netlify/plugin-nextjs` is enabled and using a current supported version.
 8. No stale deploy is pinned as the published deploy.
 9. No environment variable overrides point the app at old build or shared project files.
-10. Runtime/function logs do not show a `node:sqlite` or local filesystem crash before public page rendering.
+10. Runtime/function logs do not show a `node:sqlite` or local filesystem crash before public page rendering. Static public pages should not require Netlify Functions to render.
+
+## Deployment fingerprint
+
+After deployment, check:
+
+- `https://operonkitchens.netlify.app/deploy-check`
+
+Expected public markers:
+
+- Static app version: `2026-05-31-quote-safety-pass`
+- Hero: `Clear kitchen renovation estimates for Sydney homes — before the site visit.`
+- Chatbot: `Need help with scope? Ask Operon`
+- Footer spacing fixed: `yes`
 
 Any required Netlify UI or production deployment setting change is outside this repository and should be done manually by Vincent.

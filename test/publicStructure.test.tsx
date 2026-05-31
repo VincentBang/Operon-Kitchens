@@ -4,6 +4,7 @@ import AreasPage from '../src/pages/areas';
 import AreaPage from '../src/pages/areas/[slug]';
 import FaqsPage from '../src/pages/faqs';
 import ContactPage from '../src/pages/contact';
+import DeployCheckPage from '../src/pages/deploy-check';
 import DesignSpecificationPackagePage from '../src/pages/design-specification-package';
 import HowItWorksPage from '../src/pages/how-it-works';
 import HomePage from '../src/pages';
@@ -87,6 +88,18 @@ describe('public site structure', () => {
     expect(screen.getAllByText(/\$38k - \$52k/i).length).toBeGreaterThan(0);
     expect(screen.getByText(/Example only — actual range depends on scope and site review/i)).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /Know what you receive before completing the wizard/i })).toBeInTheDocument();
+  });
+
+  it('renders a safe deployment fingerprint page', () => {
+    render(<DeployCheckPage />);
+    const pageText = document.body.textContent ?? '';
+
+    expect(screen.getByRole('heading', { name: /Operon Kitchens deploy check/i })).toBeInTheDocument();
+    expect(screen.getAllByText('2026-05-31-quote-safety-pass').length).toBeGreaterThan(0);
+    expect(screen.getByText(/Clear kitchen renovation estimates for Sydney homes/i)).toBeInTheDocument();
+    expect(screen.getByText(/Need help with scope\? Ask Operon/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/yes/i).length).toBeGreaterThan(0);
+    expect(pageText).not.toMatch(/secret|service_role|database_url|password|token/i);
   });
 
   it('renders service pages with scope, risks and CTAs', () => {
