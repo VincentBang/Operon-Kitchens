@@ -6,9 +6,11 @@ import FaqsPage from '../src/pages/faqs';
 import ContactPage from '../src/pages/contact';
 import DesignSpecificationPackagePage from '../src/pages/design-specification-package';
 import HowItWorksPage from '../src/pages/how-it-works';
+import HomePage from '../src/pages';
 import QuoteReviewServicePage from '../src/pages/quote-review-service';
 import RequestReviewPage from '../src/pages/request-review';
 import QuoteReviewPage from '../src/pages/quote/review';
+import PrivacyPage from '../src/pages/privacy';
 import SiteMeasurePage from '../src/pages/site-measure';
 import TermsPage from '../src/pages/terms';
 import { kitchenAreas } from '../src/lib/areas';
@@ -53,9 +55,20 @@ describe('public site structure', () => {
 
   it('renders public terms with estimate and disclaimer guidance', () => {
     render(<TermsPage />);
-    expect(screen.getByRole('heading', { name: /Operon Kitchens terms of use/i })).toBeInTheDocument();
-    expect(screen.getByText(/not binding building quotes/i)).toBeInTheDocument();
-    expect(screen.getByText(/does not provide legal advice/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Terms of Use/i })).toBeInTheDocument();
+    expect(screen.getByText(/Online estimates are planning ranges/i)).toBeInTheDocument();
+    expect(screen.getByText(/does not approve, reject, certify or legally assess/i)).toBeInTheDocument();
+    expect(screen.getByText(/Site measure is required before project-specific pricing/i)).toBeInTheDocument();
+    expect(screen.getByText(/not legal advice/i)).toBeInTheDocument();
+  });
+
+  it('renders public privacy content for uploads, rights and marketing consent', () => {
+    render(<PrivacyPage />);
+    expect(screen.getByRole('heading', { name: /Privacy Policy/i })).toBeInTheDocument();
+    expect(screen.getByText(/Uploaded quotes, photos, plans, drawings and appliance lists/i)).toBeInTheDocument();
+    expect(screen.getByText(/access to information held about you, ask for corrections, or request deletion/i)).toBeInTheDocument();
+    expect(screen.getByText(/Marketing is optional/i)).toBeInTheDocument();
+    expect(screen.getByText(/Office of the Australian Information Commissioner/i)).toBeInTheDocument();
   });
 
   it('renders the public FAQ page without admin data dependencies', () => {
@@ -63,6 +76,17 @@ describe('public site structure', () => {
     expect(screen.getByRole('heading', { name: /Questions before you renovate/i })).toBeInTheDocument();
     expect(screen.getByText(/Still comparing kitchen options/i)).toBeInTheDocument();
     expect(screen.getByText(/Is the online estimate a confirmed price/i)).toBeInTheDocument();
+  });
+
+  it('renders the upgraded homepage hero and sample estimate output', () => {
+    render(<HomePage />);
+
+    expect(screen.getByRole('heading', { name: /Clear kitchen renovation estimates for Sydney homes/i })).toBeInTheDocument();
+    expect(screen.getByText(/Build a planning range, understand assumptions and exclusions/i)).toBeInTheDocument();
+    expect(screen.getByText(/Planning range preview/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/\$38k - \$52k/i).length).toBeGreaterThan(0);
+    expect(screen.getByText(/Example only — actual range depends on scope and site review/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Know what you receive before completing the wizard/i })).toBeInTheDocument();
   });
 
   it('renders service pages with scope, risks and CTAs', () => {

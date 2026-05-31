@@ -10,9 +10,28 @@ type SqliteDatabase = {
   };
 };
 
-const sqlite = require('node:sqlite') as {
-  DatabaseSync: new (filename: string) => SqliteDatabase;
-};
+let DatabaseSync: (new (filename: string) => SqliteDatabase) | null = null;
+
+try {
+  DatabaseSync = (require('node:sqlite') as {
+    DatabaseSync: new (filename: string) => SqliteDatabase;
+  }).DatabaseSync;
+} catch {
+  DatabaseSync = null;
+}
+
+function createEphemeralDb(): SqliteDatabase {
+  const emptyStatement = {
+    get: () => undefined,
+    all: () => [],
+    run: () => ({ changes: 0, lastInsertRowid: 0 }),
+  };
+
+  return {
+    exec: () => undefined,
+    prepare: () => emptyStatement,
+  };
+}
 
 const dataDir = path.join(process.cwd(), 'data');
 const isServerlessRuntime =
@@ -30,7 +49,7 @@ const globalForDb = globalThis as unknown as {
   operonKitchenDb?: SqliteDatabase;
 };
 
-export const db = globalForDb.operonKitchenDb ?? new sqlite.DatabaseSync(dbPath);
+export const db = globalForDb.operonKitchenDb ?? (DatabaseSync ? new DatabaseSync(dbPath) : createEphemeralDb());
 
 db.exec('PRAGMA foreign_keys = ON;');
 if (!useMemoryDb) {

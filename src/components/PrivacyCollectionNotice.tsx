@@ -20,8 +20,9 @@ export default function PrivacyCollectionNotice({
     <section className="privacyNotice" aria-label="Privacy collection notice">
       <h4>Privacy collection notice</h4>
       <p>
-        We collect your name, email, phone number, {context === 'review' ? 'quote checklist details and any uploaded quote files' : 'kitchen scope details, photos or plans you provide'} to prepare and follow up your {contextLabel}. We may share relevant project details with trades, manufacturers, suppliers or service providers where needed to review scope, availability, compliance or site requirements.
+        Operon Kitchens collects your contact, project and {context === 'review' ? 'quote checklist and uploaded file' : 'estimate answer and uploaded file'} information to prepare planning estimates, review quotes, flag scope/risk items and coordinate follow-up. We may share relevant details with trades, suppliers, consultants or service providers where needed.
       </p>
+      <p>Only upload files you are authorised to share. Uploaded quotes, plans and photos may contain personal or property information.</p>
       <p>
         Read the full <Link href="/privacy" className="textLink">Operon Kitchens privacy policy</Link>.
       </p>
