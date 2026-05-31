@@ -239,6 +239,16 @@ Recommended storage posture for Phase 1:
 
 If file upload storage is not configured and a customer submits files, the response will show the request delivery state without pretending files were stored. Supabase lead storage remains the source of truth for the enquiry record.
 
+For controlled upload verification, the safe browser response includes `delivery.fileDeliveryStatus`:
+
+- `stored`: file objects and metadata were stored.
+- `not_supplied`: no files were attached.
+- `not_configured`: upload storage environment variables are missing.
+- `object_upload_failed`: Supabase Storage object upload needs review.
+- `metadata_insert_failed`: file metadata table insert needs review.
+
+These statuses are diagnostic categories only. They do not expose service keys, bucket secrets, file contents, supplier costs, lead scores, internal notes or admin priority.
+
 ## Admin-lite Lead Operations
 
 The internal `/admin/leads` page uses Netlify Functions and a simple admin token to list and update request-review leads.
@@ -332,5 +342,7 @@ If lead storage succeeds but files are not stored:
 1. Confirm `OPERON_KITCHENS_UPLOAD_BUCKET` exists in Netlify and the site has redeployed.
 2. Confirm the bucket exists in the same Supabase project referenced by `OPERON_KITCHENS_SUPABASE_URL`.
 3. Confirm `public.kitchen_request_review_files` exists.
-4. Confirm Netlify Function logs do not show `file_storage_env_missing`.
-5. If logs show `file_storage_failed`, check bucket name, MIME type restrictions, file size limit and metadata table columns.
+4. Confirm the browser response does not show `delivery.fileDeliveryStatus: "not_configured"`.
+5. Confirm Netlify Function logs do not show `file_storage_env_missing`.
+6. If the response shows `object_upload_failed`, check bucket name, bucket creation, MIME type restrictions and file size limit.
+7. If the response shows `metadata_insert_failed`, check `public.kitchen_request_review_files` columns, constraints and RLS/service-role access.

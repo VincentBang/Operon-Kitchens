@@ -15,7 +15,14 @@ export interface KitchenRequestReviewFileRecord {
 export type KitchenFileStorageResult =
   | { configured: false; stored: false; reason: 'missing_env'; fileCount: number }
   | { configured: true; stored: true; fileCount: number; files: KitchenRequestReviewFileRecord[] }
-  | { configured: true; stored: false; fileCount: number; error: string };
+  | {
+      configured: true;
+      stored: false;
+      fileCount: number;
+      stage: 'object_upload_failed' | 'metadata_insert_failed';
+      status: number;
+      safeError: string;
+    };
 
 function getSupabaseConfig() {
   const supabaseUrl = process.env.OPERON_KITCHENS_SUPABASE_URL;
@@ -119,7 +126,9 @@ export async function storeKitchenRequestReviewFiles(
         configured: true,
         stored: false,
         fileCount: lead.files.length,
-        error: `Supabase file upload failed with ${uploadResponse.status}: ${detail.slice(0, 180)}`,
+        stage: 'object_upload_failed',
+        status: uploadResponse.status,
+        safeError: safeStorageError(detail),
       };
     }
 
@@ -148,9 +157,25 @@ export async function storeKitchenRequestReviewFiles(
       configured: true,
       stored: false,
       fileCount: lead.files.length,
-      error: `Supabase file metadata insert failed with ${metadataResponse.status}: ${detail.slice(0, 180)}`,
+      stage: 'metadata_insert_failed',
+      status: metadataResponse.status,
+      safeError: safeStorageError(detail),
     };
   }
 
   return { configured: true, stored: true, fileCount: lead.files.length, files: records };
+}
+
+function safeStorageError(detail: string) {
+  const lowered = detail.toLowerCase();
+  if (lowered.includes('bucket not found') || lowered.includes('bucket')) return 'bucket_check_required';
+  if (lowered.includes('mime') || lowered.includes('type')) return 'mime_type_check_required';
+  if (lowered.includes('size') || lowered.includes('limit')) return 'file_size_check_required';
+  if (lowered.includes('permission') || lowered.includes('policy') || lowered.includes('row-level security') || lowered.includes('rls')) {
+    return 'permission_check_required';
+  }
+  if (lowered.includes('column') || lowered.includes('schema') || lowered.includes('relation') || lowered.includes('table')) {
+    return 'metadata_schema_check_required';
+  }
+  return 'storage_check_required';
 }

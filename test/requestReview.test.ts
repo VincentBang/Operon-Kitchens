@@ -373,6 +373,7 @@ describe('kitchen-request-review Netlify function', () => {
     expect(body.delivery).toEqual(expect.objectContaining({
       stored: true,
       filesStored: true,
+      fileDeliveryStatus: 'stored',
       fileCount: 1,
       notificationPrepared: false,
     }));
@@ -399,6 +400,44 @@ describe('kitchen-request-review Netlify function', () => {
       file_size: 11,
       category: 'existingQuote',
     }));
+    expect(JSON.stringify(body).toLowerCase()).not.toContain('service-role-test-key');
+  });
+
+  it('returns a safe file delivery diagnostic when file storage fails', async () => {
+    process.env.OPERON_KITCHENS_SUPABASE_URL = 'https://kitchens.supabase.co';
+    process.env.OPERON_KITCHENS_SUPABASE_SERVICE_ROLE_KEY = 'service-role-test-key';
+    process.env.OPERON_KITCHENS_UPLOAD_BUCKET = uploadBucketName;
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const fetchMock = jest
+      .fn()
+      .mockResolvedValueOnce({ ok: true, text: async () => '' })
+      .mockResolvedValueOnce({ ok: false, status: 404, text: async () => '{"message":"Bucket not found"}' });
+    global.fetch = fetchMock as typeof fetch;
+
+    const response = await handler({
+      httpMethod: 'POST',
+      body: JSON.stringify({ ...validPayload, files: [validFilePayload] }),
+    });
+    const body = JSON.parse(response.body);
+
+    expect(response.statusCode).toBe(202);
+    expect(body.delivery).toEqual(expect.objectContaining({
+      stored: true,
+      filesStored: false,
+      fileDeliveryStatus: 'object_upload_failed',
+      fileCount: 1,
+      notificationPrepared: false,
+    }));
+    expect(warnSpy).toHaveBeenCalledWith(
+      'operon_kitchens_request_review_file_storage_failed',
+      expect.objectContaining({
+        category: 'file_storage_failed',
+        stage: 'object_upload_failed',
+        status: 404,
+        safeError: 'bucket_check_required',
+      }),
+    );
+    expect(JSON.stringify(body).toLowerCase()).not.toContain('bucket not found');
     expect(JSON.stringify(body).toLowerCase()).not.toContain('service-role-test-key');
   });
 });

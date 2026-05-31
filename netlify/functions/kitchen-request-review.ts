@@ -109,6 +109,18 @@ function buildRequestReviewEmailText(lead: KitchenRequestReviewLead) {
   ].join('\n');
 }
 
+function getFileDeliveryStatus(fileStorage: {
+  fileCount: number;
+  configured: boolean;
+  stored: boolean;
+  stage?: string;
+}) {
+  if (fileStorage.fileCount === 0) return 'not_supplied';
+  if (!fileStorage.configured) return 'not_configured';
+  if (fileStorage.stored) return 'stored';
+  return fileStorage.stage || 'not_stored';
+}
+
 async function notifyByResend(lead: KitchenRequestReviewLead) {
   const apiKey = process.env.OPERON_KITCHENS_RESEND_API_KEY;
   const to = process.env.OPERON_KITCHENS_REQUEST_REVIEW_TO_EMAIL;
@@ -185,7 +197,9 @@ export async function handler(event: NetlifyEvent): Promise<NetlifyResponse> {
     } else if (!fileStorage.stored) {
       console.warn('operon_kitchens_request_review_file_storage_failed', {
         category: 'file_storage_failed',
-        error: fileStorage.error,
+        stage: fileStorage.stage,
+        status: fileStorage.status,
+        safeError: fileStorage.safeError,
       });
     }
   }
@@ -232,6 +246,7 @@ export async function handler(event: NetlifyEvent): Promise<NetlifyResponse> {
     delivery: {
       stored: storage.stored,
       filesStored: fileStorage.stored,
+      fileDeliveryStatus: getFileDeliveryStatus(fileStorage),
       fileCount: lead.files.length,
       notificationPrepared,
     },
