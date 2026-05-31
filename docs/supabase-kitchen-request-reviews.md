@@ -247,6 +247,8 @@ For controlled upload verification, the safe browser response includes `delivery
 - `object_upload_failed`: Supabase Storage object upload needs review.
 - `metadata_insert_failed`: file metadata table insert needs review.
 
+When a file is attached and storage fails, the response may also include `delivery.fileDeliveryIssue` with a safe category such as `bucket_check_required`, `permission_check_required`, `mime_type_check_required`, `file_size_check_required` or `metadata_schema_check_required`.
+
 These statuses are diagnostic categories only. They do not expose service keys, bucket secrets, file contents, supplier costs, lead scores, internal notes or admin priority.
 
 ## Admin-lite Lead Operations
@@ -346,3 +348,13 @@ If lead storage succeeds but files are not stored:
 5. Confirm Netlify Function logs do not show `file_storage_env_missing`.
 6. If the response shows `object_upload_failed`, check bucket name, bucket creation, MIME type restrictions and file size limit.
 7. If the response shows `metadata_insert_failed`, check `public.kitchen_request_review_files` columns, constraints and RLS/service-role access.
+
+If the response shows `fileDeliveryIssue: "bucket_check_required"`, confirm the bucket exists and exactly matches the Netlify `OPERON_KITCHENS_UPLOAD_BUCKET` value:
+
+```sql
+select id, name, public, file_size_limit, allowed_mime_types
+from storage.buckets
+where id = '<UPLOAD_BUCKET_NAME>';
+```
+
+If the bucket row is missing, rerun the bucket setup SQL in the File Upload Storage section with `<UPLOAD_BUCKET_NAME>` replaced by the exact Netlify bucket value.

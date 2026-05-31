@@ -25,9 +25,9 @@ export type KitchenFileStorageResult =
     };
 
 function getSupabaseConfig() {
-  const supabaseUrl = process.env.OPERON_KITCHENS_SUPABASE_URL;
-  const serviceRoleKey = process.env.OPERON_KITCHENS_SUPABASE_SERVICE_ROLE_KEY;
-  const bucket = process.env.OPERON_KITCHENS_UPLOAD_BUCKET;
+  const supabaseUrl = process.env.OPERON_KITCHENS_SUPABASE_URL?.trim();
+  const serviceRoleKey = process.env.OPERON_KITCHENS_SUPABASE_SERVICE_ROLE_KEY?.trim();
+  const bucket = process.env.OPERON_KITCHENS_UPLOAD_BUCKET?.trim();
 
   if (!supabaseUrl || !serviceRoleKey || !bucket) return null;
 
