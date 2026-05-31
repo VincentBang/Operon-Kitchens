@@ -202,6 +202,9 @@ export default function LeadsAdminPage() {
                     </span>
                   </div>
                   <p className="mt-3 line-clamp-2 text-sm text-slate-300">{lead.message}</p>
+                  {lead.files.length > 0 && (
+                    <p className="mt-2 text-xs text-slate-400">{lead.files.length} uploaded file{lead.files.length === 1 ? '' : 's'}</p>
+                  )}
                 </button>
               ))}
               {!leads.length && (
@@ -245,6 +248,23 @@ export default function LeadsAdminPage() {
                 <div className="mt-5 rounded-xl bg-slate-900/70 p-4">
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Message</p>
                   <p className="mt-2 text-sm leading-6 text-slate-200">{selectedLead.message}</p>
+                </div>
+
+                <div className="mt-5 rounded-xl bg-slate-900/70 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Uploaded files</p>
+                  {selectedLead.files.length > 0 ? (
+                    <ul className="mt-3 space-y-2 text-sm text-slate-200">
+                      {selectedLead.files.map((file) => (
+                        <li key={file.id} className="rounded-lg bg-white/5 p-3">
+                          <span className="block font-medium">{file.file_name}</span>
+                          <span className="block text-xs text-slate-400">{file.category} | {Math.round(file.file_size / 1024)} KB | {file.file_type}</span>
+                          <span className="block truncate text-xs text-slate-500" title={file.object_path}>{file.object_path}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="mt-2 text-sm text-slate-300">No uploaded files attached to this lead.</p>
+                  )}
                 </div>
 
                 <div className="mt-5 rounded-xl bg-slate-900/70 p-4">

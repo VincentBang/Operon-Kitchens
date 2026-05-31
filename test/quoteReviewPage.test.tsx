@@ -47,7 +47,8 @@ describe('quote review page submission', () => {
     }));
     expect(body.message).toContain('Quote review request submitted from /quote/review.');
     expect(body.message).toContain('Saved estimate reference: OK-123.');
-    expect(body.message).toContain('Files are not uploaded through this submit action yet.');
+    expect(body.message).toContain('Attached files are stored for kitchen request review where secure storage is configured.');
+    expect(body.files).toEqual([]);
     expect(body).not.toHaveProperty('margin');
     expect(body).not.toHaveProperty('leadScore');
     expect(JSON.stringify(fetchMock.mock.calls)).not.toContain('/api/leads');

@@ -25,7 +25,7 @@ describe('request review page', () => {
     expect(screen.getByLabelText('Have a current quote?')).toBeInTheDocument();
     expect(screen.getByLabelText('Have photos or plans?')).toBeInTheDocument();
     expect(screen.getByLabelText('Preferred next step')).toBeInTheDocument();
-    expect(screen.getByText(/This request form only sends text, contact and project details/i)).toBeInTheDocument();
+    expect(screen.getByText(/Only upload quotes, plans, photos or appliance documents/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Submit request/i })).toBeDisabled();
 
     fillRequiredFields();
@@ -60,6 +60,7 @@ describe('request review page', () => {
       privacyAcknowledged: true,
       termsAcknowledged: true,
       sourceRoute: '/request-review',
+      files: [],
     }));
     expect(body).not.toHaveProperty('margin');
     expect(body).not.toHaveProperty('leadScore');

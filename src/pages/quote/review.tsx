@@ -12,6 +12,7 @@ import {
   ReviewFileSummary,
   reviewChecks,
 } from '@/lib/quoteReview';
+import { RequestReviewFileCategoryOption, requestReviewFileLimits } from '@/lib/requestReview';
 
 const reviewValueCards = [
   ['Missing inclusions', 'Demolition, rubbish removal, delivery, final clean, painting and patching can change the real comparison.'],
@@ -36,9 +37,34 @@ function readinessLabel(status: 'notReady' | 'partial' | 'reviewReady') {
   return 'Needs more detail';
 }
 
+type ReviewFileUpload = ReviewFileSummary & {
+  localId: string;
+  mimeType: string;
+  contentBase64: string;
+};
+
+function fileToBase64(file: File) {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = typeof reader.result === 'string' ? reader.result : '';
+      resolve(result.includes(',') ? result.split(',').pop() || '' : result);
+    };
+    reader.onerror = () => reject(new Error('File could not be read.'));
+    reader.readAsDataURL(file);
+  });
+}
+
+function mapReviewFileCategory(category: ReviewFileCategory): RequestReviewFileCategoryOption {
+  if (category === 'existingQuote') return 'existingQuote';
+  if (category === 'photo') return 'photo';
+  if (category === 'plan') return 'plan';
+  return 'other';
+}
+
 export default function QuoteReview() {
   const [checked, setChecked] = useState<Partial<Record<ReviewCheckKey, boolean>>>({});
-  const [files, setFiles] = useState<ReviewFileSummary[]>([]);
+  const [files, setFiles] = useState<ReviewFileUpload[]>([]);
   const [jobDetails, setJobDetails] = useState<KitchenQuoteReviewJobDetails>(createDefaultReviewJobDetails());
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
   const [lookup, setLookup] = useState('');
@@ -52,24 +78,54 @@ export default function QuoteReview() {
   const [marketingOptIn, setMarketingOptIn] = useState(false);
   const [leadError, setLeadError] = useState('');
   const [isSubmittingLead, setIsSubmittingLead] = useState(false);
+  const [fileStatus, setFileStatus] = useState<'idle' | 'reading' | 'error'>('idle');
+  const [fileError, setFileError] = useState('');
+  const [fileUploadWarning, setFileUploadWarning] = useState('');
 
   const result = useMemo(() => evaluateKitchenQuoteReview({ checkedItems: checked, files, jobDetails }), [checked, files, jobDetails]);
-  const contactReady = Boolean(contactName.trim() && contactEmail.trim() && privacyAcknowledged && termsAcknowledged);
+  const contactReady = Boolean(contactName.trim() && contactEmail.trim() && privacyAcknowledged && termsAcknowledged && fileStatus !== 'reading');
 
   const updateJobDetails = (patch: Partial<KitchenQuoteReviewJobDetails>) => {
     setJobDetails((current) => ({ ...current, ...patch }));
   };
 
-  const addFiles = (fileList: FileList | null, category: ReviewFileCategory) => {
+  const addFiles = async (fileList: FileList | null, category: ReviewFileCategory) => {
     if (!fileList?.length) return;
-    const nextFiles = Array.from(fileList).map((file) => ({
-      id: `${category}-${file.name}-${Date.now()}`,
-      name: file.name,
-      category,
-      size: file.size,
-    }));
-    setFiles((current) => [...current, ...nextFiles]);
-    trackKitchenEvent('file_upload_added', { file_category: category, route: '/quote/review' });
+    setFileStatus('reading');
+    setFileError('');
+    try {
+      const incoming = Array.from(fileList);
+      if (files.length + incoming.length > requestReviewFileLimits.maxFiles) {
+        throw new Error(`Upload up to ${requestReviewFileLimits.maxFiles} files for this review.`);
+      }
+      const currentTotal = files.reduce((sum, file) => sum + (file.size ?? 0), 0);
+      const incomingTotal = incoming.reduce((sum, file) => sum + file.size, 0);
+      if (incoming.some((file) => file.size > requestReviewFileLimits.maxFileBytes)) {
+        throw new Error('Each uploaded file must be 4MB or smaller.');
+      }
+      if (currentTotal + incomingTotal > requestReviewFileLimits.maxTotalBytes) {
+        throw new Error('Total uploaded file size must be 10MB or smaller.');
+      }
+      const nextFiles = await Promise.all(Array.from(fileList).map(async (file) => ({
+        id: `${category}-${file.name}-${Date.now()}`,
+        localId: `${category}-${file.name}-${file.size}-${Date.now()}`,
+        name: file.name,
+        category,
+        size: file.size,
+        mimeType: file.type || 'application/octet-stream',
+        contentBase64: await fileToBase64(file),
+      })));
+      setFiles((current) => [...current, ...nextFiles]);
+      setFileStatus('idle');
+      trackKitchenEvent('file_upload_added', { file_category: category, route: '/quote/review' });
+    } catch (uploadError) {
+      setFileStatus('error');
+      setFileError(uploadError instanceof Error ? uploadError.message : 'File could not be prepared for upload.');
+    }
+  };
+
+  const removeFile = (localId: string) => {
+    setFiles((current) => current.filter((file) => file.localId !== localId));
   };
 
   const handleLookup = () => {
@@ -79,6 +135,7 @@ export default function QuoteReview() {
 
   const saveReviewLead = async () => {
     setLeadError('');
+    setFileUploadWarning('');
     setIsSubmittingLead(true);
     try {
       const response = await fetch('/.netlify/functions/kitchen-request-review', {
@@ -96,6 +153,13 @@ export default function QuoteReview() {
           approximateBudgetRange: '',
           preferredNextStep: 'quoteReview',
           message: buildReviewRequestMessage(result, jobDetails, checked, files, lookup),
+          files: files.map((file) => ({
+            name: file.name,
+            category: mapReviewFileCategory(file.category),
+            mimeType: file.mimeType,
+            size: file.size ?? 0,
+            contentBase64: file.contentBase64,
+          })),
           marketingOptIn,
           privacyAcknowledged,
           termsAcknowledged,
@@ -107,6 +171,9 @@ export default function QuoteReview() {
       if (!response.ok) {
         const message = Array.isArray(payload.errors) ? payload.errors.join(' ') : payload.error || 'Could not save review request.';
         throw new Error(message);
+      }
+      if (files.length > 0 && payload.delivery?.filesStored !== true) {
+        setFileUploadWarning('Your review request was saved, but the selected files were not attached. Please mention this when Operon Kitchens follows up.');
       }
       trackKitchenEvent('quote_review_submit', {
         readiness_label: readinessLabel(result.status),
@@ -201,7 +268,7 @@ export default function QuoteReview() {
           <section className="quoteResult">
             <h2>Quote, photo or plan context</h2>
             <p className="muted">
-              Add file names locally to improve the review preview, or continue without a file and use the checklist below. Secure file storage is not enabled yet; the request sends text, checklist and project details only. Only prepare documents you are authorised to share.
+              Attach quote, photo or plan files for secure kitchen review storage, or continue without a file and use the checklist below. Only upload documents you are authorised to share.
             </p>
             <div className="formGrid two">
               <label className="uploadBox"><span>Existing quote</span><input type="file" accept=".pdf,image/*" onChange={(event) => addFiles(event.target.files, 'existingQuote')} /></label>
@@ -209,9 +276,17 @@ export default function QuoteReview() {
               <label className="uploadBox"><span>Plans</span><input type="file" multiple accept=".pdf,image/*" onChange={(event) => addFiles(event.target.files, 'plan')} /></label>
               <label className="uploadBox"><span>Other documents</span><input type="file" multiple accept=".pdf,image/*" onChange={(event) => addFiles(event.target.files, 'other')} /></label>
             </div>
+            <p className="muted">Limits: up to {requestReviewFileLimits.maxFiles} files, 4MB each, 10MB total. PDF and common image formats only.</p>
+            {fileStatus === 'reading' && <div className="successPanel">Preparing file for secure upload...</div>}
+            {fileError && <div className="errorPanel">{fileError}</div>}
             {files.length > 0 && (
               <ul className="lineItemList">
-                {files.map((file) => <li key={file.id}><span>{file.name}</span><span>{file.category}</span></li>)}
+                {files.map((file) => (
+                  <li key={file.localId}>
+                    <span>{file.name}</span>
+                    <button type="button" className="textLink" onClick={() => removeFile(file.localId)}>Remove</button>
+                  </li>
+                ))}
               </ul>
             )}
           </section>
@@ -326,12 +401,17 @@ export default function QuoteReview() {
           />
 
           {leadError && <div className="errorPanel">{leadError}</div>}
-          {reviewSubmitted && <div className="successPanel">Your quote review request has been saved. We will follow up with next steps.</div>}
+          {reviewSubmitted && (
+            <div className="successPanel">
+              Your quote review request has been saved. We will follow up with next steps.
+              {fileUploadWarning && <p>{fileUploadWarning}</p>}
+            </div>
+          )}
           <div className="wizardActions">
             <Link href="/quote" className="button ghost">Start estimate instead</Link>
             <Link href="/request-review" className="button ghost">Ask about site measure</Link>
             <button onClick={saveReviewLead} className="button primary" disabled={!contactReady || isSubmittingLead}>
-              {isSubmittingLead ? 'Saving...' : 'Request quote review'}
+              {isSubmittingLead ? 'Saving...' : fileStatus === 'reading' ? 'Preparing files...' : 'Request quote review'}
             </button>
           </div>
         </div>
@@ -406,7 +486,7 @@ function buildReviewRequestMessage(
     `Missing or unclear items: ${result.unclearItems.slice(0, 8).join(', ') || 'none flagged'}.`,
     `Customer questions: ${result.customerQuestions.slice(0, 5).join(' | ') || 'none generated'}.`,
     `Recommended next step: ${result.recommendedNextStep}`,
-    'Files are not uploaded through this submit action yet. Site measure and written scope confirmation are still required before commitment.',
+    'Attached files are stored for kitchen request review where secure storage is configured. Site measure and written scope confirmation are still required before commitment.',
   ].join('\n');
 }
 

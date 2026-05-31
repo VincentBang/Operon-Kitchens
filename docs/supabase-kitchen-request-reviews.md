@@ -17,6 +17,7 @@ The function validates and sanitises the customer payload, creates server-side m
 ```text
 OPERON_KITCHENS_SUPABASE_URL
 OPERON_KITCHENS_SUPABASE_SERVICE_ROLE_KEY
+OPERON_KITCHENS_UPLOAD_BUCKET
 ```
 
 Optional notification variables:
@@ -84,6 +85,18 @@ create table if not exists public.kitchen_request_reviews (
   ip_hash text
 );
 
+create table if not exists public.kitchen_request_review_files (
+  id uuid primary key,
+  lead_id uuid not null references public.kitchen_request_reviews(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  bucket text not null,
+  object_path text not null,
+  file_name text not null,
+  file_type text not null,
+  file_size integer not null check (file_size > 0 and file_size <= 4194304),
+  category text not null check (category in ('existingQuote', 'photo', 'plan', 'applianceList', 'other'))
+);
+
 create index if not exists kitchen_request_reviews_created_at_idx
   on public.kitchen_request_reviews (created_at desc);
 
@@ -93,7 +106,14 @@ create index if not exists kitchen_request_reviews_email_idx
 create index if not exists kitchen_request_reviews_status_idx
   on public.kitchen_request_reviews (status);
 
+create index if not exists kitchen_request_review_files_lead_id_idx
+  on public.kitchen_request_review_files (lead_id);
+
+create index if not exists kitchen_request_review_files_created_at_idx
+  on public.kitchen_request_review_files (created_at desc);
+
 alter table public.kitchen_request_reviews enable row level security;
+alter table public.kitchen_request_review_files enable row level security;
 ```
 
 If the table already exists with the earlier Phase 1 status check, apply this migration before using admin-lite lead status updates:
@@ -151,6 +171,74 @@ Recommended policy posture for Phase 1:
 
 Do not create policies that allow anonymous reads of leads, contact details, messages or operational notes.
 
+## File Upload Storage
+
+Request-review and quote-review uploads are stored through the server-side Netlify Function only. The browser sends validated file payloads to:
+
+```text
+POST /.netlify/functions/kitchen-request-review
+```
+
+The function:
+
+- validates file count, type and size
+- stores file objects in a kitchen-specific Supabase Storage bucket
+- stores safe metadata in `public.kitchen_request_review_files`
+- returns only safe acknowledgement data to the browser
+
+Recommended bucket name:
+
+```text
+operon-kitchens-request-review-files
+```
+
+Set Netlify:
+
+```text
+OPERON_KITCHENS_UPLOAD_BUCKET=operon-kitchens-request-review-files
+```
+
+Apply this bucket setup manually in the kitchen Supabase project only:
+
+```sql
+insert into storage.buckets (
+  id,
+  name,
+  public,
+  file_size_limit,
+  allowed_mime_types
+)
+values (
+  'operon-kitchens-request-review-files',
+  'operon-kitchens-request-review-files',
+  false,
+  4194304,
+  array[
+    'application/pdf',
+    'image/jpeg',
+    'image/png',
+    'image/webp',
+    'image/heic',
+    'image/heif'
+  ]
+)
+on conflict (id) do update
+set
+  public = excluded.public,
+  file_size_limit = excluded.file_size_limit,
+  allowed_mime_types = excluded.allowed_mime_types;
+```
+
+Recommended storage posture for Phase 1:
+
+- Bucket is private.
+- No public object reads.
+- No anonymous object uploads.
+- Netlify Function uses the service role key server-side.
+- Admin-lite lists metadata only; it does not expose signed download URLs yet.
+
+If file upload storage is not configured and a customer submits files, the response will show the request delivery state without pretending files were stored. Supabase lead storage remains the source of truth for the enquiry record.
+
 ## Admin-lite Lead Operations
 
 The internal `/admin/leads` page uses Netlify Functions and a simple admin token to list and update request-review leads.
@@ -193,6 +281,7 @@ The public form sends only customer-safe fields:
 - message
 - privacy and terms acknowledgements
 - simple attribution fields from the current URL/referrer when available
+- optional uploaded quote/photo/plan/appliance files after browser-side size checks
 
 The server creates:
 
@@ -215,6 +304,14 @@ Attribution fields are optional and customer-safe:
 
 The browser must not send or receive supplier costs, internal rates, margin logic, lead scores, admin priority or internal notes.
 
+File upload limits:
+
+- up to 6 files per request
+- 4MB maximum per file
+- 10MB total per request
+- PDF, JPEG, PNG, WebP, HEIC and HEIF only
+- SVG, scripts, executables and archives are not accepted
+
 ## Production 503 Checklist
 
 If the function is live but returns `503` to a valid POST:
@@ -228,6 +325,12 @@ If the function is live but returns `503` to a valid POST:
 7. If logs show `storage_insert_failed`, read the safe status/detail to identify missing table, column mismatch, invalid key or project mismatch.
 8. If email is intentionally deferred, `email_env_missing` is expected and should not block success when Supabase storage works.
 
-## File Uploads
+## Upload Troubleshooting
 
-File uploads are not enabled in this intake endpoint. Customers should use the quote review pathway for upload guidance until kitchen-scoped storage, validation and retention rules are implemented.
+If lead storage succeeds but files are not stored:
+
+1. Confirm `OPERON_KITCHENS_UPLOAD_BUCKET` exists in Netlify and the site has redeployed.
+2. Confirm the bucket exists in the same Supabase project referenced by `OPERON_KITCHENS_SUPABASE_URL`.
+3. Confirm `public.kitchen_request_review_files` exists.
+4. Confirm Netlify Function logs do not show `file_storage_env_missing`.
+5. If logs show `file_storage_failed`, check bucket name, MIME type restrictions, file size limit and metadata table columns.

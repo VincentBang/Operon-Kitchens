@@ -39,6 +39,19 @@ export interface KitchenAdminLead {
   internal_notes: string | null;
   user_agent: string | null;
   ip_hash: string | null;
+  files: KitchenAdminLeadFile[];
+}
+
+export interface KitchenAdminLeadFile {
+  id: string;
+  lead_id: string;
+  created_at: string;
+  bucket: string;
+  object_path: string;
+  file_name: string;
+  file_type: string;
+  file_size: number;
+  category: string;
 }
 
 export type AdminLeadListResult =
@@ -112,6 +125,18 @@ const attributionColumnNames = [
   'landing_page',
 ];
 
+const adminLeadFileColumns = [
+  'id',
+  'lead_id',
+  'created_at',
+  'bucket',
+  'object_path',
+  'file_name',
+  'file_type',
+  'file_size',
+  'category',
+].join(',');
+
 function isMissingAttributionColumnError(detail: string) {
   const lowerDetail = detail.toLowerCase();
   return lowerDetail.includes('pgrst204') || attributionColumnNames.some((column) => lowerDetail.includes(column));
@@ -127,6 +152,7 @@ function normaliseAdminLead(lead: Partial<KitchenAdminLead>): KitchenAdminLead {
     utm_content: lead.utm_content ?? null,
     utm_term: lead.utm_term ?? null,
     landing_page: lead.landing_page ?? null,
+    files: lead.files ?? [],
   } as KitchenAdminLead;
 }
 
@@ -165,6 +191,7 @@ function getSupabaseConfig() {
   const serviceRoleKey = process.env.OPERON_KITCHENS_SUPABASE_SERVICE_ROLE_KEY;
   if (!supabaseUrl || !serviceRoleKey) return null;
   return {
+    baseRestUrl: `${supabaseUrl.replace(/\/$/, '')}/rest/v1`,
     baseUrl: `${supabaseUrl.replace(/\/$/, '')}/rest/v1/kitchen_request_reviews`,
     serviceRoleKey,
   };
@@ -177,6 +204,41 @@ function serviceHeaders(serviceRoleKey: string, prefer?: string) {
     'Content-Type': 'application/json',
     ...(prefer ? { Prefer: prefer } : {}),
   };
+}
+
+async function listKitchenAdminLeadFiles(config: { baseRestUrl: string; serviceRoleKey: string }, leadIds: string[]) {
+  if (leadIds.length === 0) return new Map<string, KitchenAdminLeadFile[]>();
+  const params = new URLSearchParams({
+    select: adminLeadFileColumns,
+    lead_id: `in.(${leadIds.join(',')})`,
+    order: 'created_at.desc',
+  });
+
+  const response = await fetch(`${config.baseRestUrl}/kitchen_request_review_files?${params.toString()}`, {
+    method: 'GET',
+    headers: serviceHeaders(config.serviceRoleKey),
+  });
+
+  if (!response.ok) return new Map<string, KitchenAdminLeadFile[]>();
+
+  const files = (await response.json()) as KitchenAdminLeadFile[];
+  return files.reduce((map, file) => {
+    const existing = map.get(file.lead_id) ?? [];
+    existing.push(file);
+    map.set(file.lead_id, existing);
+    return map;
+  }, new Map<string, KitchenAdminLeadFile[]>());
+}
+
+async function attachLeadFiles(
+  config: { baseRestUrl: string; serviceRoleKey: string },
+  leads: KitchenAdminLead[],
+) {
+  const filesByLead = await listKitchenAdminLeadFiles(config, leads.map((lead) => lead.id));
+  return leads.map((lead) => ({
+    ...lead,
+    files: filesByLead.get(lead.id) ?? [],
+  }));
 }
 
 export async function listKitchenAdminLeads(options: {
@@ -210,7 +272,8 @@ export async function listKitchenAdminLeads(options: {
       });
       if (response.ok) {
         const legacyLeads = (await response.json()) as Partial<KitchenAdminLead>[];
-        return { configured: true, ok: true, leads: legacyLeads.map(normaliseAdminLead) };
+        const normalisedLeads = legacyLeads.map(normaliseAdminLead);
+        return { configured: true, ok: true, leads: await attachLeadFiles(config, normalisedLeads) };
       }
     }
 
@@ -222,7 +285,8 @@ export async function listKitchenAdminLeads(options: {
   }
 
   const leads = (await response.json()) as Partial<KitchenAdminLead>[];
-  return { configured: true, ok: true, leads: leads.map(normaliseAdminLead) };
+  const normalisedLeads = leads.map(normaliseAdminLead);
+  return { configured: true, ok: true, leads: await attachLeadFiles(config, normalisedLeads) };
 }
 
 export async function updateKitchenAdminLead(options: {

@@ -52,7 +52,7 @@ Current status:
 - Attribution/UTM tracking is supported and documented.
 - Resend notification logic exists but email may remain disabled until a verified branded sender/domain is available.
 - No custom domain yet.
-- No file upload storage yet.
+- Kitchen-scoped file upload storage is now scaffolded for request-review and quote-review intake, pending Supabase bucket/table setup and controlled production verification.
 - No payment.
 - No customer login.
 - No full CRM.
@@ -70,6 +70,7 @@ Controlled-launch note:
 - Quote review engine: `src/lib/quoteReview.ts`.
 - Request-review validation: `src/lib/requestReview.ts`.
 - Request-review storage: `src/lib/kitchenLeadStorage.ts`.
+- Request-review file storage: `src/lib/kitchenFileStorage.ts`.
 - Admin-lite lead operations: `src/lib/kitchenAdminLeads.ts`, `src/pages/admin/leads.tsx`, and Netlify admin functions.
 - Analytics readiness: `src/lib/analytics.ts` and `docs/analytics-events.md`.
 

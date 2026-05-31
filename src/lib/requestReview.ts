@@ -2,11 +2,28 @@ export const propertyTypeOptions = ['house', 'townhouse', 'apartment', 'strataAp
 export const projectStageOptions = ['planning', 'quoteInHand', 'readyForMeasure', 'urgent', 'notSure'] as const;
 export const yesNoOptions = ['yes', 'no', 'notSure'] as const;
 export const preferredNextStepOptions = ['planningEstimate', 'quoteReview', 'siteMeasure', 'scopeDiscussion'] as const;
+export const requestReviewFileCategoryOptions = ['existingQuote', 'photo', 'plan', 'applianceList', 'other'] as const;
 
 export type PropertyTypeOption = typeof propertyTypeOptions[number];
 export type ProjectStageOption = typeof projectStageOptions[number];
 export type YesNoOption = typeof yesNoOptions[number];
 export type PreferredNextStepOption = typeof preferredNextStepOptions[number];
+export type RequestReviewFileCategoryOption = typeof requestReviewFileCategoryOptions[number];
+
+export const requestReviewFileLimits = {
+  maxFiles: 6,
+  maxFileBytes: 4 * 1024 * 1024,
+  maxTotalBytes: 10 * 1024 * 1024,
+};
+
+export interface KitchenRequestReviewFile {
+  id: string;
+  name: string;
+  category: RequestReviewFileCategoryOption;
+  mimeType: string;
+  size: number;
+  contentBase64: string;
+}
 
 export interface RequestReviewAttribution {
   referrer?: string;
@@ -36,6 +53,7 @@ export interface KitchenRequestReviewLead {
   marketingOptIn: boolean;
   sourceRoute: string;
   attribution: RequestReviewAttribution;
+  files: KitchenRequestReviewFile[];
   createdAt: string;
 }
 
@@ -69,6 +87,16 @@ const disallowedKeys = new Set([
 ]);
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const base64Pattern = /^[a-z0-9+/]+={0,2}$/i;
+const allowedFileMimeTypes = new Set([
+  'application/pdf',
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/heic',
+  'image/heif',
+]);
+const allowedFileExtensions = new Set(['pdf', 'jpg', 'jpeg', 'png', 'webp', 'heic', 'heif']);
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -77,6 +105,15 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 function cleanString(value: unknown, maxLength: number) {
   if (typeof value !== 'string') return '';
   return value.replace(/\s+/g, ' ').trim().slice(0, maxLength);
+}
+
+function cleanFileName(value: unknown) {
+  if (typeof value !== 'string') return '';
+  return value
+    .replace(/[^\w .()[\]-]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 160);
 }
 
 function isOneOf<T extends readonly string[]>(value: string, options: T): value is T[number] {
@@ -106,6 +143,95 @@ function createLeadId() {
     const resolved = token === 'x' ? value : (value & 0x3) | 0x8;
     return resolved.toString(16);
   });
+}
+
+function getFileExtension(fileName: string) {
+  const extension = fileName.split('.').pop();
+  return extension ? extension.toLowerCase() : '';
+}
+
+function mimeTypeFromExtension(extension: string) {
+  if (extension === 'pdf') return 'application/pdf';
+  if (extension === 'jpg' || extension === 'jpeg') return 'image/jpeg';
+  if (extension === 'png') return 'image/png';
+  if (extension === 'webp') return 'image/webp';
+  if (extension === 'heic') return 'image/heic';
+  if (extension === 'heif') return 'image/heif';
+  return 'application/octet-stream';
+}
+
+function normaliseBase64Content(value: unknown) {
+  if (typeof value !== 'string') return '';
+  const trimmed = value.trim();
+  const commaIndex = trimmed.indexOf(',');
+  return (commaIndex >= 0 ? trimmed.slice(commaIndex + 1) : trimmed).replace(/\s+/g, '');
+}
+
+function getBase64ByteLength(base64: string) {
+  if (!base64) return 0;
+  const padding = base64.endsWith('==') ? 2 : base64.endsWith('=') ? 1 : 0;
+  return Math.floor((base64.length * 3) / 4) - padding;
+}
+
+function validateRequestReviewFiles(input: Record<string, unknown>, errors: string[]): KitchenRequestReviewFile[] {
+  const rawFiles = input.files ?? input.uploadedFiles;
+  if (rawFiles === undefined || rawFiles === null) return [];
+  if (!Array.isArray(rawFiles)) {
+    errors.push('Uploaded files must be supplied as a list.');
+    return [];
+  }
+  if (rawFiles.length > requestReviewFileLimits.maxFiles) {
+    errors.push(`Upload up to ${requestReviewFileLimits.maxFiles} files for this request.`);
+    return [];
+  }
+
+  const files: KitchenRequestReviewFile[] = [];
+  let totalBytes = 0;
+
+  for (const rawFile of rawFiles) {
+    if (!isRecord(rawFile)) {
+      errors.push('Each uploaded file must include safe file metadata.');
+      continue;
+    }
+
+    const name = cleanFileName(rawFile.name);
+    const category = cleanString(rawFile.category, 40);
+    const submittedMimeType = cleanString(rawFile.mimeType ?? rawFile.type, 120).toLowerCase();
+    const declaredSize = typeof rawFile.size === 'number' && Number.isFinite(rawFile.size) ? Math.max(0, Math.round(rawFile.size)) : 0;
+    const contentBase64 = normaliseBase64Content(rawFile.contentBase64 ?? rawFile.base64);
+    const decodedSize = getBase64ByteLength(contentBase64);
+    const size = declaredSize || decodedSize;
+    const extension = getFileExtension(name);
+    const fileTypeAllowed = allowedFileMimeTypes.has(submittedMimeType) || allowedFileExtensions.has(extension);
+
+    if (!name) errors.push('Each uploaded file needs a safe file name.');
+    if (!isOneOf(category, requestReviewFileCategoryOptions)) errors.push('Uploaded file category is not supported.');
+    if (!fileTypeAllowed) {
+      errors.push('Uploaded files must be PDF or common image files.');
+    }
+    if (!contentBase64 || !base64Pattern.test(contentBase64)) errors.push('Uploaded file content could not be read safely.');
+    if (!size || size !== decodedSize) errors.push('Uploaded file size could not be verified.');
+    if (size > requestReviewFileLimits.maxFileBytes) errors.push('Each uploaded file must be 4MB or smaller.');
+
+    totalBytes += size;
+    if (name && isOneOf(category, requestReviewFileCategoryOptions) && fileTypeAllowed && contentBase64 && size === decodedSize && size <= requestReviewFileLimits.maxFileBytes) {
+      files.push({
+        id: createLeadId(),
+        name,
+        category,
+        mimeType: allowedFileMimeTypes.has(submittedMimeType) ? submittedMimeType : mimeTypeFromExtension(extension),
+        size,
+        contentBase64,
+      });
+    }
+  }
+
+  if (totalBytes > requestReviewFileLimits.maxTotalBytes) {
+    errors.push('Total uploaded file size must be 10MB or smaller.');
+    return [];
+  }
+
+  return files;
 }
 
 export function validateKitchenRequestReview(input: unknown): RequestReviewValidationResult {
@@ -144,6 +270,7 @@ export function validateKitchenRequestReview(input: unknown): RequestReviewValid
   const marketingOptIn = input.marketingOptIn === true;
 
   const errors: string[] = [];
+  const files = validateRequestReviewFiles(input, errors);
   if (!name) errors.push('Name is required.');
   if (!email || !emailPattern.test(email)) errors.push('A valid email is required.');
   if (!isOneOf(propertyType, propertyTypeOptions)) errors.push('Property type is required.');
@@ -186,6 +313,7 @@ export function validateKitchenRequestReview(input: unknown): RequestReviewValid
         utmTerm: utmTerm || undefined,
         landingPage: landingPage || undefined,
       },
+      files,
       createdAt: new Date().toISOString(),
     },
   };
@@ -199,5 +327,6 @@ export function createCustomerRequestAcknowledgement(lead: KitchenRequestReviewL
       lead.preferredNextStep === 'siteMeasure'
         ? 'We will use your details to assess whether site measure is the right next step.'
         : 'We will use your details to prepare the right quote review or planning follow-up.',
+    uploadedFileCount: lead.files.length,
   };
 }

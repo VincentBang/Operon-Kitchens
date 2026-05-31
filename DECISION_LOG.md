@@ -67,3 +67,11 @@ Decision: `/quote/review` must use the request-review Netlify Function for custo
 Rationale: Production static export does not support Next API routes.
 
 Implication: The local page now submits to `/.netlify/functions/kitchen-request-review` and saved-estimate lookup is static-safe. Do not add file upload storage as part of this small fix.
+
+## 2026-05-31: File Upload Storage Is Server-Mediated
+
+Decision: Request-review and quote-review files are sent to the existing kitchen request-review Netlify Function and stored server-side in a private kitchen-specific Supabase Storage bucket.
+
+Rationale: The browser must not receive Supabase service keys, direct storage credentials, internal paths for unauthorised access, supplier costs, lead scores or admin-only data.
+
+Implication: `OPERON_KITCHENS_UPLOAD_BUCKET` is required for production file storage. Metadata is stored in `public.kitchen_request_review_files`; admin-lite displays metadata only. Signed download links, file deletion, retention workflows and full CRM handling remain deferred.

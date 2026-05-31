@@ -1,4 +1,5 @@
 import { handler } from '../netlify/functions/kitchen-request-review';
+import { storeKitchenRequestReviewFiles } from '../src/lib/kitchenFileStorage';
 import { createKitchenRequestReviewStorageRecord, storeKitchenRequestReviewLead } from '../src/lib/kitchenLeadStorage';
 import { validateKitchenRequestReview } from '../src/lib/requestReview';
 import { readFileSync } from 'node:fs';
@@ -20,6 +21,14 @@ const validPayload = {
   termsAcknowledged: true,
   marketingOptIn: false,
   sourceRoute: '/request-review',
+};
+
+const validFilePayload = {
+  name: 'kitchen-quote.pdf',
+  category: 'existingQuote',
+  mimeType: 'application/pdf',
+  size: 11,
+  contentBase64: Buffer.from('hello quote').toString('base64'),
 };
 
 describe('request review intake validation', () => {
@@ -83,6 +92,42 @@ describe('request review intake validation', () => {
     });
   });
 
+  it('accepts and sanitises safe upload file payloads', () => {
+    const result = validateKitchenRequestReview({
+      ...validPayload,
+      files: [validFilePayload],
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error('Expected valid payload');
+    expect(result.data.files).toHaveLength(1);
+    expect(result.data.files[0]).toEqual(expect.objectContaining({
+      name: 'kitchen-quote.pdf',
+      category: 'existingQuote',
+      mimeType: 'application/pdf',
+      size: 11,
+      contentBase64: validFilePayload.contentBase64,
+    }));
+    expect(result.data.files[0].id).toMatch(/^[0-9a-f-]{36}$/);
+  });
+
+  it('rejects unsafe upload file payloads', () => {
+    const result = validateKitchenRequestReview({
+      ...validPayload,
+      files: [{
+        name: 'script.svg',
+        category: 'other',
+        mimeType: 'image/svg+xml',
+        size: 13,
+        contentBase64: Buffer.from('<svg></svg>').toString('base64'),
+      }],
+    });
+
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error('Expected invalid payload');
+    expect(result.errors).toContain('Uploaded files must be PDF or common image files.');
+  });
+
   it('rejects missing required fields and invalid email', () => {
     const result = validateKitchenRequestReview({
       ...validPayload,
@@ -128,6 +173,7 @@ describe('kitchen-request-review Netlify function', () => {
     delete process.env.OPERON_KITCHENS_RESEND_API_KEY;
     delete process.env.OPERON_KITCHENS_REQUEST_REVIEW_TO_EMAIL;
     delete process.env.OPERON_KITCHENS_IP_HASH_SALT;
+    delete process.env.OPERON_KITCHENS_UPLOAD_BUCKET;
     jest.restoreAllMocks();
     jest.spyOn(console, 'info').mockImplementation(() => undefined);
     jest.spyOn(console, 'warn').mockImplementation(() => undefined);
@@ -160,7 +206,7 @@ describe('kitchen-request-review Netlify function', () => {
     expect(response.statusCode).toBe(202);
     expect(body.ok).toBe(true);
     expect(body.request.requestId).toMatch(/^[0-9a-f-]{36}$/);
-    expect(body.delivery).toEqual({ stored: true, notificationPrepared: false });
+    expect(body.delivery).toEqual(expect.objectContaining({ stored: true, filesStored: true, fileCount: 0, notificationPrepared: false }));
     expect(fetchMock).toHaveBeenCalledWith(
       'https://kitchens.supabase.co/rest/v1/kitchen_request_reviews',
       expect.objectContaining({ method: 'POST' }),
@@ -191,7 +237,7 @@ describe('kitchen-request-review Netlify function', () => {
     const body = JSON.parse(response.body);
 
     expect(response.statusCode).toBe(202);
-    expect(body.delivery).toEqual({ stored: false, notificationPrepared: true });
+    expect(body.delivery).toEqual(expect.objectContaining({ stored: false, filesStored: false, fileCount: 0, notificationPrepared: true }));
     expect(fetchMock).toHaveBeenCalledWith('https://api.resend.com/emails', expect.objectContaining({ method: 'POST' }));
     const resendPayload = JSON.parse(String(fetchMock.mock.calls[0][1]?.body));
     expect(resendPayload.subject).toBe('New Operon Kitchens request-review lead');
@@ -228,7 +274,7 @@ describe('kitchen-request-review Netlify function', () => {
     const body = JSON.parse(response.body);
 
     expect(response.statusCode).toBe(202);
-    expect(body.delivery).toEqual({ stored: true, notificationPrepared: false });
+    expect(body.delivery).toEqual(expect.objectContaining({ stored: true, filesStored: true, fileCount: 0, notificationPrepared: false }));
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(JSON.stringify(body).toLowerCase()).not.toContain('resend');
     expect(JSON.stringify(body).toLowerCase()).not.toContain('service-role-test-key');
@@ -302,6 +348,56 @@ describe('kitchen-request-review Netlify function', () => {
       'Message must include at least 10 characters.',
       'Terms acknowledgement is required.',
     ]));
+  });
+
+  it('stores lead files when upload storage env vars are configured', async () => {
+    process.env.OPERON_KITCHENS_SUPABASE_URL = 'https://kitchens.supabase.co';
+    process.env.OPERON_KITCHENS_SUPABASE_SERVICE_ROLE_KEY = 'service-role-test-key';
+    process.env.OPERON_KITCHENS_UPLOAD_BUCKET = 'operon-kitchens-request-review-files';
+    const fetchMock = jest
+      .fn()
+      .mockResolvedValueOnce({ ok: true, text: async () => '' })
+      .mockResolvedValueOnce({ ok: true, text: async () => '' })
+      .mockResolvedValueOnce({ ok: true, text: async () => '' });
+    global.fetch = fetchMock as typeof fetch;
+
+    const response = await handler({
+      httpMethod: 'POST',
+      body: JSON.stringify({ ...validPayload, files: [validFilePayload] }),
+    });
+    const body = JSON.parse(response.body);
+
+    expect(response.statusCode).toBe(202);
+    expect(body.delivery).toEqual(expect.objectContaining({
+      stored: true,
+      filesStored: true,
+      fileCount: 1,
+      notificationPrepared: false,
+    }));
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining('/storage/v1/object/operon-kitchens-request-review-files/request-reviews/'),
+      expect.objectContaining({
+        method: 'POST',
+        headers: expect.objectContaining({
+          Authorization: 'Bearer service-role-test-key',
+          'Content-Type': 'application/pdf',
+          'x-upsert': 'false',
+        }),
+      }),
+    );
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://kitchens.supabase.co/rest/v1/kitchen_request_review_files',
+      expect.objectContaining({ method: 'POST' }),
+    );
+    const metadataBody = JSON.parse(String(fetchMock.mock.calls[2][1]?.body));
+    expect(metadataBody[0]).toEqual(expect.objectContaining({
+      bucket: 'operon-kitchens-request-review-files',
+      file_name: 'kitchen-quote.pdf',
+      file_type: 'application/pdf',
+      file_size: 11,
+      category: 'existingQuote',
+    }));
+    expect(JSON.stringify(body).toLowerCase()).not.toContain('service-role-test-key');
   });
 });
 
@@ -438,5 +534,51 @@ describe('kitchen request review storage adapter', () => {
     expect(documentedSql).toContain("'site_measure_booked'");
     expect(documentedSql).toContain('utm_source text');
     expect(documentedSql).toContain('landing_page text');
+  });
+});
+
+describe('kitchen request review file storage adapter', () => {
+  const originalEnv = process.env;
+  const originalFetch = global.fetch;
+
+  beforeEach(() => {
+    process.env = { ...originalEnv };
+    global.fetch = originalFetch;
+    delete process.env.OPERON_KITCHENS_SUPABASE_URL;
+    delete process.env.OPERON_KITCHENS_SUPABASE_SERVICE_ROLE_KEY;
+    delete process.env.OPERON_KITCHENS_UPLOAD_BUCKET;
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  afterAll(() => {
+    process.env = originalEnv;
+    global.fetch = originalFetch;
+  });
+
+  it('reports missing upload storage configuration when files are present', async () => {
+    const validation = validateKitchenRequestReview({ ...validPayload, files: [validFilePayload] });
+    if (!validation.ok) throw new Error('Expected valid payload');
+
+    await expect(storeKitchenRequestReviewFiles(validation.data)).resolves.toEqual({
+      configured: false,
+      stored: false,
+      reason: 'missing_env',
+      fileCount: 1,
+    });
+  });
+
+  it('does not require upload storage when no files are present', async () => {
+    const validation = validateKitchenRequestReview(validPayload);
+    if (!validation.ok) throw new Error('Expected valid payload');
+
+    await expect(storeKitchenRequestReviewFiles(validation.data)).resolves.toEqual({
+      configured: true,
+      stored: true,
+      fileCount: 0,
+      files: [],
+    });
   });
 });

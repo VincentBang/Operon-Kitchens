@@ -6,6 +6,8 @@ import {
   preferredNextStepOptions,
   projectStageOptions,
   propertyTypeOptions,
+  RequestReviewFileCategoryOption,
+  requestReviewFileLimits,
   yesNoOptions,
 } from '@/lib/requestReview';
 
@@ -37,6 +39,35 @@ const nextStepLabels = {
   siteMeasure: 'Site measure',
   scopeDiscussion: 'Scope discussion',
 };
+
+type PreparedRequestFile = {
+  localId: string;
+  name: string;
+  category: RequestReviewFileCategoryOption;
+  mimeType: string;
+  size: number;
+  contentBase64: string;
+};
+
+const requestFileCategories: { value: RequestReviewFileCategoryOption; label: string; accept: string }[] = [
+  { value: 'existingQuote', label: 'Existing quote', accept: '.pdf,image/jpeg,image/png,image/webp,image/heic,image/heif' },
+  { value: 'photo', label: 'Photos', accept: 'image/jpeg,image/png,image/webp,image/heic,image/heif' },
+  { value: 'plan', label: 'Plans or drawings', accept: '.pdf,image/jpeg,image/png,image/webp,image/heic,image/heif' },
+  { value: 'applianceList', label: 'Appliance list', accept: '.pdf,image/jpeg,image/png,image/webp' },
+  { value: 'other', label: 'Other document', accept: '.pdf,image/jpeg,image/png,image/webp' },
+];
+
+function fileToBase64(file: File) {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = typeof reader.result === 'string' ? reader.result : '';
+      resolve(result.includes(',') ? result.split(',').pop() || '' : result);
+    };
+    reader.onerror = () => reject(new Error('File could not be read.'));
+    reader.readAsDataURL(file);
+  });
+}
 
 function getAttributionFields() {
   if (typeof window === 'undefined') {
@@ -84,11 +115,52 @@ export default function RequestReviewPage() {
   const [status, setStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [error, setError] = useState('');
   const [requestId, setRequestId] = useState('');
+  const [files, setFiles] = useState<PreparedRequestFile[]>([]);
+  const [fileStatus, setFileStatus] = useState<'idle' | 'reading' | 'error'>('idle');
+  const [fileError, setFileError] = useState('');
+  const [fileUploadWarning, setFileUploadWarning] = useState('');
 
-  const ready = Boolean(form.name.trim() && form.email.trim() && privacyAcknowledged && termsAcknowledged && form.message.trim().length >= 10);
+  const ready = Boolean(form.name.trim() && form.email.trim() && privacyAcknowledged && termsAcknowledged && form.message.trim().length >= 10 && fileStatus !== 'reading');
 
   const update = (field: keyof typeof form, value: string) => {
     setForm((current) => ({ ...current, [field]: value }));
+  };
+
+  const addFiles = async (fileList: FileList | null, category: RequestReviewFileCategoryOption) => {
+    if (!fileList?.length) return;
+    setFileStatus('reading');
+    setFileError('');
+    try {
+      const incoming = Array.from(fileList);
+      if (files.length + incoming.length > requestReviewFileLimits.maxFiles) {
+        throw new Error(`Upload up to ${requestReviewFileLimits.maxFiles} files for this request.`);
+      }
+      const currentTotal = files.reduce((sum, file) => sum + file.size, 0);
+      const incomingTotal = incoming.reduce((sum, file) => sum + file.size, 0);
+      if (incoming.some((file) => file.size > requestReviewFileLimits.maxFileBytes)) {
+        throw new Error('Each uploaded file must be 4MB or smaller.');
+      }
+      if (currentTotal + incomingTotal > requestReviewFileLimits.maxTotalBytes) {
+        throw new Error('Total uploaded file size must be 10MB or smaller.');
+      }
+      const prepared = await Promise.all(incoming.map(async (file) => ({
+        localId: `${category}-${file.name}-${file.size}-${Date.now()}`,
+        name: file.name,
+        category,
+        mimeType: file.type || 'application/octet-stream',
+        size: file.size,
+        contentBase64: await fileToBase64(file),
+      })));
+      setFiles((current) => [...current, ...prepared]);
+      setFileStatus('idle');
+    } catch (uploadError) {
+      setFileStatus('error');
+      setFileError(uploadError instanceof Error ? uploadError.message : 'File could not be prepared for upload.');
+    }
+  };
+
+  const removeFile = (localId: string) => {
+    setFiles((current) => current.filter((file) => file.localId !== localId));
   };
 
   const submit = async (event: FormEvent) => {
@@ -97,6 +169,7 @@ export default function RequestReviewPage() {
     setStatus('saving');
     setError('');
     setRequestId('');
+    setFileUploadWarning('');
 
     try {
       const response = await fetch('/.netlify/functions/kitchen-request-review', {
@@ -108,6 +181,7 @@ export default function RequestReviewPage() {
           termsAcknowledged,
           marketingOptIn,
           sourceRoute: '/request-review',
+          files: files.map(({ localId, ...file }) => file),
           ...getAttributionFields(),
         }),
       });
@@ -117,6 +191,9 @@ export default function RequestReviewPage() {
         throw new Error(message);
       }
       setRequestId(payload.request?.requestId || '');
+      if (files.length > 0 && payload.delivery?.filesStored !== true) {
+        setFileUploadWarning('Your request details were received, but the selected files were not attached. Please mention this when Operon Kitchens follows up.');
+      }
       setStatus('saved');
     } catch (submitError) {
       setStatus('error');
@@ -140,7 +217,7 @@ export default function RequestReviewPage() {
         </div>
         <div>
           <p className="muted">
-            Use this page to request quote review, site measure discussion or project suitability guidance. Uploads stay in the quote review pathway until secure file storage is enabled.
+            Use this page to request quote review, site measure discussion or project suitability guidance. You can now attach small quote, photo, plan or appliance-list files for secure kitchen review storage.
           </p>
           <div className="flexActions">
             <Link href="/quote" className="button ghost">Start estimate instead</Link>
@@ -204,9 +281,29 @@ export default function RequestReviewPage() {
             <input tabIndex={-1} autoComplete="off" value={form.website} onChange={(event) => update('website', event.target.value)} />
           </label>
           <aside className="compliancePanel">
-            <h2>Upload pathway</h2>
-            <p>Quote, photo and plan uploads are handled in the quote review pathway. This request form only sends text, contact and project details.</p>
-            <Link href="/quote/review" className="textLink">Upload existing quote or project files</Link>
+            <h2>Upload documents</h2>
+            <p>Only upload quotes, plans, photos or appliance documents you are authorised to share. Files are stored for request review and do not replace site measure or written scope confirmation.</p>
+            <div className="formGrid two">
+              {requestFileCategories.map((category) => (
+                <label key={category.value} className="uploadBox">
+                  <span>{category.label}</span>
+                  <input type="file" multiple accept={category.accept} onChange={(event) => addFiles(event.target.files, category.value)} />
+                </label>
+              ))}
+            </div>
+            <p className="muted">Limits: up to {requestReviewFileLimits.maxFiles} files, 4MB each, 10MB total. PDF and common image formats only.</p>
+            {fileStatus === 'reading' && <div className="successPanel">Preparing file for secure upload...</div>}
+            {fileError && <div className="errorPanel">{fileError}</div>}
+            {files.length > 0 && (
+              <ul className="lineItemList">
+                {files.map((file) => (
+                  <li key={file.localId}>
+                    <span>{file.name}</span>
+                    <button type="button" className="textLink" onClick={() => removeFile(file.localId)}>Remove</button>
+                  </li>
+                ))}
+              </ul>
+            )}
           </aside>
 
           <PrivacyCollectionNotice
@@ -228,12 +325,13 @@ export default function RequestReviewPage() {
           {status === 'saved' && (
             <div className="successPanel">
               Your request has been received for Operon Kitchens review intake. {requestId && <>Reference: <strong>{requestId}</strong>.</>} Site measure, written scope confirmation and project-specific review are still required before commitment.
+              {fileUploadWarning && <p>{fileUploadWarning}</p>}
             </div>
           )}
           {status === 'error' && <div className="errorPanel">{error}</div>}
           <div className="wizardActions">
             <button className="button primary" type="submit" disabled={!ready || status === 'saving'}>
-              {status === 'saving' ? 'Submitting...' : 'Submit request'}
+              {status === 'saving' ? 'Submitting...' : fileStatus === 'reading' ? 'Preparing files...' : 'Submit request'}
             </button>
             <Link href="/quote/review" className="button ghost">Upload quote/photos/plans</Link>
           </div>

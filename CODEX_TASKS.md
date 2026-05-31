@@ -19,6 +19,7 @@ Prepare Operon Kitchens for controlled real enquiry testing while avoiding unnec
 2. Keep request-review controlled-launch flow stable.
    - Preserve Supabase as source of truth.
    - Preserve safe success when storage works and email is disabled.
+   - Preserve kitchen-scoped file upload storage and safe metadata display.
    - Do not fake success when neither storage nor email works.
    - Preserve attribution fields and legacy fallback.
 
@@ -46,7 +47,7 @@ Key manual checks:
 
 Do not implement these unless explicitly asked:
 
-- File uploads and secure file storage.
+- Admin file download/review workflow, retention rules and deletion handling.
 - Payment/checkout.
 - Customer accounts/login expansion.
 - Full CRM.

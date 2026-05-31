@@ -89,12 +89,13 @@ Environment variables:
 * `OPERON_KITCHENS_REQUEST_REVIEW_FROM_EMAIL` - optional sender address. Use a verified Resend domain/sender for production.
 * `OPERON_KITCHENS_IP_HASH_SALT` - optional salt for privacy-safer IP hashing.
 * `OPERON_KITCHENS_ADMIN_TOKEN` - required for the internal `/admin/leads` admin-lite lead operations page and functions.
+* `OPERON_KITCHENS_UPLOAD_BUCKET` - required for secure quote/photo/plan file storage when customers attach files.
 
 If Supabase storage is absent but Resend is configured, the function can still notify by email. If neither durable storage nor email notification is configured, the function returns a controlled service-unavailable response instead of pretending the lead was captured.
 
 For storage-only production testing, Supabase variables are enough. Resend variables can be left unset until a sending domain is ready; the function should still return success when the Supabase insert succeeds. If Resend is configured and rejects a send, the lead can still succeed when Supabase storage succeeds. If a valid request returns `503`, check Netlify Function logs for the safe diagnostic categories documented in `docs/supabase-kitchen-request-reviews.md`.
 
-Email notification is not the database. Supabase remains the source of truth, and notification emails should prompt the operator to check `/admin/leads`. Notification emails include customer-safe lead details only: request ID, contact details, project answers, message, marketing opt-in, created time and an admin follow-up reminder. They must not include supplier costs, internal rates, margin logic, lead scores, admin priority, service keys, uploaded files or final quote approval.
+Email notification is not the database. Supabase remains the source of truth, and notification emails should prompt the operator to check `/admin/leads`. Notification emails include customer-safe lead details only: request ID, contact details, project answers, message, uploaded file names/categories, marketing opt-in, created time and an admin follow-up reminder. They must not include supplier costs, internal rates, margin logic, lead scores, admin priority, service keys, file contents or final quote approval.
 
 Lead attribution is captured without cookies when available. The request-review page sends the current source route, landing page, referrer and UTM parameters (`utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`). These fields are optional, sanitised server-side and visible in `/admin/leads` for controlled-launch review. If the optional Supabase attribution migration has not been applied yet, the server falls back to the legacy lead columns so the request can still be stored; attribution persistence begins after the additive migration is applied.
 
@@ -102,7 +103,7 @@ Controlled-launch QA is documented in `docs/controlled-launch-checklist.md`.
 
 Supabase setup instructions and SQL are documented in `docs/supabase-kitchen-request-reviews.md`.
 
-File uploads are not enabled in this form yet; customers are directed to the quote review pathway for upload guidance until secure kitchen-scoped storage is implemented.
+File uploads are enabled through the same request-review Netlify Function when `OPERON_KITCHENS_UPLOAD_BUCKET` and the kitchen Supabase storage bucket/table are configured. Files are validated server-side, stored in a private kitchen-specific Supabase Storage bucket, and linked to the lead through `public.kitchen_request_review_files`. Upload limits are 6 files, 4MB each and 10MB total, with PDF and common image formats only. Admin-lite displays file metadata only; it does not expose public file URLs or signed downloads yet.
 
 This is request intake only. It is not a final quote, order submission, payment flow, legal advice, compliance approval or project acceptance.
 
@@ -123,7 +124,7 @@ This Phase 1 application focuses on structure and core quote-review logic. To mo
 
 * **Database integration**: connect to a database such as Supabase/Postgres to persist leads, rate cards and admin data.
 * **Authentication**: secure the admin dashboard with proper authentication and authorisation.
-* **File uploads**: implement secure storage (e.g. S3 or Supabase Storage) with validation and size limits.
+* **File upload operations**: add admin download/review workflow, retention rules and deletion handling after controlled storage is verified.
 * **Dynamic content management**: product pages, glossary, guides, location pages and FAQs now read from kitchen CMS tables seeded from the static files. A future production CMS can replace the SQLite-backed admin layer.
 * **Comprehensive testing**: build out unit and integration tests for the pricing engine and form flows using Jest and React Testing Library.
 * **Responsive design**: refine mobile layouts and add visual polish consistent with a premium brand.

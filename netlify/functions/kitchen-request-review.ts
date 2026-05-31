@@ -5,6 +5,7 @@ import {
 } from '../../src/lib/requestReview';
 import { createHash } from 'node:crypto';
 import { storeKitchenRequestReviewLead } from '../../src/lib/kitchenLeadStorage';
+import { storeKitchenRequestReviewFiles } from '../../src/lib/kitchenFileStorage';
 
 interface NetlifyEvent {
   httpMethod: string;
@@ -95,6 +96,7 @@ function buildRequestReviewEmailText(lead: KitchenRequestReviewLead) {
     `UTM source: ${lead.attribution.utmSource || 'not supplied'}`,
     `UTM medium: ${lead.attribution.utmMedium || 'not supplied'}`,
     `UTM campaign: ${lead.attribution.utmCampaign || 'not supplied'}`,
+    `Uploaded files: ${lead.files.length ? lead.files.map((file) => `${file.category}: ${file.name}`).join('; ') : 'none supplied'}`,
     '',
     'Message:',
     lead.message,
@@ -158,6 +160,9 @@ export async function handler(event: NetlifyEvent): Promise<NetlifyResponse> {
     userAgent: getHeader(event.headers, 'user-agent'),
     ipHash: getIpHash(event),
   });
+  const fileStorage = storage.stored
+    ? await storeKitchenRequestReviewFiles(lead)
+    : { configured: false as const, stored: false as const, reason: 'lead_not_stored' as const, fileCount: lead.files.length };
 
   if (!storage.configured) {
     console.warn('operon_kitchens_request_review_storage_env_missing', {
@@ -169,6 +174,20 @@ export async function handler(event: NetlifyEvent): Promise<NetlifyResponse> {
       category: 'storage_insert_failed',
       error: storage.error,
     });
+  }
+
+  if (lead.files.length > 0) {
+    if (!fileStorage.configured) {
+      console.warn('operon_kitchens_request_review_file_storage_env_missing', {
+        category: 'file_storage_env_missing',
+        fileCount: lead.files.length,
+      });
+    } else if (!fileStorage.stored) {
+      console.warn('operon_kitchens_request_review_file_storage_failed', {
+        category: 'file_storage_failed',
+        error: fileStorage.error,
+      });
+    }
   }
 
   let notificationPrepared = false;
@@ -212,6 +231,8 @@ export async function handler(event: NetlifyEvent): Promise<NetlifyResponse> {
     request: createCustomerRequestAcknowledgement(lead),
     delivery: {
       stored: storage.stored,
+      filesStored: fileStorage.stored,
+      fileCount: lead.files.length,
       notificationPrepared,
     },
   });

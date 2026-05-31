@@ -228,7 +228,7 @@ label span:first-child {
 }
 
 .hero {
-  min-height: min(820px, calc(88vh - 76px));
+  min-height: min(760px, calc(100svh - 82px));
   display: flex;
   flex-direction: column;
   position: relative;
@@ -282,8 +282,8 @@ label span:first-child {
 }
 
 .heroContent {
-  width: min(1180px, calc(100% - 32px));
-  margin: auto auto 16vh;
+  width: min(1280px, calc(100% - 40px));
+  margin: auto auto clamp(56px, 8vh, 96px);
   position: relative;
   z-index: 2;
 }
@@ -298,11 +298,12 @@ label span:first-child {
 }
 
 .hero h1 {
-  max-width: 740px;
+  max-width: 880px;
   margin: 0;
-  font-size: clamp(3rem, 7vw, 5.8rem);
-  line-height: 0.98;
+  font-size: clamp(3rem, 4.8vw, 5rem);
+  line-height: 1.02;
   letter-spacing: 0;
+  text-wrap: balance;
 }
 
 .siteFooter {
@@ -386,11 +387,11 @@ label span:first-child {
 }
 
 .heroLead {
-  max-width: 650px;
-  margin: 24px 0 0;
+  max-width: 620px;
+  margin: 20px 0 0;
   color: rgba(255, 255, 255, 0.88);
-  font-size: 1.17rem;
-  line-height: 1.65;
+  font-size: clamp(1rem, 1.2vw, 1.12rem);
+  line-height: 1.55;
 }
 
 .wizardHeader .heroLead,
@@ -1872,11 +1873,13 @@ a.infoCard:hover,
 
   .hero {
     min-height: auto;
-    padding-top: 48px;
+    padding-top: 0;
   }
 
   .heroContent {
-    margin: 0 auto 96px;
+    margin: 0 auto 72px;
+    padding-top: 44px;
+    width: min(100% - 28px, 640px);
   }
 
   .proofStrip,
@@ -1979,15 +1982,6 @@ a.infoCard:hover,
     font-size: clamp(2.1rem, 14vw, 3.4rem);
   }
 
-  .hero h1 {
-    font-size: clamp(2.45rem, 13vw, 3.45rem);
-    line-height: 1.02;
-  }
-
-  .heroLead {
-    font-size: 1rem;
-  }
-
   .heroActions,
   .flexActions {
     align-items: stretch;
@@ -2048,13 +2042,14 @@ a.infoCard:hover,
 }
 
 .heroGrid {
-  align-items: end;
+  align-items: center;
   display: grid;
-  gap: clamp(28px, 5vw, 54px);
-  grid-template-columns: minmax(0, 1fr) minmax(340px, 440px);
+  gap: clamp(24px, 4vw, 48px);
+  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 400px);
 }
 
 .estimatePreviewCard {
+  align-self: center;
   background: rgba(255, 255, 255, 0.96);
   border: 1px solid rgba(255, 255, 255, 0.38);
   border-radius: 8px;
@@ -2083,7 +2078,7 @@ a.infoCard:hover,
 
 .estimatePreviewCard strong {
   display: block;
-  font-size: clamp(2rem, 5vw, 3rem);
+  font-size: clamp(2rem, 3.3vw, 2.7rem);
   line-height: 1;
 }
 
@@ -2219,8 +2214,24 @@ a.infoCard:hover,
     grid-template-columns: 1fr;
   }
 
+  .heroGrid {
+    align-items: start;
+    gap: 28px;
+  }
+
+  .hero h1 {
+    max-width: 100%;
+    font-size: clamp(2.5rem, 9.5vw, 4.25rem);
+    line-height: 1.04;
+  }
+
+  .heroLead {
+    max-width: 100%;
+  }
+
   .estimatePreviewCard {
     max-width: 520px;
+    width: 100%;
   }
 
   .stickyMobileCta {
@@ -2268,11 +2279,25 @@ a.infoCard:hover,
 
 @media (max-width: 520px) {
   .hero h1 {
-    font-size: clamp(2.45rem, 13vw, 3.45rem);
-    line-height: 1.02;
+    font-size: clamp(2.15rem, 10.5vw, 3rem);
+    line-height: 1.05;
+  }
+
+  .heroContent {
+    margin-bottom: 68px;
+    padding-top: 34px;
+    width: min(100% - 24px, 640px);
+  }
+
+  .heroActions {
+    margin-top: 22px;
   }
 
   .estimatePreviewCard {
     padding: 22px 18px 18px;
+  }
+
+  .estimatePreviewCard strong {
+    font-size: clamp(1.9rem, 11vw, 2.5rem);
   }
 }

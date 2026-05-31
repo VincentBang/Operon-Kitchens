@@ -58,6 +58,7 @@ Because the public site is a static export:
 - Runtime backend behaviour must use Netlify Functions under `netlify/functions`.
 - `/request-review` should use `/.netlify/functions/kitchen-request-review`.
 - `/admin/leads` should use `/.netlify/functions/kitchen-admin-leads` and `/.netlify/functions/kitchen-admin-lead-update`.
+- File uploads should use `/.netlify/functions/kitchen-request-review`, not browser-side Supabase writes.
 
 Static-export regression check:
 
@@ -109,6 +110,7 @@ Only after an approved deploy:
 - `/admin/leads` shows the lead after entering the token.
 - Status update works.
 - Internal note update works.
+- If files were attached, metadata appears in `/admin/leads`.
 - No secrets or internal pricing fields appear in browser responses.
 
 ## 7. Netlify Deploy Rule

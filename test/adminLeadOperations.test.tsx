@@ -30,6 +30,19 @@ const sampleLead = {
   internal_notes: null,
   user_agent: 'Jest',
   ip_hash: null,
+  files: [],
+};
+
+const sampleLeadFile = {
+  id: '1993f583-2d91-4d4c-bf3f-afd71d4ebb30',
+  lead_id: sampleLead.id,
+  created_at: '2026-05-31T10:01:00.000Z',
+  bucket: 'operon-kitchens-request-review-files',
+  object_path: `request-reviews/2026-05-31/${sampleLead.id}/kitchen-quote.pdf`,
+  file_name: 'kitchen-quote.pdf',
+  file_type: 'application/pdf',
+  file_size: 2048,
+  category: 'existingQuote',
 };
 
 describe('admin-lite lead functions', () => {
@@ -70,11 +83,18 @@ describe('admin-lite lead functions', () => {
   });
 
   it('returns leads with a valid admin token', async () => {
-    const fetchMock = jest.fn(async () => ({
-      ok: true,
-      json: async () => [sampleLead],
-      text: async () => '',
-    }));
+    const fetchMock = jest
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => [{ ...sampleLead, files: undefined }],
+        text: async () => '',
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => [sampleLeadFile],
+        text: async () => '',
+      });
     global.fetch = fetchMock as typeof fetch;
 
     const response = await listHandler({
@@ -87,9 +107,13 @@ describe('admin-lite lead functions', () => {
 
     expect(response.statusCode).toBe(200);
     expect(body.ok).toBe(true);
-    expect(body.leads).toEqual([sampleLead]);
+    expect(body.leads).toEqual([{ ...sampleLead, files: [sampleLeadFile] }]);
     expect(fetchMock).toHaveBeenCalledWith(
       expect.stringContaining('/rest/v1/kitchen_request_reviews?'),
+      expect.objectContaining({ method: 'GET' }),
+    );
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining('/rest/v1/kitchen_request_review_files?'),
       expect.objectContaining({ method: 'GET' }),
     );
     expect(JSON.stringify(body)).not.toContain('service-role-test-key');
@@ -175,7 +199,7 @@ describe('admin-lite leads page', () => {
   it('renders attribution fields when a lead is loaded without exposing secrets', async () => {
     global.fetch = jest.fn(async () => ({
       ok: true,
-      json: async () => ({ ok: true, leads: [sampleLead] }),
+      json: async () => ({ ok: true, leads: [{ ...sampleLead, files: [sampleLeadFile] }] }),
     })) as typeof fetch;
 
     render(<LeadsAdminPage />);
@@ -184,6 +208,8 @@ describe('admin-lite leads page', () => {
 
     expect(await screen.findByText(/1 lead loaded/i)).toBeInTheDocument();
     expect(screen.getByText(/Source: google/i)).toBeInTheDocument();
+    expect(screen.getByText(/1 uploaded file/i)).toBeInTheDocument();
+    expect(screen.getByText('kitchen-quote.pdf')).toBeInTheDocument();
     expect(screen.getByText('Lead source')).toBeInTheDocument();
     expect(screen.getByText('/request-review')).toBeInTheDocument();
     expect(screen.getByText('google / cpc / controlled_launch')).toBeInTheDocument();
