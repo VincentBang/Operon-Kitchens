@@ -61,7 +61,17 @@ create table if not exists public.kitchen_request_reviews (
   message text not null,
   marketing_opt_in boolean not null default false,
   source_route text not null default '/request-review',
-  status text not null default 'new' check (status in ('new', 'contacted', 'reviewing', 'closed')),
+  status text not null default 'new' check (status in (
+    'new',
+    'review_needed',
+    'contacted',
+    'site_measure_offered',
+    'site_measure_booked',
+    'quoted',
+    'won',
+    'lost',
+    'spam'
+  )),
   internal_notes text,
   user_agent text,
   ip_hash text
@@ -79,6 +89,27 @@ create index if not exists kitchen_request_reviews_status_idx
 alter table public.kitchen_request_reviews enable row level security;
 ```
 
+If the table already exists with the earlier Phase 1 status check, apply this migration before using admin-lite lead status updates:
+
+```sql
+alter table public.kitchen_request_reviews
+  drop constraint if exists kitchen_request_reviews_status_check;
+
+alter table public.kitchen_request_reviews
+  add constraint kitchen_request_reviews_status_check
+  check (status in (
+    'new',
+    'review_needed',
+    'contacted',
+    'site_measure_offered',
+    'site_measure_booked',
+    'quoted',
+    'won',
+    'lost',
+    'spam'
+  ));
+```
+
 ## RLS Guidance
 
 Use server-mediated inserts only.
@@ -91,6 +122,37 @@ Recommended policy posture for Phase 1:
 - Add admin read/update policies later only after kitchen authentication and admin roles are implemented.
 
 Do not create policies that allow anonymous reads of leads, contact details, messages or operational notes.
+
+## Admin-lite Lead Operations
+
+The internal `/admin/leads` page uses Netlify Functions and a simple admin token to list and update request-review leads.
+
+Required Netlify environment variable:
+
+```text
+OPERON_KITCHENS_ADMIN_TOKEN
+```
+
+The browser sends the token only in the `x-operon-admin-token` request header. Netlify Functions compare it server-side. If the token is missing or incorrect, the functions return `401` and do not reveal whether leads exist.
+
+Functions:
+
+- `GET /.netlify/functions/kitchen-admin-leads`
+- `POST /.netlify/functions/kitchen-admin-lead-update`
+
+Allowed status values:
+
+- `new`
+- `review_needed`
+- `contacted`
+- `site_measure_offered`
+- `site_measure_booked`
+- `quoted`
+- `won`
+- `lost`
+- `spam`
+
+Admin-lite updates are limited to `status` and `internal_notes`. The functions reject attempts to update contact details, created dates, pricing, supplier costs, lead scores, admin priority or other unsupported fields.
 
 ## Storage Boundary
 

@@ -69,33 +69,34 @@ No remaining live/local production mismatch was found in this route group.
 Checked on 2026-05-31 after Supabase and Netlify environment variables were reported as configured:
 
 - `https://operonkitchens.netlify.app/request-review` returned `200`.
-- `https://operonkitchens.netlify.app/.netlify/functions/kitchen-request-review` returned `404`.
-- A production test payload was not submitted because the function route is not live.
+- `GET https://operonkitchens.netlify.app/.netlify/functions/kitchen-request-review` returned `405`, which is expected because the function accepts `POST` only.
+- A labelled production storage-only test lead was submitted by `POST`.
+- The `POST` returned `202`.
+- The response included `ok: true`.
+- The response included `delivery.stored: true`.
+- The response included `delivery.notificationPrepared: false`, which is expected while Resend/email variables are intentionally blank.
+- The response did not include service keys, internal notes, lead score, margin, supplier costs, internal rates or admin priority.
+- Test request ID: `0993f583-2d91-4d4c-bf3f-afd71d4ebb30`.
 
-Local diagnosis:
+Supabase dashboard verification still requires Vincent or an operator with project access to confirm:
 
-- `netlify.toml` declares `[functions] directory = "netlify/functions"`.
-- `netlify/functions/kitchen-request-review.ts` exists locally.
-- `src/lib/requestReview.ts` and `src/lib/kitchenLeadStorage.ts` exist locally.
-- These request-review function/storage files are currently untracked in Git, so they are not part of the latest deployed commit.
+- a new row exists in `public.kitchen_request_reviews`,
+- `status` defaults to `new`,
+- client-controlled `status`, `internal_notes`, admin priority, lead score, margin and supplier-cost fields are not present,
+- `user_agent` is stored where available,
+- `ip_hash` is only present when `OPERON_KITCHENS_IP_HASH_SALT` is configured.
 
-Required deployment action:
+Netlify Function log verification still requires Vincent or an operator with Netlify access to confirm:
 
-1. Commit and push the request-review function, storage adapter, request-review schema, docs and tests to the branch Netlify deploys.
-2. Trigger a fresh Netlify deploy.
-3. Recheck `https://operonkitchens.netlify.app/.netlify/functions/kitchen-request-review`.
-4. After the function returns from Netlify, submit a clearly labelled test lead and confirm:
-   - the response is a safe acknowledgement,
-   - `delivery.stored` is `true`,
-   - `delivery.notificationPrepared` reflects the Resend result,
-   - a row exists in `kitchen_request_reviews`,
-   - the row status defaults to `new`,
-   - no client-controlled internal notes/status/admin fields are stored,
-   - Netlify logs do not contain missing environment variable warnings, Supabase errors, Resend errors or secrets.
+- no `storage_env_missing`,
+- no `storage_insert_failed`,
+- no `no_durable_path_available`,
+- `email_env_missing` is acceptable while email is intentionally deferred,
+- no secrets are logged.
 
 Netlify Function note:
 
-The site can publish the static app from `out` while still deploying functions from `netlify/functions`. If the function remains `404` after the files are committed and deployed, check whether the Netlify site is connected to the correct repository/branch and whether the deploy log includes function bundling for `kitchen-request-review`.
+The site can publish the static app from `out` while still deploying functions from `netlify/functions`.
 
 ## Local route status
 

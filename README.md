@@ -88,6 +88,7 @@ Environment variables:
 * `OPERON_KITCHENS_REQUEST_REVIEW_TO_EMAIL` - optional recipient for request-review notifications.
 * `OPERON_KITCHENS_REQUEST_REVIEW_FROM_EMAIL` - optional sender address. Defaults to Resend onboarding sender if omitted.
 * `OPERON_KITCHENS_IP_HASH_SALT` - optional salt for privacy-safer IP hashing.
+* `OPERON_KITCHENS_ADMIN_TOKEN` - required for the internal `/admin/leads` admin-lite lead operations page and functions.
 
 If Supabase storage is absent but Resend is configured, the function can still notify by email. If neither durable storage nor email notification is configured, the function returns a controlled service-unavailable response instead of pretending the lead was captured.
 
@@ -98,6 +99,17 @@ Supabase setup instructions and SQL are documented in `docs/supabase-kitchen-req
 File uploads are not enabled in this form yet; customers are directed to the quote review pathway for upload guidance until secure kitchen-scoped storage is implemented.
 
 This is request intake only. It is not a final quote, order submission, payment flow, legal advice, compliance approval or project acceptance.
+
+### Admin-lite lead operations
+
+The internal `/admin/leads` page can list and update request-review leads after the operator enters `OPERON_KITCHENS_ADMIN_TOKEN`. Do not share this token publicly. The page is not linked from the customer navigation and is intended only as a lightweight operational console until a proper authenticated admin system is built.
+
+Admin functions:
+
+* `GET /.netlify/functions/kitchen-admin-leads`
+* `POST /.netlify/functions/kitchen-admin-lead-update`
+
+The functions use the Supabase service role key server-side only and never expose it to the browser. Admin updates are limited to status and internal notes. Email notifications remain optional/deferred; storage-only production mode is supported.
 
 ## Further development
 

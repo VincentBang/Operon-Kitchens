@@ -320,5 +320,6 @@ describe('kitchen request review storage adapter', () => {
     expect(documentedSql).toContain("property_type text not null check (property_type in ('house', 'townhouse', 'apartment', 'strataApartment', 'notSure'))");
     expect(documentedSql).toContain("project_stage text not null check (project_stage in ('planning', 'quoteInHand', 'readyForMeasure', 'urgent', 'notSure'))");
     expect(documentedSql).toContain("preferred_next_step text not null check (preferred_next_step in ('planningEstimate', 'quoteReview', 'siteMeasure', 'scopeDiscussion'))");
+    expect(documentedSql).toContain("'site_measure_booked'");
   });
 });
