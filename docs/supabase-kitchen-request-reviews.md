@@ -189,13 +189,13 @@ The function:
 Recommended bucket name:
 
 ```text
-operon-kitchens-request-review-files
+<UPLOAD_BUCKET_NAME>
 ```
 
 Set Netlify:
 
 ```text
-OPERON_KITCHENS_UPLOAD_BUCKET=operon-kitchens-request-review-files
+OPERON_KITCHENS_UPLOAD_BUCKET=<UPLOAD_BUCKET_NAME>
 ```
 
 Apply this bucket setup manually in the kitchen Supabase project only:
@@ -209,8 +209,8 @@ insert into storage.buckets (
   allowed_mime_types
 )
 values (
-  'operon-kitchens-request-review-files',
-  'operon-kitchens-request-review-files',
+  '<UPLOAD_BUCKET_NAME>',
+  '<UPLOAD_BUCKET_NAME>',
   false,
   4194304,
   array[

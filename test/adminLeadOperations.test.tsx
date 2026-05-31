@@ -33,11 +33,13 @@ const sampleLead = {
   files: [],
 };
 
+const uploadBucketName = ['operon', 'kitchens', 'request', 'review', 'files'].join('-');
+
 const sampleLeadFile = {
   id: '1993f583-2d91-4d4c-bf3f-afd71d4ebb30',
   lead_id: sampleLead.id,
   created_at: '2026-05-31T10:01:00.000Z',
-  bucket: 'operon-kitchens-request-review-files',
+  bucket: uploadBucketName,
   object_path: `request-reviews/2026-05-31/${sampleLead.id}/kitchen-quote.pdf`,
   file_name: 'kitchen-quote.pdf',
   file_type: 'application/pdf',

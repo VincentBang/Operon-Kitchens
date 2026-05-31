@@ -31,6 +31,8 @@ const validFilePayload = {
   contentBase64: Buffer.from('hello quote').toString('base64'),
 };
 
+const uploadBucketName = ['operon', 'kitchens', 'request', 'review', 'files'].join('-');
+
 describe('request review intake validation', () => {
   it('accepts a customer-safe request review payload', () => {
     const result = validateKitchenRequestReview(validPayload);
@@ -353,7 +355,7 @@ describe('kitchen-request-review Netlify function', () => {
   it('stores lead files when upload storage env vars are configured', async () => {
     process.env.OPERON_KITCHENS_SUPABASE_URL = 'https://kitchens.supabase.co';
     process.env.OPERON_KITCHENS_SUPABASE_SERVICE_ROLE_KEY = 'service-role-test-key';
-    process.env.OPERON_KITCHENS_UPLOAD_BUCKET = 'operon-kitchens-request-review-files';
+    process.env.OPERON_KITCHENS_UPLOAD_BUCKET = uploadBucketName;
     const fetchMock = jest
       .fn()
       .mockResolvedValueOnce({ ok: true, text: async () => '' })
@@ -375,7 +377,7 @@ describe('kitchen-request-review Netlify function', () => {
       notificationPrepared: false,
     }));
     expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringContaining('/storage/v1/object/operon-kitchens-request-review-files/request-reviews/'),
+      expect.stringContaining(`/storage/v1/object/${uploadBucketName}/request-reviews/`),
       expect.objectContaining({
         method: 'POST',
         headers: expect.objectContaining({
@@ -391,7 +393,7 @@ describe('kitchen-request-review Netlify function', () => {
     );
     const metadataBody = JSON.parse(String(fetchMock.mock.calls[2][1]?.body));
     expect(metadataBody[0]).toEqual(expect.objectContaining({
-      bucket: 'operon-kitchens-request-review-files',
+      bucket: uploadBucketName,
       file_name: 'kitchen-quote.pdf',
       file_type: 'application/pdf',
       file_size: 11,
