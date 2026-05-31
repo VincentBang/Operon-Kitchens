@@ -30,6 +30,16 @@ OPERON_KITCHENS_IP_HASH_SALT
 
 If Supabase storage is not configured but Resend is configured, the function can still notify by email. If neither durable storage nor email notification is configured, the endpoint returns a controlled service-unavailable response instead of pretending the lead was captured.
 
+When diagnosing production failures, check the Netlify Function logs for these safe categories:
+
+- `storage_env_missing` - one or both Supabase storage environment variables are not available to the deployed function runtime.
+- `storage_insert_failed` - Supabase environment variables are present, but the REST insert failed. Check the table name, SQL migration, service role key and Supabase project URL.
+- `email_env_missing` - Resend notification variables are not configured. This is acceptable while email is intentionally deferred if Supabase storage succeeds.
+- `email_send_failed` - Resend variables are present, but Resend rejected or failed the send.
+- `no_durable_path_available` - neither Supabase storage nor email notification succeeded, so the function correctly returned `503`.
+
+These diagnostics must not include service keys, API keys, raw payloads, supplier costs, internal pricing, lead scores, admin priority or internal notes.
+
 ## SQL Migration
 
 Apply this manually in the kitchen Supabase project only. Do not run it against Operon Flooring or Oz Timber projects.
@@ -102,6 +112,19 @@ The server creates:
 - optional `ip_hash` when `OPERON_KITCHENS_IP_HASH_SALT` is configured
 
 The browser must not send or receive supplier costs, internal rates, margin logic, lead scores, admin priority or internal notes.
+
+## Production 503 Checklist
+
+If the function is live but returns `503` to a valid POST:
+
+1. Confirm Netlify has redeployed after environment variable changes.
+2. Confirm `OPERON_KITCHENS_SUPABASE_URL` is the Supabase project URL, not the dashboard URL.
+3. Confirm `OPERON_KITCHENS_SUPABASE_SERVICE_ROLE_KEY` is the service role key, not the anon key.
+4. Confirm the SQL in this document has been applied to the same Supabase project referenced by the URL.
+5. Confirm the table exists at `public.kitchen_request_reviews`.
+6. Confirm Netlify Function logs do not show `storage_env_missing`.
+7. If logs show `storage_insert_failed`, read the safe status/detail to identify missing table, column mismatch, invalid key or project mismatch.
+8. If email is intentionally deferred, `email_env_missing` is expected and should not block success when Supabase storage works.
 
 ## File Uploads
 

@@ -76,7 +76,7 @@ async function notifyByResend(lead: KitchenRequestReviewLead) {
   const apiKey = process.env.OPERON_KITCHENS_RESEND_API_KEY;
   const to = process.env.OPERON_KITCHENS_REQUEST_REVIEW_TO_EMAIL;
   const from = process.env.OPERON_KITCHENS_REQUEST_REVIEW_FROM_EMAIL || 'Operon Kitchens <onboarding@resend.dev>';
-  if (!apiKey || !to) return false;
+  if (!apiKey || !to) return { configured: false, sent: false as const, reason: 'email_env_missing' as const };
 
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -111,11 +111,16 @@ async function notifyByResend(lead: KitchenRequestReviewLead) {
 
   if (!response.ok) {
     const detail = await response.text();
-    console.warn('operon_kitchens_request_review_email_failed', { status: response.status, detail: detail.slice(0, 240) });
-    return false;
+    return {
+      configured: true,
+      sent: false as const,
+      reason: 'email_send_failed' as const,
+      status: response.status,
+      detail: detail.slice(0, 240),
+    };
   }
 
-  return true;
+  return { configured: true, sent: true as const };
 }
 
 export async function handler(event: NetlifyEvent): Promise<NetlifyResponse> {
@@ -137,23 +142,47 @@ export async function handler(event: NetlifyEvent): Promise<NetlifyResponse> {
   });
 
   if (!storage.configured) {
-    console.warn('operon_kitchens_request_review_storage_not_configured', {
+    console.warn('operon_kitchens_request_review_storage_env_missing', {
+      category: 'storage_env_missing',
       message: 'Missing Supabase storage environment variables.',
     });
   } else if (!storage.stored) {
-    console.warn('operon_kitchens_request_review_storage_failed', { error: storage.error });
+    console.warn('operon_kitchens_request_review_storage_insert_failed', {
+      category: 'storage_insert_failed',
+      error: storage.error,
+    });
   }
 
   let notificationPrepared = false;
   try {
-    notificationPrepared = await notifyByResend(lead);
+    const email = await notifyByResend(lead);
+    notificationPrepared = email.sent;
+    if (!email.configured) {
+      console.warn('operon_kitchens_request_review_email_env_missing', {
+        category: 'email_env_missing',
+        message: 'Missing Resend notification environment variables.',
+      });
+    } else if (!email.sent) {
+      console.warn('operon_kitchens_request_review_email_send_failed', {
+        category: 'email_send_failed',
+        status: email.status,
+        detail: email.detail,
+      });
+    }
   } catch (error) {
     console.warn('operon_kitchens_request_review_notification_error', {
+      category: 'email_send_failed',
       message: error instanceof Error ? error.message : 'Unknown notification error',
     });
   }
 
   if (!storage.stored && !notificationPrepared) {
+    console.warn('operon_kitchens_request_review_no_durable_path_available', {
+      category: 'no_durable_path_available',
+      storageConfigured: storage.configured,
+      storageStored: storage.stored,
+      notificationPrepared,
+    });
     return json(503, {
       ok: false,
       error: 'Request intake is temporarily unavailable. Please try again later or use the estimate and quote review pathways to prepare your details.',

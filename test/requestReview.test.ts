@@ -1,6 +1,8 @@
 import { handler } from '../netlify/functions/kitchen-request-review';
 import { createKitchenRequestReviewStorageRecord, storeKitchenRequestReviewLead } from '../src/lib/kitchenLeadStorage';
 import { validateKitchenRequestReview } from '../src/lib/requestReview';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 const validPayload = {
   name: 'Vincent',
@@ -155,6 +157,7 @@ describe('kitchen-request-review Netlify function', () => {
   });
 
   it('does not fake success when storage and email are both unavailable', async () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
     const response = await handler({
       httpMethod: 'POST',
       body: JSON.stringify(validPayload),
@@ -164,6 +167,46 @@ describe('kitchen-request-review Netlify function', () => {
     expect(response.statusCode).toBe(503);
     expect(body.ok).toBe(false);
     expect(body.error).toContain('temporarily unavailable');
+    expect(warnSpy).toHaveBeenCalledWith(
+      'operon_kitchens_request_review_storage_env_missing',
+      expect.objectContaining({ category: 'storage_env_missing' }),
+    );
+    expect(warnSpy).toHaveBeenCalledWith(
+      'operon_kitchens_request_review_email_env_missing',
+      expect.objectContaining({ category: 'email_env_missing' }),
+    );
+    expect(warnSpy).toHaveBeenCalledWith(
+      'operon_kitchens_request_review_no_durable_path_available',
+      expect.objectContaining({ category: 'no_durable_path_available' }),
+    );
+  });
+
+  it('logs safe diagnostic categories when Supabase insert fails', async () => {
+    process.env.OPERON_KITCHENS_SUPABASE_URL = 'https://kitchens.supabase.co';
+    process.env.OPERON_KITCHENS_SUPABASE_SERVICE_ROLE_KEY = 'service-role-test-key';
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+    global.fetch = jest.fn(async () => ({
+      ok: false,
+      status: 404,
+      text: async () => '{"message":"relation public.kitchen_request_reviews does not exist"}',
+    })) as typeof fetch;
+
+    const response = await handler({
+      httpMethod: 'POST',
+      body: JSON.stringify(validPayload),
+    });
+    const body = JSON.parse(response.body);
+
+    expect(response.statusCode).toBe(503);
+    expect(body.ok).toBe(false);
+    expect(warnSpy).toHaveBeenCalledWith(
+      'operon_kitchens_request_review_storage_insert_failed',
+      expect.objectContaining({
+        category: 'storage_insert_failed',
+        error: expect.stringContaining('Supabase insert failed with 404'),
+      }),
+    );
+    expect(JSON.stringify(warnSpy.mock.calls).toLowerCase()).not.toContain('service-role-test-key');
   });
 
   it('returns validation errors as safe JSON', async () => {
@@ -259,5 +302,23 @@ describe('kitchen request review storage adapter', () => {
     expect(record.internal_notes).toBeNull();
     expect(record).not.toHaveProperty('leadScore');
     expect(record).not.toHaveProperty('adminPriority');
+  });
+
+  it('keeps the documented Supabase SQL aligned with the storage record mapping', () => {
+    const validation = validateKitchenRequestReview(validPayload);
+    if (!validation.ok) throw new Error('Expected valid payload');
+    const record = createKitchenRequestReviewStorageRecord(validation.data);
+    const documentedSql = readFileSync(
+      join(process.cwd(), 'docs', 'supabase-kitchen-request-reviews.md'),
+      'utf8',
+    );
+
+    expect(documentedSql).toContain('create table if not exists public.kitchen_request_reviews');
+    for (const column of Object.keys(record)) {
+      expect(documentedSql).toContain(column);
+    }
+    expect(documentedSql).toContain("property_type text not null check (property_type in ('house', 'townhouse', 'apartment', 'strataApartment', 'notSure'))");
+    expect(documentedSql).toContain("project_stage text not null check (project_stage in ('planning', 'quoteInHand', 'readyForMeasure', 'urgent', 'notSure'))");
+    expect(documentedSql).toContain("preferred_next_step text not null check (preferred_next_step in ('planningEstimate', 'quoteReview', 'siteMeasure', 'scopeDiscussion'))");
   });
 });

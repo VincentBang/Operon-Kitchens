@@ -91,6 +91,8 @@ Environment variables:
 
 If Supabase storage is absent but Resend is configured, the function can still notify by email. If neither durable storage nor email notification is configured, the function returns a controlled service-unavailable response instead of pretending the lead was captured.
 
+For storage-only production testing, Supabase variables are enough. Resend variables can be left unset until a sending domain is ready; the function should still return success when the Supabase insert succeeds. If a valid request returns `503`, check Netlify Function logs for the safe diagnostic categories documented in `docs/supabase-kitchen-request-reviews.md`.
+
 Supabase setup instructions and SQL are documented in `docs/supabase-kitchen-request-reviews.md`.
 
 File uploads are not enabled in this form yet; customers are directed to the quote review pathway for upload guidance until secure kitchen-scoped storage is implemented.
