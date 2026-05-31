@@ -154,6 +154,47 @@ describe('kitchen-request-review Netlify function', () => {
     expect(response.statusCode).toBe(202);
     expect(body.delivery).toEqual({ stored: false, notificationPrepared: true });
     expect(fetchMock).toHaveBeenCalledWith('https://api.resend.com/emails', expect.objectContaining({ method: 'POST' }));
+    const resendPayload = JSON.parse(String(fetchMock.mock.calls[0][1]?.body));
+    expect(resendPayload.subject).toBe('New Operon Kitchens request-review lead');
+    expect(resendPayload.text).toContain('Request ID:');
+    expect(resendPayload.text).toContain('Name: Vincent');
+    expect(resendPayload.text).toContain('Email: vincent@example.com');
+    expect(resendPayload.text).toContain('Phone: 0400000000');
+    expect(resendPayload.text).toContain('Suburb: Mosman');
+    expect(resendPayload.text).toContain('Property type: house');
+    expect(resendPayload.text).toContain('Project stage: quoteInHand');
+    expect(resendPayload.text).toContain('Has current quote: yes');
+    expect(resendPayload.text).toContain('Has photos/plans: yes');
+    expect(resendPayload.text).toContain('Approximate budget range: $40k-$60k');
+    expect(resendPayload.text).toContain('Preferred next step: quoteReview');
+    expect(resendPayload.text).toContain('Marketing opt-in: no');
+    expect(resendPayload.text).toContain('Open /admin/leads');
+    expect(resendPayload.text).toContain('Supabase is the source of truth');
+    expect(resendPayload.text).not.toContain('supplier cost');
+    expect(resendPayload.text).not.toContain('margin');
+    expect(resendPayload.text).not.toContain('lead score');
+    expect(resendPayload.text).not.toContain('admin priority');
+  });
+
+  it('stores successfully when email is missing and does not expose notification internals', async () => {
+    process.env.OPERON_KITCHENS_SUPABASE_URL = 'https://kitchens.supabase.co';
+    process.env.OPERON_KITCHENS_SUPABASE_SERVICE_ROLE_KEY = 'service-role-test-key';
+    const fetchMock = jest.fn(async () => ({ ok: true, text: async () => '' }));
+    global.fetch = fetchMock as typeof fetch;
+
+    const response = await handler({
+      httpMethod: 'POST',
+      body: JSON.stringify(validPayload),
+    });
+    const body = JSON.parse(response.body);
+
+    expect(response.statusCode).toBe(202);
+    expect(body.delivery).toEqual({ stored: true, notificationPrepared: false });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(JSON.stringify(body).toLowerCase()).not.toContain('resend');
+    expect(JSON.stringify(body).toLowerCase()).not.toContain('service-role-test-key');
+    expect(JSON.stringify(body).toLowerCase()).not.toContain('internalrate');
+    expect(JSON.stringify(body).toLowerCase()).not.toContain('suppliercost');
   });
 
   it('does not fake success when storage and email are both unavailable', async () => {

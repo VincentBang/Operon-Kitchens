@@ -86,13 +86,15 @@ Environment variables:
 * `OPERON_KITCHENS_SUPABASE_SERVICE_ROLE_KEY` - required for server-side insert into `kitchen_request_reviews`.
 * `OPERON_KITCHENS_RESEND_API_KEY` - optional Resend API key for request notifications.
 * `OPERON_KITCHENS_REQUEST_REVIEW_TO_EMAIL` - optional recipient for request-review notifications.
-* `OPERON_KITCHENS_REQUEST_REVIEW_FROM_EMAIL` - optional sender address. Defaults to Resend onboarding sender if omitted.
+* `OPERON_KITCHENS_REQUEST_REVIEW_FROM_EMAIL` - optional sender address. Use a verified Resend domain/sender for production.
 * `OPERON_KITCHENS_IP_HASH_SALT` - optional salt for privacy-safer IP hashing.
 * `OPERON_KITCHENS_ADMIN_TOKEN` - required for the internal `/admin/leads` admin-lite lead operations page and functions.
 
 If Supabase storage is absent but Resend is configured, the function can still notify by email. If neither durable storage nor email notification is configured, the function returns a controlled service-unavailable response instead of pretending the lead was captured.
 
-For storage-only production testing, Supabase variables are enough. Resend variables can be left unset until a sending domain is ready; the function should still return success when the Supabase insert succeeds. If a valid request returns `503`, check Netlify Function logs for the safe diagnostic categories documented in `docs/supabase-kitchen-request-reviews.md`.
+For storage-only production testing, Supabase variables are enough. Resend variables can be left unset until a sending domain is ready; the function should still return success when the Supabase insert succeeds. If Resend is configured and rejects a send, the lead can still succeed when Supabase storage succeeds. If a valid request returns `503`, check Netlify Function logs for the safe diagnostic categories documented in `docs/supabase-kitchen-request-reviews.md`.
+
+Email notification is not the database. Supabase remains the source of truth, and notification emails should prompt the operator to check `/admin/leads`. Notification emails include customer-safe lead details only: request ID, contact details, project answers, message, marketing opt-in, created time and an admin follow-up reminder. They must not include supplier costs, internal rates, margin logic, lead scores, admin priority, service keys, uploaded files or final quote approval.
 
 Supabase setup instructions and SQL are documented in `docs/supabase-kitchen-request-reviews.md`.
 

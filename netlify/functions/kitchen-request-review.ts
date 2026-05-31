@@ -72,6 +72,36 @@ function getIpHash(event: NetlifyEvent) {
   return createHash('sha256').update(`${salt}:${rawIp}`).digest('hex');
 }
 
+function buildRequestReviewEmailText(lead: KitchenRequestReviewLead) {
+  return [
+    'New Operon Kitchens request-review lead',
+    '',
+    `Request ID: ${lead.id}`,
+    `Created: ${lead.createdAt}`,
+    `Name: ${lead.name}`,
+    `Email: ${lead.email}`,
+    `Phone: ${lead.phone || 'not supplied'}`,
+    `Suburb: ${lead.suburb || 'not supplied'}`,
+    `Property type: ${lead.propertyType}`,
+    `Project stage: ${lead.projectStage}`,
+    `Has current quote: ${lead.hasCurrentQuote}`,
+    `Has photos/plans: ${lead.hasPhotosPlans}`,
+    `Approximate budget range: ${lead.approximateBudgetRange || 'not supplied'}`,
+    `Preferred next step: ${lead.preferredNextStep}`,
+    `Marketing opt-in: ${lead.marketingOptIn ? 'yes' : 'no'}`,
+    `Source route: ${lead.sourceRoute}`,
+    '',
+    'Message:',
+    lead.message,
+    '',
+    'Next step:',
+    'Open /admin/leads, fetch leads with the admin token, then update status and internal notes after follow-up.',
+    '',
+    'Reminder:',
+    'Supabase is the source of truth. This email is a notification only and does not include uploaded files or final quote approval.',
+  ].join('\n');
+}
+
 async function notifyByResend(lead: KitchenRequestReviewLead) {
   const apiKey = process.env.OPERON_KITCHENS_RESEND_API_KEY;
   const to = process.env.OPERON_KITCHENS_REQUEST_REVIEW_TO_EMAIL;
@@ -87,25 +117,8 @@ async function notifyByResend(lead: KitchenRequestReviewLead) {
     body: JSON.stringify({
       from,
       to,
-      subject: `Operon Kitchens request review: ${lead.name}`,
-      text: [
-        `Request ID: ${lead.id}`,
-        `Created: ${lead.createdAt}`,
-        `Name: ${lead.name}`,
-        `Email: ${lead.email}`,
-        `Phone: ${lead.phone || 'not supplied'}`,
-        `Suburb: ${lead.suburb || 'not supplied'}`,
-        `Property type: ${lead.propertyType}`,
-        `Project stage: ${lead.projectStage}`,
-        `Has current quote: ${lead.hasCurrentQuote}`,
-        `Has photos/plans: ${lead.hasPhotosPlans}`,
-        `Approximate budget range: ${lead.approximateBudgetRange || 'not supplied'}`,
-        `Preferred next step: ${lead.preferredNextStep}`,
-        `Source route: ${lead.sourceRoute}`,
-        '',
-        'Message:',
-        lead.message,
-      ].join('\n'),
+      subject: 'New Operon Kitchens request-review lead',
+      text: buildRequestReviewEmailText(lead),
     }),
   });
 

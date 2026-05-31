@@ -98,6 +98,32 @@ Netlify Function note:
 
 The site can publish the static app from `out` while still deploying functions from `netlify/functions`.
 
+Resend notification note:
+
+- Email is a notification layer only; Supabase remains the source of truth.
+- Production email requires `OPERON_KITCHENS_RESEND_API_KEY`, `OPERON_KITCHENS_REQUEST_REVIEW_TO_EMAIL` and `OPERON_KITCHENS_REQUEST_REVIEW_FROM_EMAIL`.
+- `OPERON_KITCHENS_REQUEST_REVIEW_FROM_EMAIL` should use a verified Resend sender/domain for production.
+- If storage succeeds but email is missing or fails, the request can still return `202` with `delivery.stored: true` and `delivery.notificationPrepared: false`.
+- Notification emails direct operators to `/admin/leads` and must not include service keys, internal pricing logic, supplier costs, margin, lead score, admin priority, uploaded files, final quote approval, legal approval or compliance approval.
+
+## Admin-lite lead operations verification
+
+Checked on 2026-05-31 after `OPERON_KITCHENS_ADMIN_TOKEN` was added and the admin-lite lead operations deploy was live:
+
+- `https://operonkitchens.netlify.app/admin/leads` returned `200`.
+- `/admin/leads` includes `noindex,nofollow`.
+- `/admin/leads` is not present in `https://operonkitchens.netlify.app/sitemap.xml`.
+- `public/robots.txt` disallows `/admin`.
+- The public header and footer do not link to `/admin/leads`; the route is only referenced inside admin-only UI/code.
+- `GET /.netlify/functions/kitchen-admin-leads` without a token returned `401`.
+- `GET /.netlify/functions/kitchen-admin-leads` with an invalid token returned `401`.
+- `POST /.netlify/functions/kitchen-admin-lead-update` without a token returned `401`.
+- `POST /.netlify/functions/kitchen-admin-lead-update` with an invalid token returned `401`.
+- Checked unauthorised responses did not include service role keys, margin, supplier costs, internal rates, lead score, admin priority or hidden pricing logic.
+- Vincent confirmed through the live `/admin/leads` browser UI that the valid-token flow loads leads and that status/internal-note updates work.
+
+Valid-token API checks from Codex were not run because `OPERON_KITCHENS_ADMIN_TOKEN` was not available in the local shell and the token should not be pasted into chat. Invalid-status and unsafe-field rejection with a valid token are covered by automated tests and should be spot-checked manually in production if deeper live API verification is needed.
+
 ## Local route status
 
 The latest local build completed successfully with 107 generated pages exported to `out/`. These routes are included in the successful build output:
