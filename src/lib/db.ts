@@ -15,10 +15,14 @@ const sqlite = require('node:sqlite') as {
 };
 
 const dataDir = path.join(process.cwd(), 'data');
-const useBuildMemoryDb = process.env.OPERON_KITCHENS_BUILD_DB === 'memory';
-const dbPath = useBuildMemoryDb ? ':memory:' : path.join(dataDir, 'operon-kitchens.sqlite');
+const isServerlessRuntime =
+  process.env.NETLIFY === 'true' ||
+  Boolean(process.env.AWS_LAMBDA_FUNCTION_NAME) ||
+  Boolean(process.env.NEXT_RUNTIME);
+const useMemoryDb = process.env.OPERON_KITCHENS_BUILD_DB === 'memory' || isServerlessRuntime;
+const dbPath = useMemoryDb ? ':memory:' : path.join(dataDir, 'operon-kitchens.sqlite');
 
-if (!useBuildMemoryDb) {
+if (!useMemoryDb) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
@@ -29,7 +33,7 @@ const globalForDb = globalThis as unknown as {
 export const db = globalForDb.operonKitchenDb ?? new sqlite.DatabaseSync(dbPath);
 
 db.exec('PRAGMA foreign_keys = ON;');
-if (!useBuildMemoryDb) {
+if (!useMemoryDb) {
   db.exec('PRAGMA journal_mode = WAL;');
 }
 db.exec('PRAGMA busy_timeout = 5000;');
@@ -173,6 +177,6 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_kitchen_faqs_category ON kitchen_faqs(category);
 `);
 
-if (process.env.NODE_ENV !== 'production' && !useBuildMemoryDb) {
+if (process.env.NODE_ENV !== 'production' && !useMemoryDb) {
   globalForDb.operonKitchenDb = db;
 }
