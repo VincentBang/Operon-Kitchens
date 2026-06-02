@@ -94,7 +94,19 @@ create table if not exists public.kitchen_request_review_files (
   file_name text not null,
   file_type text not null,
   file_size integer not null check (file_size > 0 and file_size <= 4194304),
-  category text not null check (category in ('existingQuote', 'photo', 'plan', 'applianceList', 'other'))
+  category text not null check (category in ('existingQuote', 'photo', 'plan', 'applianceList', 'other')),
+  retention_status text not null default 'active' check (retention_status in (
+    'active',
+    'review_complete',
+    'customer_requested_deletion',
+    'deleted',
+    'retained_for_business_record'
+  )),
+  review_completed_at timestamptz,
+  delete_requested_at timestamptz,
+  deleted_at timestamptz,
+  deleted_by text,
+  delete_reason text
 );
 
 create index if not exists kitchen_request_reviews_created_at_idx
@@ -111,6 +123,12 @@ create index if not exists kitchen_request_review_files_lead_id_idx
 
 create index if not exists kitchen_request_review_files_created_at_idx
   on public.kitchen_request_review_files (created_at desc);
+
+create index if not exists kitchen_request_review_files_retention_status_idx
+  on public.kitchen_request_review_files (retention_status);
+
+create index if not exists kitchen_request_review_files_deleted_at_idx
+  on public.kitchen_request_review_files (deleted_at);
 
 alter table public.kitchen_request_reviews enable row level security;
 alter table public.kitchen_request_review_files enable row level security;
@@ -157,6 +175,33 @@ create index if not exists kitchen_request_reviews_utm_campaign_idx
 ```
 
 Until this optional attribution migration is applied, the live request-review function falls back to the legacy lead columns so valid leads are still stored. Apply the migration before expecting `/admin/leads` to show referrer, landing page or UTM details.
+
+If the file metadata table already exists without retention fields, apply this additive migration before launching admin deletion controls:
+
+```sql
+alter table public.kitchen_request_review_files
+  add column if not exists retention_status text not null default 'active'
+    check (retention_status in (
+      'active',
+      'review_complete',
+      'customer_requested_deletion',
+      'deleted',
+      'retained_for_business_record'
+    )),
+  add column if not exists review_completed_at timestamptz,
+  add column if not exists delete_requested_at timestamptz,
+  add column if not exists deleted_at timestamptz,
+  add column if not exists deleted_by text,
+  add column if not exists delete_reason text;
+
+create index if not exists kitchen_request_review_files_retention_status_idx
+  on public.kitchen_request_review_files (retention_status);
+
+create index if not exists kitchen_request_review_files_deleted_at_idx
+  on public.kitchen_request_review_files (deleted_at);
+```
+
+Retention metadata is for admin-only file operations. It does not create public file access, customer file deletion controls, browser-side Supabase writes or automated retention jobs.
 
 ## RLS Guidance
 

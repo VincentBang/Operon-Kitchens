@@ -223,10 +223,56 @@ describe('admin-lite leads page', () => {
     expect(screen.getByText('/request-review')).toBeInTheDocument();
     expect(screen.getByText('google / cpc / controlled_launch')).toBeInTheDocument();
     expect(screen.getByText(/Suggested handling/i)).toBeInTheDocument();
-    expect(screen.getByText(/Metadata only. Signed downloads, deletion and retention workflows are deferred/i)).toBeInTheDocument();
+    expect(screen.getByText(/Files are private. Download links are generated on demand and expire shortly/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Download' })).toBeInTheDocument();
     expect(screen.getByText('hero')).toBeInTheDocument();
     expect(screen.getByText('kitchen_quote')).toBeInTheDocument();
     expect(document.body.textContent).not.toContain('service-role-test-key');
+  });
+
+  it('creates a signed download link for a selected file without exposing secrets', async () => {
+    const openSpy = jest.spyOn(window, 'open').mockImplementation(() => null);
+    const fetchMock = jest
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ ok: true, leads: [{ ...sampleLead, files: [sampleLeadFile] }] }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          ok: true,
+          fileId: sampleLeadFile.id,
+          fileName: sampleLeadFile.file_name,
+          downloadUrl: 'https://kitchens.supabase.co/storage/v1/object/sign/private-file?token=safe',
+          expiresInSeconds: 600,
+        }),
+      });
+    global.fetch = fetchMock as typeof fetch;
+
+    render(<LeadsAdminPage />);
+    fireEvent.change(screen.getByLabelText('Admin token'), { target: { value: 'admin-token' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Fetch leads' }));
+
+    expect(await screen.findByText(/1 lead loaded/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Download' }));
+
+    expect(await screen.findByText(/Download link created for kitchen-quote.pdf/i)).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      '/.netlify/functions/kitchen-admin-file-download',
+      expect.objectContaining({
+        method: 'POST',
+        headers: expect.objectContaining({ 'x-operon-admin-token': 'admin-token' }),
+        body: JSON.stringify({ fileId: sampleLeadFile.id }),
+      }),
+    );
+    expect(openSpy).toHaveBeenCalledWith(
+      'https://kitchens.supabase.co/storage/v1/object/sign/private-file?token=safe',
+      '_blank',
+      'noopener,noreferrer',
+    );
+    expect(document.body.textContent).not.toContain('service-role-test-key');
+    expect(document.body.textContent?.toLowerCase()).not.toContain('leadscore');
   });
 
   it('shows a clear no-results state after fetching an empty filtered list', async () => {

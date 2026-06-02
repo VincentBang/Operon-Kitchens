@@ -47,6 +47,7 @@ Make controlled customer testing operationally smoother without adding major run
    - Admin metadata display.
    - Future signed downloads.
    - Future deletion and retention rules.
+   - Keep the file upload MVP completion plan aligned before runtime file operations.
 
 6. Prepare lead handling playbook.
    - Status meanings.

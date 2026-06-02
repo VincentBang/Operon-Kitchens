@@ -29,6 +29,7 @@ Use this index to choose the right document before starting work. Operon Kitchen
 ## File Uploads
 
 - [File upload architecture spec](./file-upload-architecture-spec.md): current server-mediated storage path, private bucket posture, admin metadata display and future signed download/deletion/retention design.
+- [File upload MVP completion plan](./file-upload-mvp-completion-plan.md): implementation-ready sequence for admin signed downloads, deletion controls and retention metadata before runtime work.
 - [Supabase request-review storage notes](./supabase-kitchen-request-reviews.md): manual SQL, request-review lead storage, file metadata table and upload troubleshooting.
 
 ## Domain, Email And Operations

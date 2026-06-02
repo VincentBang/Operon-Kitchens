@@ -80,6 +80,7 @@ Scope:
 - private bucket verified
 - request-review upload stores file object and metadata
 - admin metadata visible
+- [file upload MVP completion plan](./file-upload-mvp-completion-plan.md) reviewed
 - signed download workflow designed and approved
 - deletion and retention rules documented
 

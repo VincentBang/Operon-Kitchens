@@ -100,6 +100,7 @@ export default function LeadsAdminPage() {
   const [message, setMessage] = useState('');
   const [draftNotes, setDraftNotes] = useState<Record<string, string>>({});
   const [draftStatus, setDraftStatus] = useState<Record<string, AdminLeadStatus>>({});
+  const [downloadingFileId, setDownloadingFileId] = useState<string | null>(null);
 
   const selectedLead = useMemo(
     () => leads.find((lead) => lead.id === selectedId) ?? leads[0],
@@ -165,6 +166,32 @@ export default function LeadsAdminPage() {
       setMessage('Lead update could not be saved.');
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function downloadFile(fileId: string) {
+    setDownloadingFileId(fileId);
+    setMessage('');
+    try {
+      const response = await fetch('/.netlify/functions/kitchen-admin-file-download', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-operon-admin-token': token,
+        },
+        body: JSON.stringify({ fileId }),
+      });
+      const body = await response.json();
+      if (!response.ok || !body.ok || typeof body.downloadUrl !== 'string') {
+        setMessage(body.error || 'File download link could not be created.');
+        return;
+      }
+      window.open(body.downloadUrl, '_blank', 'noopener,noreferrer');
+      setMessage(`Download link created for ${body.fileName || 'uploaded file'}. It expires shortly.`);
+    } catch {
+      setMessage('File download link could not be created.');
+    } finally {
+      setDownloadingFileId(null);
     }
   }
 
@@ -353,9 +380,21 @@ export default function LeadsAdminPage() {
                     <ul className="mt-3 space-y-2 text-sm text-slate-200">
                       {selectedLead.files.map((file) => (
                         <li key={file.id} className="rounded-lg bg-white/5 p-3">
-                          <span className="block font-medium">{file.file_name}</span>
-                          <span className="block text-xs text-slate-400">{file.category} | {Math.round(file.file_size / 1024)} KB | {file.file_type}</span>
-                          <span className="block truncate text-xs text-slate-500" title={file.object_path}>{file.object_path}</span>
+                          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                            <div className="min-w-0">
+                              <span className="block font-medium">{file.file_name}</span>
+                              <span className="block text-xs text-slate-400">{file.category} | {Math.round(file.file_size / 1024)} KB | {file.file_type}</span>
+                              <span className="block truncate text-xs text-slate-500" title={file.object_path}>{file.object_path}</span>
+                            </div>
+                            <button
+                              type="button"
+                              disabled={!token || downloadingFileId === file.id}
+                              onClick={() => downloadFile(file.id)}
+                              className="rounded-lg border border-emerald-300/40 px-3 py-2 text-xs font-semibold text-emerald-100 hover:bg-emerald-300/10 disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                              {downloadingFileId === file.id ? 'Creating link...' : 'Download'}
+                            </button>
+                          </div>
                         </li>
                       ))}
                     </ul>
@@ -363,7 +402,7 @@ export default function LeadsAdminPage() {
                     <p className="mt-2 text-sm text-slate-300">No uploaded files attached to this lead.</p>
                   )}
                   <p className="mt-3 text-xs text-slate-400">
-                    Metadata only. Signed downloads, deletion and retention workflows are deferred until approved.
+                    Files are private. Download links are generated on demand and expire shortly. Deletion and retention workflows are deferred until approved.
                   </p>
                 </div>
 
