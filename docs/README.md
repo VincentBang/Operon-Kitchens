@@ -30,6 +30,10 @@ Use this index to choose the right document before starting work. Operon Kitchen
 
 - [File upload architecture spec](./file-upload-architecture-spec.md): current server-mediated storage path, private bucket posture, admin metadata display and future signed download/deletion/retention design.
 - [File upload MVP completion plan](./file-upload-mvp-completion-plan.md): implementation-ready sequence for admin signed downloads, deletion controls and retention metadata before runtime work.
+- [File upload release candidate summary](./file-upload-release-candidate-summary.md): what the signed-download batch would release and how to verify it.
+- [Signed download live verification checklist](./signed-download-live-verification-checklist.md): one-deploy production verification steps after approval.
+- [Supabase file upload SQL checklist](./supabase-file-upload-sql-checklist.md): manual bucket/table/retention SQL checks for Vincent.
+- [File upload runtime slice decision](./file-upload-runtime-slice-decision.md): choose between deploying signed downloads, continuing local delete-function work, or pausing file ops.
 - [Supabase request-review storage notes](./supabase-kitchen-request-reviews.md): manual SQL, request-review lead storage, file metadata table and upload troubleshooting.
 
 ## Domain, Email And Operations

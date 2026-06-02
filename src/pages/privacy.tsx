@@ -114,7 +114,7 @@ export default function PrivacyPage() {
       <section>
         <h2>Storage and retention</h2>
         <p>
-          Estimate and quote-review enquiries may be retained while active and for reasonable business record periods. Uploaded quotes, screenshots, photos, plans and related files may be deleted on request where legally and technically possible. Future paid-service records may need to be retained for business, accounting, support or legal reasons.
+          Estimate and quote-review enquiries may be retained while active and for reasonable business record periods. Uploaded quotes, screenshots, photos, plans and related files are stored for review and follow-up where upload storage is configured, and may be deleted on request where legally and technically possible. Future paid-service records may need to be retained for business, accounting, support or legal reasons.
         </p>
       </section>
 

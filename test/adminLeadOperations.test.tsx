@@ -216,6 +216,7 @@ describe('admin-lite leads page', () => {
     expect(screen.getByText(/Source: google/i)).toBeInTheDocument();
     expect(screen.getByText(/1 uploaded file/i)).toBeInTheDocument();
     expect(screen.getByText('kitchen-quote.pdf')).toBeInTheDocument();
+    expect(screen.getByText(/Existing quote \| 2 KB \| application\/pdf/i)).toBeInTheDocument();
     expect(screen.getAllByText('Apartment').length).toBeGreaterThan(0);
     expect(screen.getAllByText('I have a quote').length).toBeGreaterThan(0);
     expect(screen.getByText('Quote review')).toBeInTheDocument();

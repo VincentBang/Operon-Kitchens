@@ -14,6 +14,13 @@ Vincent is low on Netlify credits. Do not deploy, push to `main`, create deploy 
 
 Make controlled customer testing operationally smoother without adding major runtime features.
 
+Current local file-upload status:
+
+- admin signed-download function and `/admin/leads` download button are prepared locally
+- file retention SQL and deletion design guardrails are documented
+- no delete button, delete runtime, retention automation or customer file portal is live
+- next decision: deploy signed downloads once, or continue local-only with delete-function tests and function
+
 ## Local-Only Task Queue
 
 1. Review and maintain the controlled-launch checklist.
@@ -48,6 +55,11 @@ Make controlled customer testing operationally smoother without adding major run
    - Future signed downloads.
    - Future deletion and retention rules.
    - Keep the file upload MVP completion plan aligned before runtime file operations.
+
+8. Prepare the next file-operation slice.
+   - Option A: approved one-deploy signed-download release and verification.
+   - Option B: local-only delete-function tests and token-gated soft-delete function.
+   - Option C: pause file operations and return to quote-review service packaging.
 
 6. Prepare lead handling playbook.
    - Status meanings.

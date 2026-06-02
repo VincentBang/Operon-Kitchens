@@ -51,6 +51,8 @@ Current controlled-launch state:
 - attribution/UTM tracking is implemented
 - Resend notification code exists, but branded domain/email setup is deferred
 - file upload storage is scaffolded and under controlled verification
+- admin signed-download function and UI are prepared locally, not deployed unless Vincent approves a release
+- deletion controls and retention automation remain deferred
 - no payment
 - no customer login
 - no full CRM

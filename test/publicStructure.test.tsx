@@ -60,6 +60,7 @@ describe('public site structure', () => {
     expect(screen.getByText(/Online estimates are planning ranges/i)).toBeInTheDocument();
     expect(screen.getByText(/does not approve, reject, certify or legally assess/i)).toBeInTheDocument();
     expect(screen.getByText(/Site measure is required before project-specific pricing/i)).toBeInTheDocument();
+    expect(screen.getByText(/Admin download links, where available, are internal short-lived access tools only/i)).toBeInTheDocument();
     expect(screen.getByText(/Residential kitchen work may require written contract review/i)).toBeInTheDocument();
     expect(screen.getByText(/Older homes, previous renovations or demolition work may require asbestos/i)).toBeInTheDocument();
     expect(screen.getByText(/not legal advice/i)).toBeInTheDocument();
@@ -69,6 +70,7 @@ describe('public site structure', () => {
     render(<PrivacyPage />);
     expect(screen.getByRole('heading', { name: /Privacy Policy/i })).toBeInTheDocument();
     expect(screen.getAllByText(/Uploaded quotes, plans, photos, screenshots, drawings, appliance lists/i).length).toBeGreaterThan(0);
+    expect(screen.getByText(/stored for review and follow-up where upload storage is configured/i)).toBeInTheDocument();
     expect(screen.getByText(/access to information held about you, ask for corrections, or request deletion/i)).toBeInTheDocument();
     expect(screen.getByText(/Marketing is optional/i)).toBeInTheDocument();
     expect(screen.getByText(/Public customer outputs are limited to planning ranges, confidence, assumptions, exclusions and review prompts/i)).toBeInTheDocument();

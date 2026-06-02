@@ -32,7 +32,25 @@ describe('file upload retention and deletion design', () => {
     expect(plan).toContain('"deleteReason": "customer_request | duplicate | irrelevant | unsafe | retention_cleanup | other"');
     expect(plan).toContain('Deletion must never accept arbitrary bucket names or object paths from the browser.');
     expect(plan).toContain('Do not add delete UI, retention automation or public customer file access in this slice.');
+    expect(plan).toContain('delete function + tests only');
+    expect(plan).toContain('Validate `deleteReason`.');
+    expect(plan).toContain('Reject unsupported browser fields');
+    expect(plan).toContain("`retention_status = 'deleted'`");
+    expect(plan).toContain('Do not return raw Supabase errors, service role keys, object contents, internal notes or pricing fields.');
     expect(existsSync(join(process.cwd(), 'netlify/functions/kitchen-admin-file-delete.ts'))).toBe(false);
+  });
+
+  it('documents allowed deletion reasons and unsafe client fields before runtime implementation', () => {
+    const plan = readDoc('docs/file-upload-mvp-completion-plan.md');
+
+    for (const reason of ['customer_request', 'duplicate', 'irrelevant', 'unsafe', 'retention_cleanup', 'other']) {
+      expect(plan).toContain(reason);
+    }
+    for (const unsafeField of ['bucket', 'object_path', 'leadScore', 'adminPriority', 'supplierCost', 'margin', 'serviceRoleKey']) {
+      expect(plan).toContain(unsafeField);
+    }
+    expect(plan).toContain('rejects browser-supplied `bucket` and `object_path`');
+    expect(plan).toContain('does not delete arbitrary object paths supplied by the browser');
   });
 
   it('keeps delete controls absent from admin leads until the next runtime slice is approved', () => {
@@ -44,4 +62,3 @@ describe('file upload retention and deletion design', () => {
     expect(adminPage).not.toContain('deleteReason');
   });
 });
-

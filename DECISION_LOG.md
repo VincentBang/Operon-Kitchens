@@ -55,3 +55,9 @@ Implication: Admin signed downloads, deletion, retention workflows and full file
 Decision: Operon Kitchens remains in controlled testing mode until domain/email/Resend readiness is complete.
 
 Implication: Avoid aggressive public launch, broad SEO rollout and repeated Netlify deploys. Prioritise local hardening and manual playbooks.
+
+## 2026-06-03: Admin Signed Downloads Prepared Locally
+
+Decision: Admin signed file download function and `/admin/leads` download UI are prepared locally for the Operon Kitchens file upload MVP.
+
+Implication: Signed downloads still require an approved push/deploy before live use. Delete buttons, delete function, retention automation and customer file portals remain deferred until separately approved.

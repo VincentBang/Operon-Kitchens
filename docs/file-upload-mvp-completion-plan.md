@@ -134,6 +134,14 @@ POST /.netlify/functions/kitchen-admin-file-delete
 
 Recommended MVP approach: soft-delete metadata first, then optionally remove the storage object.
 
+Smallest safe deletion slice:
+
+```text
+delete function + tests only
+```
+
+Do not add a delete button until the function has local tests and Vincent approves the UI slice.
+
 Required request:
 
 ```json
@@ -143,15 +151,30 @@ Required request:
 }
 ```
 
+Allowed delete reasons:
+
+- `customer_request`
+- `duplicate`
+- `irrelevant`
+- `unsafe`
+- `retention_cleanup`
+- `other`
+
 Server flow:
 
 1. Validate admin token.
 2. Validate `fileId`.
-3. Fetch metadata from `public.kitchen_request_review_files`.
-4. Reject already deleted files with a safe status.
-5. Update metadata with deletion fields.
-6. Optionally delete the storage object after metadata update succeeds.
-7. Return safe confirmation.
+3. Validate `deleteReason`.
+4. Reject unsupported browser fields such as `bucket`, `object_path`, `email`, `leadScore`, `adminPriority`, `supplierCost`, `margin` or `serviceRoleKey`.
+5. Fetch metadata from `public.kitchen_request_review_files`.
+6. Reject missing or already deleted files with a safe status.
+7. Update metadata with:
+   - `retention_status = 'deleted'`
+   - `deleted_at`
+   - `deleted_by = 'admin-token'` or another safe non-secret operator label
+   - `delete_reason`
+8. Optionally delete the storage object after metadata update succeeds.
+9. Return safe confirmation.
 
 Recommended MVP response:
 
@@ -164,6 +187,30 @@ Recommended MVP response:
 ```
 
 Deletion must never accept arbitrary bucket names or object paths from the browser.
+
+Safe error responses:
+
+- `401`: unauthorised
+- `400`: invalid file ID, invalid reason or unsupported fields
+- `404`: file unavailable
+- `409`: file already deleted
+- `503`: file storage not configured
+- `502`: delete temporarily unavailable
+
+Do not return raw Supabase errors, service role keys, object contents, internal notes or pricing fields.
+
+Recommended future endpoint tests:
+
+- rejects non-POST requests
+- rejects missing/invalid token
+- rejects malformed file ID
+- rejects unsupported delete reason
+- rejects browser-supplied `bucket` and `object_path`
+- rejects unsafe fields such as `leadScore`, `adminPriority`, `supplierCost`, `margin`, `serviceRoleKey`
+- fetches metadata by `fileId`
+- soft-deletes metadata with allowed reason
+- does not delete arbitrary object paths supplied by the browser
+- returns safe responses without raw Supabase errors or secrets
 
 ## Phase 4: Retention Metadata
 

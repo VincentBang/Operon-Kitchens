@@ -51,6 +51,9 @@ export default function TermsPage() {
         <p>
           You are responsible for ensuring you have permission to upload documents, screenshots, photos, plans, drawings, appliance lists and existing quotes. Do not upload confidential third-party material you are not authorised to share, material that infringes third-party rights, or unlawful, misleading, unsafe or irrelevant content.
         </p>
+        <p>
+          Uploaded files are used for estimate, quote-review and project-planning guidance. Admin download links, where available, are internal short-lived access tools only. They do not create public file access, customer file portals, legal assessment, compliance approval or final pricing.
+        </p>
       </section>
 
       <section>

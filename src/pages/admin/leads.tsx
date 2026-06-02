@@ -38,6 +38,14 @@ const preferredNextStepLabels: Record<string, string> = {
   scopeDiscussion: 'Scope discussion',
 };
 
+const fileCategoryLabels: Record<string, string> = {
+  existingQuote: 'Existing quote',
+  photo: 'Photo',
+  plan: 'Plan',
+  applianceList: 'Appliance list',
+  other: 'Other document',
+};
+
 function formatDate(value: string) {
   try {
     return new Intl.DateTimeFormat('en-AU', {
@@ -47,6 +55,12 @@ function formatDate(value: string) {
   } catch {
     return value;
   }
+}
+
+function formatFileSize(bytes: number) {
+  if (!Number.isFinite(bytes) || bytes <= 0) return 'Unknown size';
+  if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
 function yesNoLabel(value: boolean | null) {
@@ -383,7 +397,9 @@ export default function LeadsAdminPage() {
                           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                             <div className="min-w-0">
                               <span className="block font-medium">{file.file_name}</span>
-                              <span className="block text-xs text-slate-400">{file.category} | {Math.round(file.file_size / 1024)} KB | {file.file_type}</span>
+                              <span className="block text-xs text-slate-400">
+                                {(fileCategoryLabels[file.category] || file.category)} | {formatFileSize(file.file_size)} | {file.file_type}
+                              </span>
                               <span className="block truncate text-xs text-slate-500" title={file.object_path}>{file.object_path}</span>
                             </div>
                             <button
