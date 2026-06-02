@@ -2272,6 +2272,14 @@ a.infoCard:hover,
     background: var(--ink);
   }
 
+  .siteShell {
+    padding-bottom: 74px;
+  }
+
+  #request-review-form {
+    scroll-margin-top: 86px;
+  }
+
   .deployCheckList div {
     grid-template-columns: 1fr;
   }

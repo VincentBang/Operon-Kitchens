@@ -7,8 +7,10 @@ Use this checklist as the hub for controlled testing. Operon Kitchens is still i
 ## Related Playbooks
 
 - [Controlled testing playbook](./controlled-testing-playbook.md)
+- [Request-review and admin mobile QA checklist](./request-review-admin-mobile-qa.md)
 - [Lead handling playbook](./lead-handling-playbook.md)
 - [Quote review report template](./quote-review-report-template.md)
+- [Quote review report readiness checklist](./quote-review-report-readiness-checklist.md)
 - [File upload architecture spec](./file-upload-architecture-spec.md)
 - [Domain and email launch checklist](./domain-email-launch-checklist.md)
 - [Release checkpoints](./release-checkpoints.md)
@@ -40,6 +42,8 @@ Use this before any approved release.
 - Check `/privacy` and `/terms` locally.
 - Check `/admin/leads` static page locally, without expecting live function calls.
 - Confirm mobile spacing is usable.
+- For mobile screenshots and visual QA, use the [request-review and admin mobile QA checklist](./request-review-admin-mobile-qa.md).
+- If manually trialling quote-review reports, use the [quote-review report readiness checklist](./quote-review-report-readiness-checklist.md).
 - Confirm Privacy Policy and Terms links appear near forms.
 - Confirm marketing opt-in is optional and unchecked by default.
 - Confirm no public copy says final fixed quote, guaranteed savings, legal approval, compliance approval, certified/compliant outcome or instant custom kitchen ordering.

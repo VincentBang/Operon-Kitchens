@@ -12,16 +12,19 @@ Use this index to choose the right document before starting work. Operon Kitchen
 - [Deployment rules](../DEPLOYMENT_RULES.md): Netlify credit discipline, static export notes and release gates.
 - [Decision log](../DECISION_LOG.md): major architecture and operating decisions already made.
 - [Release checkpoints](./release-checkpoints.md): approved future release gates.
+- [Local release bundle checklist](./local-release-bundle-checklist.md): how to batch local fixes before asking Vincent to approve one deploy.
 
 ## Controlled Testing
 
 - [Controlled launch checklist](./controlled-launch-checklist.md): hub checklist for local testing, manual Supabase/admin checks and approved release checkpoints.
 - [Controlled testing playbook](./controlled-testing-playbook.md): how Vincent and trusted testers should submit fake enquiries and record confusion points.
+- [Request-review and admin mobile QA](./request-review-admin-mobile-qa.md): local visual checklist for `/request-review` and `/admin/leads` screenshots, spacing and usability.
 - [Lead handling playbook](./lead-handling-playbook.md): lead statuses, follow-up timing, internal notes style, site-measure triggers and what not to promise.
 
 ## Quote Review
 
 - [Quote review report template](./quote-review-report-template.md): customer-safe future report structure covering scope clarity, allowance risk, missing information, questions, compliance prompts and recommended next step.
+- [Quote review report readiness checklist](./quote-review-report-readiness-checklist.md): manual trial checklist before paid review, PDF export, payment or CRM workflows.
 
 ## File Uploads
 

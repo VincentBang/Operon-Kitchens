@@ -195,6 +195,10 @@ describe('admin-lite leads page', () => {
     expect(screen.getByLabelText('Admin token')).toHaveAttribute('type', 'password');
     expect(screen.getByRole('button', { name: 'Fetch leads' })).toBeDisabled();
     expect(screen.getByText(/No lead data is loaded without a valid token/i)).toBeInTheDocument();
+    expect(screen.getByText(/check this page daily during controlled testing/i)).toBeInTheDocument();
+    expect(screen.getByText('Daily check')).toBeInTheDocument();
+    expect(screen.getByText('Update status')).toBeInTheDocument();
+    expect(screen.getByText('Notes style')).toBeInTheDocument();
     expect(document.body.textContent).not.toContain('OPERON_KITCHENS_SUPABASE_SERVICE_ROLE_KEY');
   });
 
@@ -212,9 +216,30 @@ describe('admin-lite leads page', () => {
     expect(screen.getByText(/Source: google/i)).toBeInTheDocument();
     expect(screen.getByText(/1 uploaded file/i)).toBeInTheDocument();
     expect(screen.getByText('kitchen-quote.pdf')).toBeInTheDocument();
+    expect(screen.getAllByText('Apartment').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('I have a quote').length).toBeGreaterThan(0);
+    expect(screen.getByText('Quote review')).toBeInTheDocument();
     expect(screen.getByText('Lead source')).toBeInTheDocument();
     expect(screen.getByText('/request-review')).toBeInTheDocument();
     expect(screen.getByText('google / cpc / controlled_launch')).toBeInTheDocument();
+    expect(screen.getByText(/Suggested handling/i)).toBeInTheDocument();
+    expect(screen.getByText(/Metadata only. Signed downloads, deletion and retention workflows are deferred/i)).toBeInTheDocument();
+    expect(screen.getByText('hero')).toBeInTheDocument();
+    expect(screen.getByText('kitchen_quote')).toBeInTheDocument();
     expect(document.body.textContent).not.toContain('service-role-test-key');
+  });
+
+  it('shows a clear no-results state after fetching an empty filtered list', async () => {
+    global.fetch = jest.fn(async () => ({
+      ok: true,
+      json: async () => ({ ok: true, leads: [] }),
+    })) as typeof fetch;
+
+    render(<LeadsAdminPage />);
+    fireEvent.change(screen.getByLabelText('Admin token'), { target: { value: 'admin-token' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Fetch leads' }));
+
+    expect(await screen.findByText(/0 leads loaded/i)).toBeInTheDocument();
+    expect(screen.getByText(/No leads matched this filter/i)).toBeInTheDocument();
   });
 });

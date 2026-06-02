@@ -164,7 +164,7 @@ describe('public site structure', () => {
 
     render(<RequestReviewPage />);
     expect(screen.getByRole('heading', { name: /Ask Operon Kitchens to review your kitchen scope/i })).toBeInTheDocument();
-    expect(screen.getByText(/Submit contact and project details only/i)).toBeInTheDocument();
+    expect(screen.getByText(/Required: name, email, message, privacy acknowledgement and terms acknowledgement/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Submit request/i })).toBeInTheDocument();
     expect(screen.getByText(/Privacy collection notice/i)).toBeInTheDocument();
 

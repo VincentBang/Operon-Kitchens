@@ -245,3 +245,5 @@ Before turning this spec into UI or reports:
 - report fields map to customer-safe review output
 - quote review stays separate from payment and full CRM
 - site measure and written scope confirmation remain clear
+
+For manual trial readiness, use [Quote Review Report Readiness Checklist](./quote-review-report-readiness-checklist.md).

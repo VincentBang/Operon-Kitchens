@@ -11,7 +11,8 @@ function isPublicPage(pathname: string) {
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const publicPage = isPublicPage(router.pathname);
-  const showChatbot = publicPage && !['/privacy', '/terms'].includes(router.pathname);
+  const chatbotHiddenRoutes = ['/privacy', '/terms', '/request-review', '/contact'];
+  const showChatbot = publicPage && !chatbotHiddenRoutes.includes(router.pathname);
 
   return (
     <>

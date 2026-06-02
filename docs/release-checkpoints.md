@@ -10,6 +10,8 @@ No deploy.
 
 Vincent is low on Netlify credits. Work locally until a checkpoint is explicitly approved.
 
+Before asking Vincent to approve a deploy, prepare the candidate with the [Local Release Bundle Checklist](./local-release-bundle-checklist.md).
+
 ## Baseline Local Gate
 
 Before any release checkpoint:

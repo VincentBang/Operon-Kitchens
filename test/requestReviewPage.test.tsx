@@ -25,7 +25,10 @@ describe('request review page', () => {
     expect(screen.getByLabelText('Have a current quote?')).toBeInTheDocument();
     expect(screen.getByLabelText('Have photos or plans?')).toBeInTheDocument();
     expect(screen.getByLabelText('Preferred next step')).toBeInTheDocument();
+    expect(screen.getByText(/What happens after you submit/i)).toBeInTheDocument();
+    expect(screen.getByText(/Required: name, email, message, privacy acknowledgement and terms acknowledgement/i)).toBeInTheDocument();
     expect(screen.getByText(/Only upload quotes, plans, photos or appliance documents/i)).toBeInTheDocument();
+    expect(screen.getByText(/No files selected yet/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Submit request/i })).toBeDisabled();
 
     fillRequiredFields();
@@ -50,6 +53,7 @@ describe('request review page', () => {
 
     await screen.findByText(/Your request has been received for Operon Kitchens review intake/i);
     expect(screen.getByText(/okr_test_request/i)).toBeInTheDocument();
+    expect(screen.getByText(/Keep your quote, photos, plans and appliance list available/i)).toBeInTheDocument();
     await waitFor(() => expect(fetchMock).toHaveBeenCalledWith('/.netlify/functions/kitchen-request-review', expect.objectContaining({
       method: 'POST',
     })));

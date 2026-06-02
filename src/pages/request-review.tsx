@@ -40,6 +40,12 @@ const nextStepLabels = {
   scopeDiscussion: 'Scope discussion',
 };
 
+const requestReviewNextSteps = [
+  'Review the request details and any attached quote, plan or photo metadata.',
+  'Identify unclear scope, allowance, access or trade review items.',
+  'Recommend quote review, site measure or written scope confirmation as the next step.',
+];
+
 type PreparedRequestFile = {
   localId: string;
   name: string;
@@ -121,6 +127,10 @@ export default function RequestReviewPage() {
   const [fileUploadWarning, setFileUploadWarning] = useState('');
 
   const ready = Boolean(form.name.trim() && form.email.trim() && privacyAcknowledged && termsAcknowledged && form.message.trim().length >= 10 && fileStatus !== 'reading');
+  const selectedFileBytes = files.reduce((sum, file) => sum + file.size, 0);
+  const selectedFileSummary = files.length
+    ? `${files.length} file${files.length === 1 ? '' : 's'} selected, ${Math.round(selectedFileBytes / 1024)} KB total`
+    : 'No files selected yet';
 
   const update = (field: keyof typeof form, value: string) => {
     setForm((current) => ({ ...current, [field]: value }));
@@ -217,7 +227,7 @@ export default function RequestReviewPage() {
         </div>
         <div>
           <p className="muted">
-            Use this page to request quote review, site measure discussion or project suitability guidance. You can now attach small quote, photo, plan or appliance-list files for secure kitchen review storage.
+            Use this page to request quote review, site measure discussion or project suitability guidance. Attach small quote, photo, plan or appliance-list files if they help explain the scope.
           </p>
           <div className="flexActions">
             <Link href="/quote" className="button ghost">Start estimate instead</Link>
@@ -227,11 +237,18 @@ export default function RequestReviewPage() {
       </section>
 
       <section className="contentPage articleBody">
-        <form className="quoteResult" onSubmit={submit}>
+        <form id="request-review-form" className="quoteResult" onSubmit={submit}>
           <h2>Request details</h2>
           <p className="muted">
-            Submit contact and project details only. Do not include sensitive information unless it is needed for the kitchen scope review.
+            Required: name, email, message, privacy acknowledgement and terms acknowledgement. Files are optional and should only be uploaded when you are authorised to share them.
           </p>
+          <aside className="successPanel">
+            <strong>What happens after you submit</strong>
+            <ul className="lineItemList">
+              {requestReviewNextSteps.map((step) => <li key={step}>{step}</li>)}
+            </ul>
+            <p className="muted">This is request intake only. Site measure and written scope confirmation are still required before commitment.</p>
+          </aside>
           <div className="formGrid two">
             <label className="field"><span>Name</span><input value={form.name} onChange={(event) => update('name', event.target.value)} required /></label>
             <label className="field"><span>Email</span><input type="email" value={form.email} onChange={(event) => update('email', event.target.value)} required /></label>
@@ -281,7 +298,7 @@ export default function RequestReviewPage() {
             <input tabIndex={-1} autoComplete="off" value={form.website} onChange={(event) => update('website', event.target.value)} />
           </label>
           <aside className="compliancePanel">
-            <h2>Upload documents</h2>
+            <h2>Optional attachments</h2>
             <p>Only upload quotes, plans, photos or appliance documents you are authorised to share. Files are stored for request review and do not replace site measure or written scope confirmation.</p>
             <div className="formGrid two">
               {requestFileCategories.map((category) => (
@@ -291,7 +308,7 @@ export default function RequestReviewPage() {
                 </label>
               ))}
             </div>
-            <p className="muted">Limits: up to {requestReviewFileLimits.maxFiles} files, 4MB each, 10MB total. PDF and common image formats only.</p>
+            <p className="muted">Limits: up to {requestReviewFileLimits.maxFiles} files, 4MB each, 10MB total. PDF and common image formats only. {selectedFileSummary}.</p>
             {fileStatus === 'reading' && <div className="successPanel">Preparing file for secure upload...</div>}
             {fileError && <div className="errorPanel">{fileError}</div>}
             {files.length > 0 && (
@@ -326,9 +343,18 @@ export default function RequestReviewPage() {
             <div className="successPanel">
               Your request has been received for Operon Kitchens review intake. {requestId && <>Reference: <strong>{requestId}</strong>.</>} Site measure, written scope confirmation and project-specific review are still required before commitment.
               {fileUploadWarning && <p>{fileUploadWarning}</p>}
+              <ul className="lineItemList">
+                <li>Keep your quote, photos, plans and appliance list available for follow-up.</li>
+                <li>Use the reference above if you send extra context later.</li>
+              </ul>
             </div>
           )}
           {status === 'error' && <div className="errorPanel">{error}</div>}
+          {!ready && status !== 'saved' && (
+            <p className="muted">
+              Complete the required contact details, add a message of at least 10 characters, and acknowledge the privacy and terms notices to submit.
+            </p>
+          )}
           <div className="wizardActions">
             <button className="button primary" type="submit" disabled={!ready || status === 'saving'}>
               {status === 'saving' ? 'Submitting...' : fileStatus === 'reading' ? 'Preparing files...' : 'Submit request'}

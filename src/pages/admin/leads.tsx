@@ -15,6 +15,29 @@ const statusLabels: Record<AdminLeadStatus, string> = {
   spam: 'Spam',
 };
 
+const propertyTypeLabels: Record<string, string> = {
+  house: 'House',
+  townhouse: 'Townhouse',
+  apartment: 'Apartment',
+  strataApartment: 'Strata apartment',
+  notSure: 'Not sure',
+};
+
+const projectStageLabels: Record<string, string> = {
+  planning: 'Planning',
+  quoteInHand: 'I have a quote',
+  readyForMeasure: 'Ready for site measure',
+  urgent: 'Urgent',
+  notSure: 'Not sure',
+};
+
+const preferredNextStepLabels: Record<string, string> = {
+  planningEstimate: 'Planning estimate',
+  quoteReview: 'Quote review',
+  siteMeasure: 'Site measure',
+  scopeDiscussion: 'Scope discussion',
+};
+
 function formatDate(value: string) {
   try {
     return new Intl.DateTimeFormat('en-AU', {
@@ -40,12 +63,40 @@ function compactAttribution(lead: KitchenAdminLead) {
   ].filter(Boolean).join(' | ');
 }
 
+function statusNudge(status: AdminLeadStatus | string) {
+  const nudges: Record<AdminLeadStatus, string> = {
+    new: 'Check contact details and decide whether quote review or site measure is the best next step.',
+    review_needed: 'Review scope, allowance and access details before customer follow-up.',
+    contacted: 'Add call notes and confirm the next customer action.',
+    site_measure_offered: 'Record whether the customer wants to proceed with site measure.',
+    site_measure_booked: 'Keep appointment details in internal notes until a fuller CRM exists.',
+    quoted: 'Track whether written scope confirmation has been issued separately.',
+    won: 'Keep delivery notes outside this admin-lite page until the full CRM exists.',
+    lost: 'Record the main reason if the customer does not proceed.',
+    spam: 'No customer follow-up needed.',
+  };
+  return isAdminLeadStatusLabel(status) ? nudges[status] : 'Use internal notes for the next safe follow-up step.';
+}
+
+function isAdminLeadStatusLabel(value: AdminLeadStatus | string): value is AdminLeadStatus {
+  return adminLeadStatuses.includes(value as AdminLeadStatus);
+}
+
+function compactProjectSummary(lead: KitchenAdminLead) {
+  return [
+    lead.suburb || 'Suburb not supplied',
+    propertyTypeLabels[lead.property_type] || lead.property_type || 'Property not supplied',
+    projectStageLabels[lead.project_stage] || lead.project_stage || 'Stage not supplied',
+  ].join(' | ');
+}
+
 export default function LeadsAdminPage() {
   const [token, setToken] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [leads, setLeads] = useState<KitchenAdminLead[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [hasFetched, setHasFetched] = useState(false);
   const [message, setMessage] = useState('');
   const [draftNotes, setDraftNotes] = useState<Record<string, string>>({});
   const [draftStatus, setDraftStatus] = useState<Record<string, AdminLeadStatus>>({});
@@ -69,6 +120,8 @@ export default function LeadsAdminPage() {
       if (!response.ok || !body.ok) {
         setMessage(body.error || 'Lead list could not be loaded.');
         setLeads([]);
+        setSelectedId(null);
+        setHasFetched(true);
         return;
       }
       setLeads(body.leads);
@@ -76,8 +129,10 @@ export default function LeadsAdminPage() {
       setDraftNotes(Object.fromEntries(body.leads.map((lead: KitchenAdminLead) => [lead.id, lead.internal_notes ?? ''])));
       setDraftStatus(Object.fromEntries(body.leads.map((lead: KitchenAdminLead) => [lead.id, lead.status])));
       setMessage(`${body.leads.length} lead${body.leads.length === 1 ? '' : 's'} loaded.`);
+      setHasFetched(true);
     } catch {
       setMessage('Lead list could not be loaded.');
+      setHasFetched(true);
     } finally {
       setLoading(false);
     }
@@ -133,6 +188,9 @@ export default function LeadsAdminPage() {
                 Admin-lite lead operations for Operon Kitchens enquiries. This page requires the admin token and does
                 not expose supplier costs, pricing assumptions, lead scores or public customer data without token access.
               </p>
+              <p className="mt-2 max-w-3xl text-xs leading-5 text-slate-400">
+                Supabase is the source of truth. While branded email is deferred, check this page daily during controlled testing.
+              </p>
             </div>
             <Link className="rounded-full border border-white/20 px-4 py-2 text-sm text-slate-200 hover:bg-white/10" href="/admin">
               Back to admin
@@ -174,8 +232,23 @@ export default function LeadsAdminPage() {
           </form>
 
           {message && (
-            <p className="mt-4 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-200">{message}</p>
+            <p className="mt-4 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-200" aria-live="polite">{message}</p>
           )}
+
+          <div className="mt-4 grid gap-3 text-sm text-slate-300 md:grid-cols-3">
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <p className="font-semibold text-white">Daily check</p>
+              <p className="mt-1">Fetch new and review-needed leads while email notification is deferred.</p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <p className="font-semibold text-white">Update status</p>
+              <p className="mt-1">Move each lead to the next real follow-up stage after contact or review.</p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <p className="font-semibold text-white">Notes style</p>
+              <p className="mt-1">Keep notes factual: what was checked, what is missing and the next action.</p>
+            </div>
+          </div>
 
           <div className="mt-6 grid gap-5 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,0.65fr)]">
             <div className="space-y-3">
@@ -192,7 +265,7 @@ export default function LeadsAdminPage() {
                     <div>
                       <p className="text-base font-semibold text-white">{lead.name}</p>
                       <p className="text-sm text-slate-300">{lead.email}{lead.phone ? ` | ${lead.phone}` : ''}</p>
-                      <p className="mt-1 text-xs text-slate-400">{formatDate(lead.created_at)} | {lead.suburb || 'Suburb not supplied'}</p>
+                      <p className="mt-1 text-xs text-slate-400">{formatDate(lead.created_at)} | {compactProjectSummary(lead)}</p>
                       {compactAttribution(lead) && (
                         <p className="mt-1 text-xs text-emerald-200">{compactAttribution(lead)}</p>
                       )}
@@ -209,7 +282,9 @@ export default function LeadsAdminPage() {
               ))}
               {!leads.length && (
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-sm text-slate-300">
-                  Enter the admin token and fetch leads. No lead data is loaded without a valid token.
+                  {hasFetched
+                    ? 'No leads matched this filter. Try all statuses or check again after the next controlled test submission.'
+                    : 'Enter the admin token and fetch leads. No lead data is loaded without a valid token.'}
                 </div>
               )}
             </div>
@@ -220,6 +295,7 @@ export default function LeadsAdminPage() {
                   <div>
                     <h2 className="text-xl font-semibold">{selectedLead.name}</h2>
                     <p className="mt-1 text-sm text-slate-300">{selectedLead.email}</p>
+                    {selectedLead.phone && <p className="mt-1 text-sm text-slate-300">{selectedLead.phone}</p>}
                   </div>
                   <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-emerald-200">
                     {statusLabels[(selectedLead.status as AdminLeadStatus)] || selectedLead.status}
@@ -229,11 +305,11 @@ export default function LeadsAdminPage() {
                 <dl className="mt-5 grid grid-cols-2 gap-3 text-sm">
                   <div className="rounded-xl bg-slate-900/70 p-3">
                     <dt className="text-slate-400">Property</dt>
-                    <dd className="mt-1 font-medium">{selectedLead.property_type}</dd>
+                    <dd className="mt-1 font-medium">{propertyTypeLabels[selectedLead.property_type] || selectedLead.property_type}</dd>
                   </div>
                   <div className="rounded-xl bg-slate-900/70 p-3">
                     <dt className="text-slate-400">Stage</dt>
-                    <dd className="mt-1 font-medium">{selectedLead.project_stage}</dd>
+                    <dd className="mt-1 font-medium">{projectStageLabels[selectedLead.project_stage] || selectedLead.project_stage}</dd>
                   </div>
                   <div className="rounded-xl bg-slate-900/70 p-3">
                     <dt className="text-slate-400">Current quote</dt>
@@ -243,7 +319,28 @@ export default function LeadsAdminPage() {
                     <dt className="text-slate-400">Photos/plans</dt>
                     <dd className="mt-1 font-medium">{yesNoLabel(selectedLead.has_photos_or_plans)}</dd>
                   </div>
+                  <div className="rounded-xl bg-slate-900/70 p-3">
+                    <dt className="text-slate-400">Budget range</dt>
+                    <dd className="mt-1 font-medium">{selectedLead.budget_range || 'Not supplied'}</dd>
+                  </div>
+                  <div className="rounded-xl bg-slate-900/70 p-3">
+                    <dt className="text-slate-400">Preferred step</dt>
+                    <dd className="mt-1 font-medium">{preferredNextStepLabels[selectedLead.preferred_next_step] || selectedLead.preferred_next_step}</dd>
+                  </div>
+                  <div className="rounded-xl bg-slate-900/70 p-3">
+                    <dt className="text-slate-400">Marketing</dt>
+                    <dd className="mt-1 font-medium">{selectedLead.marketing_opt_in ? 'Opted in' : 'No opt-in'}</dd>
+                  </div>
+                  <div className="rounded-xl bg-slate-900/70 p-3">
+                    <dt className="text-slate-400">User agent</dt>
+                    <dd className="mt-1 truncate font-medium" title={selectedLead.user_agent || ''}>{selectedLead.user_agent || 'Not supplied'}</dd>
+                  </div>
                 </dl>
+
+                <div className="mt-5 rounded-xl border border-emerald-300/20 bg-emerald-300/10 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-200">Suggested handling</p>
+                  <p className="mt-2 text-sm leading-6 text-slate-200">{statusNudge(draftStatus[selectedLead.id] ?? selectedLead.status)}</p>
+                </div>
 
                 <div className="mt-5 rounded-xl bg-slate-900/70 p-4">
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Message</p>
@@ -265,6 +362,9 @@ export default function LeadsAdminPage() {
                   ) : (
                     <p className="mt-2 text-sm text-slate-300">No uploaded files attached to this lead.</p>
                   )}
+                  <p className="mt-3 text-xs text-slate-400">
+                    Metadata only. Signed downloads, deletion and retention workflows are deferred until approved.
+                  </p>
                 </div>
 
                 <div className="mt-5 rounded-xl bg-slate-900/70 p-4">
@@ -287,6 +387,14 @@ export default function LeadsAdminPage() {
                       <dd className="max-w-[65%] truncate text-right">
                         {[selectedLead.utm_source, selectedLead.utm_medium, selectedLead.utm_campaign].filter(Boolean).join(' / ') || 'not supplied'}
                       </dd>
+                    </div>
+                    <div className="flex justify-between gap-3">
+                      <dt className="text-slate-400">UTM content</dt>
+                      <dd className="max-w-[65%] truncate text-right" title={selectedLead.utm_content || ''}>{selectedLead.utm_content || 'not supplied'}</dd>
+                    </div>
+                    <div className="flex justify-between gap-3">
+                      <dt className="text-slate-400">UTM term</dt>
+                      <dd className="max-w-[65%] truncate text-right" title={selectedLead.utm_term || ''}>{selectedLead.utm_term || 'not supplied'}</dd>
                     </div>
                   </dl>
                 </div>

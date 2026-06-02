@@ -69,6 +69,8 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
   const canonicalBase = process.env.NEXT_PUBLIC_SITE_URL || 'https://operonkitchens.com.au';
   const canonicalPath = router.asPath === '/' ? '' : router.asPath.split('?')[0];
   const isQuoteFlow = router.pathname.startsWith('/quote');
+  const isRequestReviewFlow = router.pathname === '/request-review' || router.pathname === '/contact';
+  const showStickyCta = !isQuoteFlow && !isRequestReviewFlow;
 
   return (
     <>
@@ -143,7 +145,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
             Operon Kitchens is a separate customer-facing kitchen renovation brand. Planning guidance only. Site measure and written scope confirmation are required before contract pricing.
           </p>
         </footer>
-        {!router.pathname.startsWith('/quote') && (
+        {showStickyCta && (
           <div className="stickyMobileCta" aria-label="Quick actions">
             <TrackedCtaLink href="/quote" eventName="estimate_start_click" eventProperties={{ route: router.pathname, cta_location: 'mobile_sticky' }}>Start estimate</TrackedCtaLink>
             <TrackedCtaLink href="/quote/review" eventName="quote_review_start_click" eventProperties={{ route: router.pathname, cta_location: 'mobile_sticky' }}>Review quote</TrackedCtaLink>
