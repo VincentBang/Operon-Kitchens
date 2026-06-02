@@ -17,7 +17,7 @@ Confirm in the kitchen Supabase project:
 Recommended bucket:
 
 ```text
-operon-kitchens-request-review-files
+<OPERON_KITCHENS_UPLOAD_BUCKET>
 ```
 
 ## File Metadata Table
@@ -97,4 +97,3 @@ order by status;
 - Do not expose service role key to the browser.
 - Do not paste documentation prose into SQL editor.
 - Do not add retention automation until Vincent approves a retention period.
-

@@ -78,7 +78,7 @@ These fields are diagnostics only. They must not expose secrets, file contents, 
 Recommended bucket:
 
 ```text
-operon-kitchens-request-review-files
+<OPERON_KITCHENS_UPLOAD_BUCKET>
 ```
 
 Bucket posture:
