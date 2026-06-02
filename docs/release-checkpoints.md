@@ -1,73 +1,18 @@
 # Operon Kitchens Release Checkpoints
 
-Last updated: 31 May 2026
+Last updated: 2 June 2026
 
-Use this file before any controlled-launch release, push, or deploy.
+Use this before any approved push, deploy or production verification.
 
-## 1. Boundary Check
+## Current Default
 
-- All writes are inside `/Users/daibang/Documents/operon-kitchens/**`.
-- No Operon Flooring files modified.
-- No Oz Timber files modified.
-- No parent/root shared config modified.
-- No production Supabase settings changed directly.
-- No Netlify UI/settings changed directly.
-- No secrets committed.
+No deploy.
 
-Command:
+Vincent is low on Netlify credits. Work locally until a checkpoint is explicitly approved.
 
-```bash
-git status --short
-git diff --stat
-```
+## Baseline Local Gate
 
-## 2. Customer-Safe Copy Check
-
-Confirm public pages do not introduce:
-
-- final fixed quote claims
-- guaranteed quote or guaranteed savings
-- legal approval
-- compliance approval
-- certified/compliant claims
-- order instantly / online custom kitchen ordering claims
-- supplier costs
-- internal rates
-- margin or markup
-- lead score or lead priority
-- admin priority
-- internal notes
-
-Safe language:
-
-- planning estimate
-- indicative range
-- requires review
-- may require confirmation
-- subject to site measure
-- written scope confirmation required
-- general guidance only
-- not legal advice
-- not a final quote
-
-## 3. Runtime Path Check
-
-Because the public site is a static export:
-
-- Public pages must not depend on Next API routes for production behaviour.
-- Runtime backend behaviour must use Netlify Functions under `netlify/functions`.
-- `/request-review` should use `/.netlify/functions/kitchen-request-review`.
-- `/admin/leads` should use `/.netlify/functions/kitchen-admin-leads` and `/.netlify/functions/kitchen-admin-lead-update`.
-- File uploads should use `/.netlify/functions/kitchen-request-review`, not browser-side Supabase writes.
-
-Static-export regression check:
-
-- `/quote/review` should submit to `/.netlify/functions/kitchen-request-review`, not `/api/leads`.
-- Saved-estimate lookup on `/quote/review` should not call `/api/quotes` in the public static export.
-
-## 4. Local Verification Commands
-
-Run:
+Before any release checkpoint:
 
 ```bash
 npm test -- --runInBand
@@ -76,67 +21,104 @@ npm run build
 git diff --check
 ```
 
-Build must pass and `scripts/verify-build-content.js` must pass.
+Confirm:
 
-## 5. Static Export Check
+- all writes are inside `/Users/daibang/Documents/operon-kitchens/**`
+- no Operon Flooring files changed
+- no Oz Timber files changed
+- no parent/root shared config changed
+- no Netlify settings changed
+- no production Supabase settings changed directly
+- no secrets committed
+- no supplier costs, internal rates, margins, lead scores, admin priority, internal notes or service keys are public
+- no final fixed quote, guaranteed savings, legal approval or compliance approval claims were introduced
 
-After build, inspect key output files:
+## Checkpoint 1: Domain / Email / Resend Setup
 
-- `out/index.html`
-- `out/quote.html`
-- `out/quote/review.html`
-- `out/request-review.html`
-- `out/admin/leads.html`
-- `out/deploy-check.html`
+Purpose: prepare professional controlled testing.
 
-Recommended checks:
+Ready when:
 
-```bash
-rg -n "final fixed quote|guaranteed savings|compliance approval|legal approval|supplier cost|internal rate|lead score|admin priority" out || true
-rg -n "Need help with scope\\?\\?Ask|brand\\.Planning|Clear kitchen renovation estimates before you book a site visit" out || true
-```
+- domain is purchased
+- Netlify domain/DNS setup is planned or completed by Vincent
+- Resend verified domain/sender is configured
+- Netlify email env vars are set
+- one approved production test lead confirms email delivery
+- `/admin/leads` shows the same lead
 
-## 6. Controlled-Launch Live Check
+Deploy: only after Vincent approves.
 
-Only after an approved deploy:
+## Checkpoint 2: Controlled Testing Fixes
 
-- `/deploy-check` shows the expected commit.
-- `/request-review` returns 200.
-- `POST /.netlify/functions/kitchen-request-review` returns `202` for valid payload.
-- Response has `ok: true`.
-- Response has `delivery.stored: true`.
-- Supabase row appears in `public.kitchen_request_reviews`.
-- Attribution fields store when UTM params are present.
-- `/admin/leads` shows the lead after entering the token.
-- Status update works.
-- Internal note update works.
-- If files were attached, metadata appears in `/admin/leads`.
-- No secrets or internal pricing fields appear in browser responses.
+Purpose: fix only real blockers found by trusted testers.
 
-## 7. Netlify Deploy Rule
+Examples:
 
-Deployment is not automatic for QA or documentation tasks.
+- request-review form confusion
+- quote-review submission friction
+- admin lead readability
+- mobile usability blocker
+- privacy/terms clarity issue
 
-Always report one of:
+Avoid:
 
-- Deployment required.
-- Deployment optional.
-- Deployment not needed.
+- broad feature expansion
+- SEO sprawl
+- payment
+- full CRM
 
-Avoid repeated clear-cache deploys unless production/runtime behaviour must be verified.
+Deploy: batch fixes into one approved release.
 
-## 8. Final Report Format
+## Checkpoint 3: File Upload MVP
 
-Every implementation report should include:
+Purpose: complete safe file handling.
 
-1. Files created.
-2. Files modified.
-3. Files deleted, if any.
-4. Tests run.
-5. Lint/build result.
-6. Deployment status: required, optional, or not needed.
-7. Supabase/database changes proposed or created.
-8. Shared infrastructure touched.
-9. Confirmation no Operon Flooring or Oz Timber files were modified.
-10. Anything deferred.
-11. Approval needed from Vincent, if any.
+Scope:
+
+- private bucket verified
+- request-review upload stores file object and metadata
+- admin metadata visible
+- signed download workflow designed and approved
+- deletion and retention rules documented
+
+Do not add public file URLs or browser-side Supabase writes.
+
+Deploy: only after local tests and explicit approval.
+
+## Checkpoint 4: Paid Quote Review / Service Packaging
+
+Purpose: define commercial offer before payment.
+
+Scope:
+
+- quote-review report template
+- inclusions/exclusions
+- service ladder copy
+- refund/cancellation draft
+- no live checkout until approved
+
+Deploy: optional after service copy is approved.
+
+## Checkpoint 5: Broader SEO / Content Rollout
+
+Purpose: expand public acquisition only after operational readiness.
+
+Scope:
+
+- stronger guide pages
+- suburb/area quality review
+- internal links
+- no doorway pages
+- no fake proof
+
+Deploy: only after controlled testing proves lead handling is stable.
+
+## Final Report Requirement
+
+Every release or local-hardening report must state:
+
+- Deployment required, optional or not needed
+- What was changed
+- What was tested
+- What remains deferred
+- Recommended next local-only task

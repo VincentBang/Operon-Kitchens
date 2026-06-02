@@ -1,42 +1,51 @@
 # Operon Kitchens Deployment Rules
 
-Last updated: 31 May 2026
+Last updated: 2 June 2026
 
 ## Main Rule
 
-Minimise Netlify deploys because Netlify credits are limited.
+Default: no deploy.
 
-Do not deploy unless deployment is unavoidable or Vincent explicitly asks for commit/push/deploy. Prefer local tests, local build, static export checks and documentation.
+Vincent is low on Netlify credits. Do not trigger a deploy unless Vincent explicitly approves a release checkpoint or asks for a push/deploy.
 
-Always report whether deployment is:
+Do not:
 
-- required
-- optional
-- not needed
+- push to `main` without explicit approval
+- create deploy previews
+- run clear-cache deploys
+- trigger Netlify builds
+- perform production verification loops
+- edit Netlify site settings
+
+Prefer:
+
+- local tests
+- local lint
+- local build
+- static export inspection
+- documentation
+- local commits only when useful
+
+## Why This Matters
+
+Pushing to `main` can trigger Netlify production deployment. Treat any push to `main` as a deployment action.
 
 ## Current Deployment Mode
 
-Operon Kitchens is deployed as a static export.
+Operon Kitchens is a static export.
 
-Required Netlify settings:
+Expected Netlify settings:
 
-- Base directory: Operon Kitchens repository root.
-- Build command: `npm run build`.
-- Publish directory: `out`.
-- Node version: `22`.
-- Netlify Functions directory: `netlify/functions`.
+- Build command: `npm run build`
+- Publish directory: `out`
+- Node version: `22`
+- Functions directory: `netlify/functions`
 
-Important:
+`next.config.js` uses static export. Public pages cannot rely on Next API routes in production. Runtime backend work must use Netlify Functions.
 
-- `.next` is an intermediate Next build folder.
-- `out` is the deployable public site output.
-- `next.config.js` uses `output: 'export'`.
-- Static export public pages cannot rely on Next API routes at runtime.
-- Netlify Functions can still run from `netlify/functions`.
+## Before Any Approved Deploy
 
-## Before Any Deploy
-
-Run:
+Run locally:
 
 ```bash
 npm test -- --runInBand
@@ -51,77 +60,46 @@ Confirm:
 - no Operon Flooring files changed
 - no Oz Timber files changed
 - no secrets are committed
-- no customer-facing internal fields are exposed
-- no final fixed quote, compliance approval, legal approval or guaranteed savings claims were introduced
-
-## Local Static Export Checks
-
-After `npm run build`, inspect `out` before deploy:
-
-- `out/index.html`
-- `out/quote.html`
-- `out/quote/review.html`
-- `out/request-review.html`
-- `out/admin/leads.html`
-- `out/deploy-check.html`
-
-Use `rg` against `out` to check stale copy and unsafe wording.
+- no supplier costs, internal rates, margins, lead scores, admin priority or service keys are exposed
+- no final fixed quote, legal approval, compliance approval or guaranteed savings wording was introduced
 
 ## Deploy Required
 
-Deployment is required when:
+Only mark deployment required when:
 
-- a production bug fix must reach customers
-- Netlify Function behaviour changed and must run live
-- Vincent explicitly asks to commit/push/redeploy
-- live production parity must be verified for a runtime issue
+- Vincent explicitly approves a release
+- a production customer blocker must be fixed live
+- a Netlify Function change must be verified live
+- a release checkpoint calls for one controlled production test
 
 ## Deploy Optional
 
 Deployment is optional when:
 
-- docs changed only
-- tests changed only
-- non-customer-facing internal refactors changed
-- a feature is ready but not yet approved for release
+- code is ready but not approved for release
+- UX improvements are local and can wait
+- docs/tests changed alongside non-critical code
 
 ## Deploy Not Needed
 
 Deployment is not needed when:
 
-- the task is a local QA/review
-- the task is documentation-only
-- the task produces a plan
-- no files changed
-- only local static export output was checked
+- docs changed only
+- the task is local QA
+- the task produces a plan/spec/playbook
+- only tests were added
+- no customer-facing runtime change needs release
 
-## Live Verification
+## Clear-Cache Deploy
 
-Use sparingly to conserve deploy credits.
+Clear-cache deploy is a last resort. Use only when a production artifact/runtime mismatch is confirmed and Vincent approves.
 
-Recommended URLs:
+## Reporting Requirement
 
-- `https://operonkitchens.netlify.app/deploy-check`
-- `https://operonkitchens.netlify.app/`
-- `https://operonkitchens.netlify.app/request-review`
-- `https://operonkitchens.netlify.app/.netlify/functions/kitchen-request-review`
-- `https://operonkitchens.netlify.app/admin/leads`
+Every final report must explicitly say one of:
 
-Do not ask Vincent to paste admin tokens or secrets into chat. Use browser/session context or local environment only when safely available.
+- Deployment required
+- Deployment optional
+- Deployment not needed
 
-## Manual Netlify Changes
-
-Codex must not edit Netlify UI settings directly. If a Netlify setting outside the repository is needed, report exact manual action for Vincent.
-
-Common manual checks:
-
-- correct Git repo
-- correct branch
-- correct base directory
-- build command `npm run build`
-- publish directory `out`
-- Node version `22`
-- latest deploy commit hash
-- no old deploy pinned
-- environment variables present
-- Netlify Function logs clean
+If deployment is required or optional, explain why and what Vincent must approve.

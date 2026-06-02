@@ -1,66 +1,88 @@
 # Operon Kitchens Codex Tasks
 
-Last updated: 31 May 2026
+Last updated: 2 June 2026
 
-Use this file to keep future Codex prompts short. Read `AGENTS.md`, `PROJECT_BRIEF.md`, `DEPLOYMENT_RULES.md`, and this file before implementation tasks.
+Read `AGENTS.md`, `PROJECT_BRIEF.md`, `DEPLOYMENT_RULES.md`, `DECISION_LOG.md` and `docs/release-checkpoints.md` before every implementation task.
+
+## Current Phase
+
+Controlled testing / local hardening while Netlify deploys are paused.
+
+Vincent is low on Netlify credits. Do not deploy, push to `main`, create deploy previews, run clear-cache deploys or perform production verification unless explicitly approved.
 
 ## Current Priority
 
-Prepare Operon Kitchens for controlled real enquiry testing while avoiding unnecessary Netlify deploys.
+Make controlled customer testing operationally smoother without adding major runtime features.
 
-## Immediate High-Confidence Tasks
+## Local-Only Task Queue
 
-1. Release the `/quote/review` static-export submit-path fix when Vincent approves.
-   - Local code now submits quote-review requests to `/.netlify/functions/kitchen-request-review`.
-   - The saved-estimate lookup no longer calls `/api/quotes` on the public static page.
-   - File storage is still deferred; selected file names are local preview context only.
-   - Deployment is required only when Vincent wants this fix live.
+1. Review and maintain the controlled-launch checklist.
+   - Keep manual test steps clear.
+   - Ensure daily `/admin/leads` checks are covered while email is off.
+   - Ensure no internal fields leak.
 
-2. Keep request-review controlled-launch flow stable.
-   - Preserve Supabase as source of truth.
-   - Preserve safe success when storage works and email is disabled.
-   - Preserve kitchen-scoped file upload storage and safe metadata display.
-   - Do not fake success when neither storage nor email works.
-   - Preserve attribution fields and legacy fallback.
+2. Improve request-review and admin usability locally only.
+   - Small copy, spacing, state and readability improvements are acceptable.
+   - Do not deploy until Vincent approves a release checkpoint.
 
-3. Improve controlled-launch operations only when needed.
-   - Small admin readability improvements are acceptable.
-   - Do not build full CRM, auth system, payment, supplier API or uploads unless Vincent explicitly approves a new phase.
+3. Prepare domain/email/Resend checklist.
+   - Domain purchase.
+   - Netlify DNS/domain connection later.
+   - Resend verified domain/sender.
+   - Netlify env vars for email.
+   - One production lead test after approval.
 
-## Current Controlled-Launch Manual Checks
+4. Prepare quote-review report template.
+   - Scope clarity.
+   - Allowance risk.
+   - Missing information.
+   - Customer questions.
+   - Compliance prompts.
+   - Recommended next step.
+   - No legal approval or final quote claims.
 
-Use `docs/controlled-launch-checklist.md`.
+5. Prepare file-upload architecture spec without new runtime implementation.
+   - Current storage path.
+   - Private bucket posture.
+   - Admin metadata display.
+   - Future signed downloads.
+   - Future deletion and retention rules.
 
-Key manual checks:
+6. Prepare lead handling playbook.
+   - Status meanings.
+   - Follow-up timing.
+   - Internal notes style.
+   - When to request site measure.
+   - What not to promise.
 
-- Submit a labelled `/request-review` lead.
-- Confirm Supabase row exists.
-- Confirm attribution fields are stored when UTM params are present.
-- Confirm `/admin/leads` displays source route, landing page and UTM fields.
-- Update status.
-- Add internal note.
-- Confirm no internal fields leak.
-- Check Netlify Function logs.
-- Check `/admin/leads` daily while email is disabled.
+7. Keep docs aligned.
+   - `PROJECT_BRIEF.md`
+   - `DEPLOYMENT_RULES.md`
+   - `DECISION_LOG.md`
+   - `docs/release-checkpoints.md`
+   - `docs/controlled-testing-playbook.md`
 
-## Deferred Work
+## Explicitly Deferred
 
-Do not implement these unless explicitly asked:
+Do not implement unless Vincent explicitly approves:
 
-- Admin file download/review workflow, retention rules and deletion handling.
-- Payment/checkout.
-- Customer accounts/login expansion.
-- Full CRM.
-- Production analytics service integration.
-- Supplier APIs.
-- Full AI document review.
-- 3D planner.
-- Custom domain and branded email configuration.
-- Production Supabase setting changes outside documented migrations.
+- deployment or push to `main`
+- production verification
+- file upload expansion beyond current safe scaffolding
+- admin file download/deletion workflows
+- retention automation
+- payment or checkout
+- customer auth/login expansion
+- full CRM
+- supplier APIs
+- full AI document review
+- broad SEO page expansion
+- custom domain and branded email changes
+- production Supabase changes outside documented manual SQL
 
-## Testing Commands
+## Local Verification Commands
 
-Run before reporting completion:
+Run before reporting completion for implementation work:
 
 ```bash
 npm test -- --runInBand
@@ -69,20 +91,17 @@ npm run build
 git diff --check
 ```
 
-For route checks after build, inspect `out/*.html`. Do not deploy just to inspect static output.
+For docs-only work, still run the commands when requested by Vincent.
 
 ## Reporting Format
 
 Final reports should include:
 
-1. Files created.
-2. Files modified.
-3. Files deleted, if any.
-4. Tests run.
-5. Lint/build result.
-6. Deployment status: required, optional, or not needed.
-7. Any Supabase/database changes proposed or created.
-8. Shared infrastructure touched.
-9. Confirmation no Operon Flooring or Oz Timber files were modified.
-10. Anything deferred.
-11. Any approval needed from Vincent.
+1. Files created
+2. Files modified
+3. Files deleted, if any
+4. Tests/lint/build result
+5. Deployment status: required, optional or not needed
+6. Supabase/database changes proposed, if any
+7. Confirmation no Operon Flooring or Oz Timber files were modified
+8. Recommended next local-only task

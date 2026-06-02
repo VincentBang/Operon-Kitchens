@@ -1,90 +1,70 @@
 # Operon Kitchens Project Brief
 
-Last updated: 31 May 2026
+Last updated: 2 June 2026
 
-## Strategy
+## What Operon Kitchens Is
 
-Operon Kitchens is a separate customer-facing Sydney kitchen renovation quote clarity, quote review, and staged-ordering platform under the broader Operon Group.
+Operon Kitchens is a Sydney kitchen renovation quote clarity, quote review and staged-ordering platform under the broader Operon Group.
 
-It is not a generic renovation brochure site and it must not be treated as part of Operon Flooring or Oz Timber Floor. It is the kitchen vertical proof layer for a future trade-focused operating system, Operon OS.
+It helps homeowners:
 
-Public positioning:
+- check likely kitchen renovation budget range
+- understand confidence and project review risk
+- prepare quote/photos/plans
+- review inclusions, exclusions, PC sums and provisional sums
+- identify scope, access, strata, trade and compliance review prompts
+- move toward professional review, site measure, written scope and project delivery
 
-- Check likely kitchen renovation price.
-- Understand planning estimate range.
-- Understand quote confidence.
-- Upload quote/photos/plans when storage is ready.
-- Review inclusions, exclusions, PC sums and provisional sums.
-- Identify scope, risk and NSW review prompts.
-- Move toward professional review, site measure, written scope and project delivery.
+Operon Kitchens is not a generic renovation website and is not an AI gimmick. Technology is a backend advantage, not the public headline.
 
-Customer promise:
+## Brand Separation
 
-`Check price, understand scope, review quotes, then order with confidence after site measure.`
+Operon Kitchens remains separate from Operon Flooring and Oz Timber Floor.
 
-Do not position the site as an AI gimmick. Technology is a backend advantage, not the public headline.
+Operon Flooring may be used as a quality benchmark for structure, navigation and trust patterns, but files, production logic, Supabase resources and deployment settings must not be shared or edited from this repo.
 
-## Safe Customer Journey
+## Customer Journey
 
-The intended journey is:
+The safe staged path is:
 
-1. Free planning estimate.
-2. Upload quote/photos/plans or provide request-review details.
-3. Basic quote review.
-4. Optional detailed review later.
-5. Site measure.
-6. Design/specification.
-7. Written quote.
-8. Contract/deposit.
-9. Project delivery.
+1. Free planning estimate
+2. Upload or prepare quote/photos/plans
+3. Quote review before commitment
+4. Site measure
+5. Written scope confirmation
+6. Project delivery later
 
-Do not imply that a full custom kitchen can be ordered online before site measure and written scope confirmation.
+Do not imply that customers can order a full custom kitchen online before site measure and written scope confirmation.
 
-## Current Controlled-Launch Status
+## Future Operon OS Direction
 
-Current status:
+Operon Kitchens can later become a kitchen vertical proof layer for Operon OS, a trade-focused operating system. Future shared infrastructure should be kitchen-namespaced first, additive, non-destructive and safe to generalise later.
 
-- Static export deployment is working from `out`.
-- Netlify publish directory should be `out`, not `.next`.
-- `/request-review` is live and posts to Netlify Function `kitchen-request-review`.
-- Valid request-review leads are stored in Supabase table `public.kitchen_request_reviews`.
-- `/admin/leads` is live and protected by `OPERON_KITCHENS_ADMIN_TOKEN`.
-- Attribution/UTM tracking is supported and documented.
-- Resend notification logic exists but email may remain disabled until a verified branded sender/domain is available.
-- No custom domain yet.
-- Kitchen-scoped file upload storage is now scaffolded for request-review and quote-review intake, pending Supabase bucket/table setup and controlled production verification.
-- No payment.
-- No customer login.
-- No full CRM.
-- No supplier API.
+## Current MVP Status
 
-Controlled-launch note:
+Current controlled-launch state:
 
-- `/quote/review` has been refactored locally to submit through `/.netlify/functions/kitchen-request-review` instead of static-export API routes. Deploy this fix before sending broad traffic to `/quote/review`.
+- static export deploys from `out`
+- request-review form posts to Netlify Function `kitchen-request-review`
+- Supabase table `public.kitchen_request_reviews` stores durable leads
+- admin-lite `/admin/leads` is token gated
+- attribution/UTM tracking is implemented
+- Resend notification code exists, but branded domain/email setup is deferred
+- file upload storage is scaffolded and under controlled verification
+- no payment
+- no customer login
+- no full CRM
+- no supplier API
+- no broad public launch
 
-## Core Modules
+## Customer-Safe Data
 
-- Public website: homepage, quote wizard, quote review, request-review, service pages, area pages, guides, FAQ, privacy and terms.
-- Estimate engine: `src/lib/pricing.ts`.
-- Customer-safe quote projection: `src/lib/quotePresentation.ts`.
-- Quote review engine: `src/lib/quoteReview.ts`.
-- Request-review validation: `src/lib/requestReview.ts`.
-- Request-review storage: `src/lib/kitchenLeadStorage.ts`.
-- Request-review file storage: `src/lib/kitchenFileStorage.ts`.
-- Admin-lite lead operations: `src/lib/kitchenAdminLeads.ts`, `src/pages/admin/leads.tsx`, and Netlify admin functions.
-- Analytics readiness: `src/lib/analytics.ts` and `docs/analytics-events.md`.
+Public estimate and review outputs may show:
 
-## Customer-Safe Output Rules
-
-Customer-facing estimate output may show:
-
-- `estimateLow`
-- `estimateHigh`
-- `confidenceScore`
-- `confidenceLabel`
+- planning range
+- confidence score and label
 - confidence reasons
-- `reviewRiskScore`
-- `reviewRiskLabel`
+- review risk score and label
 - risk reasons
 - included scope
 - assumptions
@@ -93,55 +73,10 @@ Customer-facing estimate output may show:
 - compliance prompts
 - recommended next step
 
-Customer-facing pages and browser responses must not show:
+Public surfaces must not expose supplier costs, internal rates, margins, lead scores, admin priority, internal notes, service keys or hidden pricing logic.
 
-- supplier costs
-- internal rates
-- line-item cost stack
-- margin or markup logic
-- lead score
-- lead priority
-- admin priority
-- internal follow-up priority
-- internal notes
-- service role keys
-- API keys
-- production credentials
+## Current Operating Mode
 
-## Compliance And Risk Language
+Current phase: controlled testing and local hardening while Netlify deploys are paused.
 
-Use:
-
-- planning estimate
-- indicative range
-- requires review
-- may require confirmation
-- subject to site measure
-- written scope confirmation required
-- general guidance only
-- not legal advice
-- not a final quote
-
-Avoid:
-
-- final fixed quote
-- guaranteed quote
-- guaranteed savings
-- approved
-- certified
-- compliant
-- legal advice
-- compliance approval
-- order instantly
-
-NSW review prompts can include written contract review over $5,000 including GST, 10% deposit guidance, HBC review over $20,000 including GST, licensed plumbing/electrical/gas review, strata/apartment review, DBP/class 2 screening, engineered-stone restrictions, older-property/asbestos review, final site measure and written scope confirmation.
-
-## Important Docs
-
-- `AGENTS.md`: strict execution policy.
-- `CODEX_TASKS.md`: next tasks and deferred work.
-- `DEPLOYMENT_RULES.md`: deploy minimisation and static export rules.
-- `DECISION_LOG.md`: important decisions.
-- `docs/release-checkpoints.md`: release gates.
-- `docs/controlled-launch-checklist.md`: operational launch checklist.
-- `docs/supabase-kitchen-request-reviews.md`: Supabase SQL and storage behaviour.
+Default work should be local-first: improve docs, tests, specs, playbooks and safe UI/code locally. Do not deploy or push unless Vincent explicitly approves.
