@@ -19,12 +19,15 @@ Use this index to choose the right document before starting work. Operon Kitchen
 - [Controlled launch checklist](./controlled-launch-checklist.md): hub checklist for local testing, manual Supabase/admin checks and approved release checkpoints.
 - [Controlled testing playbook](./controlled-testing-playbook.md): how Vincent and trusted testers should submit fake enquiries and record confusion points.
 - [Request-review and admin mobile QA](./request-review-admin-mobile-qa.md): local visual checklist for `/request-review` and `/admin/leads` screenshots, spacing and usability.
+- [Operon Flooring UI alignment audit](./operon-flooring-ui-alignment.md): how Kitchens should follow the Operon family layout rhythm without copying Flooring content or weakening kitchen safety rules.
+- [Brand asset system](./brand-system.md): Operon Kitchens logo variants, colours, usage guidance and final designer/vector work notes.
 - [Lead handling playbook](./lead-handling-playbook.md): lead statuses, follow-up timing, internal notes style, site-measure triggers and what not to promise.
 
 ## Quote Review
 
 - [Quote review report template](./quote-review-report-template.md): customer-safe future report structure covering scope clarity, allowance risk, missing information, questions, compliance prompts and recommended next step.
 - [Quote review report readiness checklist](./quote-review-report-readiness-checklist.md): manual trial checklist before paid review, PDF export, payment or CRM workflows.
+- [Paid quote review service packaging](./paid-quote-review-service-packaging.md): future paid detailed review inclusions, exclusions, customer-safe report structure, delivery expectations and refund/cancellation principles without payment implementation.
 
 ## File Uploads
 
@@ -32,6 +35,7 @@ Use this index to choose the right document before starting work. Operon Kitchen
 - [File upload MVP completion plan](./file-upload-mvp-completion-plan.md): implementation-ready sequence for admin signed downloads, deletion controls and retention metadata before runtime work.
 - [File upload release candidate summary](./file-upload-release-candidate-summary.md): what the signed-download batch would release and how to verify it.
 - [Signed download live verification checklist](./signed-download-live-verification-checklist.md): one-deploy production verification steps after approval.
+- [Admin file delete UI design](./admin-file-delete-ui-design.md): future delete-button UX, confirmation copy and request guardrails without adding the live button yet.
 - [Supabase file upload SQL checklist](./supabase-file-upload-sql-checklist.md): manual bucket/table/retention SQL checks for Vincent.
 - [File upload runtime slice decision](./file-upload-runtime-slice-decision.md): choose between deploying signed downloads, continuing local delete-function work, or pausing file ops.
 - [Supabase request-review storage notes](./supabase-kitchen-request-reviews.md): manual SQL, request-review lead storage, file metadata table and upload troubleshooting.

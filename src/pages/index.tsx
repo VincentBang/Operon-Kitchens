@@ -6,10 +6,10 @@ import TrackedCtaLink from '@/components/TrackedCtaLink';
 import { getAreaHref, priorityFooterAreas } from '@/lib/areas';
 
 const pathCards = [
-  ['I need a new kitchen estimate', 'Build a planning budget range with confidence scoring and review flags.', '/quote'],
-  ['I already have a quote', 'Upload a current quote and check inclusions, allowances and exclusions.', '/quote/review'],
-  ['I’m researching kitchen cost', 'Understand process, PC sums, benchtop options and budget drivers.', '/kitchen-renovation-cost-sydney'],
-  ['I’m in an apartment or strata property', 'See access, approval and class 2 screening items before review.', '/apartment-kitchen-renovation-sydney'],
+  ['Start a kitchen estimate', 'Build a planning budget range with confidence scoring and review flags.', '/quote'],
+  ['Review an existing kitchen quote', 'Upload a current quote and check inclusions, allowances and exclusions.', '/quote/review'],
+  ['Prepare for site measure', 'Understand what should be checked before written scope confirmation.', '/site-measure'],
+  ['Prepare a design/spec package', 'Clarify selections, allowances and quote-ready documentation later in the journey.', '/design-specification-package'],
 ];
 
 const quoteChangeDrivers = [
@@ -33,6 +33,7 @@ const finishTiers = [
   ['Refresh', 'Cabinetry fronts, benchtop or splashback updates where the existing kitchen layout mostly remains.'],
   ['Full renovation', 'Cabinetry, surfaces, sink/tap, appliance allowance, trades, demolition and make-good review.'],
   ['Apartment kitchen', 'Extra attention to strata, access, lift bookings, work hours, class 2 screening and waste.'],
+  ['Premium renovation', 'Finish-led kitchens where selections, appliances, stone alternatives and site details need clearer review.'],
 ];
 
 const estimateOutputs = [
@@ -58,6 +59,7 @@ const sampleReportSections = [
 const projectExamples = [
   ['Apartment quote review', 'Strata access, lift bookings, appliance assumptions and unclear rubbish removal were the key review items.'],
   ['Family kitchen refresh', 'The scope separated cabinetry fronts, hardware, benchtop and painting/patching boundaries.'],
+  ['Investment property kitchen', 'Practical finish tiers, appliance allowances and access timing shaped the review path.'],
   ['Premium home estimate', 'Finish tier, benchtop alternatives, appliance allowance and site access shaped the planning range.'],
 ];
 
@@ -119,6 +121,7 @@ export default function Home() {
               <li>Benchtop compliance confirmation</li>
               <li>Site measure required</li>
             </ul>
+            <Link href="/quote" className="textLink">Start with your project details</Link>
             <small>Example only — actual range depends on scope and site review.</small>
           </div>
         </div>
@@ -150,7 +153,8 @@ export default function Home() {
       <section className="section">
         <div className="sectionIntro">
           <p className="eyebrow">Choose your path</p>
-          <h2>Start where your project is today.</h2>
+          <h2>Start from where you are now.</h2>
+          <p className="muted">Estimate, review a written quote, prepare site measure or get a specification pathway ready.</p>
         </div>
         <div className="cardGrid four">
           {pathCards.map(([title, body, href]) => (
@@ -165,8 +169,8 @@ export default function Home() {
 
       <section className="section twoColumn">
         <div>
-          <p className="eyebrow">What the estimate gives you</p>
-          <h2>A clearer planning view before site measure.</h2>
+          <p className="eyebrow">Quote clarity</p>
+          <h2>How Operon keeps kitchen quotes clear.</h2>
           <p className="muted">
             The online estimate is built to show uncertainty clearly, so the next professional review can focus on the right questions.
           </p>
@@ -211,8 +215,8 @@ export default function Home() {
 
       <section className="section twoColumn">
         <div>
-          <p className="eyebrow">Quote review</p>
-          <h2>Already have a kitchen quote? Check what sits behind the total.</h2>
+          <p className="eyebrow">Quote validation</p>
+          <h2>Want to check a written kitchen quote before deciding?</h2>
           <p className="muted">
             The review intake checks missing inclusions, PC sums, provisional sums, service relocation, appliance assumptions, benchtop clarity, strata risks and site measure requirements.
           </p>
@@ -233,8 +237,8 @@ export default function Home() {
 
       <section className="section">
         <div className="sectionIntro">
-          <p className="eyebrow">Finish tiers and project types</p>
-          <h2>Controlled choices, not endless supplier chaos.</h2>
+          <p className="eyebrow">Service paths</p>
+          <h2>Browse kitchen paths after you know the quote path.</h2>
           <p className="muted">Operon Kitchens keeps early selections practical: enough detail for estimate confidence without exposing behind-the-scenes commercial details or pretending every product is final.</p>
         </div>
         <div className="cardGrid">
@@ -249,8 +253,8 @@ export default function Home() {
 
       <section className="section">
         <div className="sectionIntro">
-          <p className="eyebrow">Project examples</p>
-          <h2>Typical profiles for clearer planning.</h2>
+          <p className="eyebrow">Example project proof</p>
+          <h2>Typical kitchen project profiles.</h2>
           <p className="muted">Example profiles show how scope, access and selections can affect the estimate range. They are not presented as completed Operon Kitchens jobs.</p>
         </div>
         <div className="cardGrid">

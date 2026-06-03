@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-labelledby="title desc">
+  <title id="title">Operon emblem</title>
+  <desc id="desc">Circular Operon master emblem in deep navy and muted gold.</desc>
+  <g transform="translate(12 12)" fill="none" stroke-linecap="square" stroke-linejoin="miter">
+    <path d="M48 0A48 48 0 0 0 0 48" stroke="#08233F" stroke-width="8"/>
+    <path d="M96 48A48 48 0 0 0 48 0" stroke="#08233F" stroke-width="8"/>
+    <path d="M48 96A48 48 0 0 0 96 48" stroke="#08233F" stroke-width="8"/>
+    <path d="M0 48A48 48 0 0 0 48 96" stroke="#08233F" stroke-width="8"/>
+    <path d="M48 12v27M48 57v27M12 48h27M57 48h27" stroke="#08233F" stroke-width="7"/>
+    <path d="M22 22l16 16M74 22L58 38M22 74l16-16M74 74L58 58" stroke="#B8842C" stroke-width="5"/>
+    <path d="M30 30h18v13M66 30H48v13M30 66h18V53M66 66H48V53" stroke="#08233F" stroke-width="7"/>
+    <circle cx="48" cy="48" r="15" fill="#fff" stroke="#B8842C" stroke-width="8"/>
+    <g fill="#B8842C" stroke="none">
+      <rect x="42" y="-5" width="12" height="12"/>
+      <rect x="42" y="89" width="12" height="12"/>
+      <rect x="-5" y="42" width="12" height="12"/>
+      <rect x="89" y="42" width="12" height="12"/>
+    </g>
+  </g>
+</svg>

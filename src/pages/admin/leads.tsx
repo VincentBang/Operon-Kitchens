@@ -46,6 +46,14 @@ const fileCategoryLabels: Record<string, string> = {
   other: 'Other document',
 };
 
+const fileRetentionLabels: Record<string, string> = {
+  active: 'Active',
+  review_complete: 'Review complete',
+  customer_requested_deletion: 'Deletion requested',
+  deleted: 'Deleted',
+  retained_for_business_record: 'Business record',
+};
+
 function formatDate(value: string) {
   try {
     return new Intl.DateTimeFormat('en-AU', {
@@ -67,6 +75,15 @@ function yesNoLabel(value: boolean | null) {
   if (value === true) return 'Yes';
   if (value === false) return 'No';
   return 'Not sure';
+}
+
+function fileRetentionLabel(value?: string | null) {
+  if (!value) return 'Active';
+  return fileRetentionLabels[value] || value;
+}
+
+function isDeletedFile(value?: string | null) {
+  return value === 'deleted';
 }
 
 function compactAttribution(lead: KitchenAdminLead) {
@@ -393,22 +410,30 @@ export default function LeadsAdminPage() {
                   {selectedLead.files.length > 0 ? (
                     <ul className="mt-3 space-y-2 text-sm text-slate-200">
                       {selectedLead.files.map((file) => (
-                        <li key={file.id} className="rounded-lg bg-white/5 p-3">
+                        <li key={file.id} className={`rounded-lg p-3 ${isDeletedFile(file.retention_status) ? 'bg-rose-950/30 opacity-75' : 'bg-white/5'}`}>
                           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                             <div className="min-w-0">
                               <span className="block font-medium">{file.file_name}</span>
                               <span className="block text-xs text-slate-400">
                                 {(fileCategoryLabels[file.category] || file.category)} | {formatFileSize(file.file_size)} | {file.file_type}
                               </span>
+                              <span className="mt-1 inline-flex rounded-full bg-white/10 px-2 py-1 text-[11px] font-semibold text-slate-200">
+                                {fileRetentionLabel(file.retention_status)}
+                              </span>
+                              {file.deleted_at && (
+                                <span className="ml-2 inline-flex rounded-full bg-rose-400/10 px-2 py-1 text-[11px] font-semibold text-rose-100">
+                                  Deleted {formatDate(file.deleted_at)}
+                                </span>
+                              )}
                               <span className="block truncate text-xs text-slate-500" title={file.object_path}>{file.object_path}</span>
                             </div>
                             <button
                               type="button"
-                              disabled={!token || downloadingFileId === file.id}
+                              disabled={!token || downloadingFileId === file.id || isDeletedFile(file.retention_status)}
                               onClick={() => downloadFile(file.id)}
                               className="rounded-lg border border-emerald-300/40 px-3 py-2 text-xs font-semibold text-emerald-100 hover:bg-emerald-300/10 disabled:cursor-not-allowed disabled:opacity-50"
                             >
-                              {downloadingFileId === file.id ? 'Creating link...' : 'Download'}
+                              {isDeletedFile(file.retention_status) ? 'Deleted' : downloadingFileId === file.id ? 'Creating link...' : 'Download'}
                             </button>
                           </div>
                         </li>
@@ -418,7 +443,7 @@ export default function LeadsAdminPage() {
                     <p className="mt-2 text-sm text-slate-300">No uploaded files attached to this lead.</p>
                   )}
                   <p className="mt-3 text-xs text-slate-400">
-                    Files are private. Download links are generated on demand and expire shortly. Deletion and retention workflows are deferred until approved.
+                    Files are private. Download links are generated on demand and expire shortly. Deleted files cannot be downloaded. Delete controls remain deferred until the next approved runtime slice.
                   </p>
                 </div>
 

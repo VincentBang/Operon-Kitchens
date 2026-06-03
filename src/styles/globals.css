@@ -3,15 +3,15 @@
 @tailwind utilities;
 
 :root {
-  --ink: #17211d;
-  --muted: #63706a;
+  --ink: #101814;
+  --muted: #5e6963;
   --line: #d9dfda;
-  --paper: #fbfaf6;
+  --paper: #f7f4ee;
   --surface: #ffffff;
-  --accent: #1f6f5b;
-  --accent-dark: #124235;
+  --accent: #2f725f;
+  --accent-dark: #193f34;
   --gold: #c79645;
-  --soft: #eef3ee;
+  --soft: #edf2ed;
   --shadow-soft: 0 18px 52px rgba(23, 33, 29, 0.08);
   --shadow-lift: 0 26px 72px rgba(23, 33, 29, 0.13);
 }
@@ -64,10 +64,10 @@ a {
 .siteHeaderInner {
   align-items: center;
   display: grid;
-  gap: 18px;
+  gap: clamp(16px, 2vw, 28px);
   grid-template-columns: auto 1fr auto auto;
   margin: 0 auto;
-  min-height: 76px;
+  min-height: 84px;
   width: min(1180px, calc(100% - 32px));
 }
 
@@ -81,13 +81,27 @@ a {
 
 .siteBrand {
   color: var(--ink);
-  font-size: 1.08rem;
   font-weight: 850;
+  line-height: 1;
   white-space: nowrap;
 }
 
-.siteBrand span {
-  color: var(--accent);
+.siteBrand img {
+  display: block;
+  height: auto;
+  max-width: min(330px, 36vw);
+  width: 318px;
+}
+
+.footerLogo {
+  background: var(--paper);
+  border-radius: 8px;
+  display: block;
+  height: auto;
+  margin-bottom: 18px;
+  max-width: min(320px, 100%);
+  padding: 10px 12px;
+  width: 380px;
 }
 
 .desktopNav {
@@ -228,7 +242,7 @@ label span:first-child {
 }
 
 .hero {
-  min-height: min(760px, calc(100svh - 82px));
+  min-height: min(680px, calc(100svh - 82px));
   display: flex;
   flex-direction: column;
   position: relative;
@@ -282,8 +296,8 @@ label span:first-child {
 }
 
 .heroContent {
-  width: min(1280px, calc(100% - 40px));
-  margin: auto auto clamp(56px, 8vh, 96px);
+  width: min(1180px, calc(100% - 32px));
+  margin: auto auto clamp(44px, 7vh, 72px);
   position: relative;
   z-index: 2;
 }
@@ -298,10 +312,10 @@ label span:first-child {
 }
 
 .hero h1 {
-  max-width: 880px;
+  max-width: 760px;
   margin: 0;
-  font-size: clamp(3rem, 4.8vw, 5rem);
-  line-height: 1.02;
+  font-size: clamp(2.8rem, 4.05vw, 4.35rem);
+  line-height: 1.03;
   letter-spacing: 0;
   text-wrap: balance;
 }
@@ -387,7 +401,7 @@ label span:first-child {
 }
 
 .heroLead {
-  max-width: 620px;
+  max-width: 660px;
   margin: 20px 0 0;
   color: rgba(255, 255, 255, 0.88);
   font-size: clamp(1rem, 1.2vw, 1.12rem);
@@ -444,7 +458,7 @@ label span:first-child {
 
 .proofStrip {
   width: min(1180px, calc(100% - 32px));
-  margin: -46px auto 0;
+  margin: -34px auto 0;
   position: relative;
   z-index: 3;
   display: grid;
@@ -458,7 +472,7 @@ label span:first-child {
 
 .proofStrip span {
   background: var(--surface);
-  min-height: 78px;
+  min-height: 72px;
   display: flex;
   align-items: center;
   padding: 18px;
@@ -502,8 +516,9 @@ h3 {
 
 .contentTitle {
   margin: 0;
-  font-size: clamp(2.4rem, 6vw, 5.2rem);
-  line-height: 0.98;
+  font-size: clamp(2.25rem, 5.2vw, 4.7rem);
+  line-height: 1.01;
+  text-wrap: balance;
 }
 
 .muted,
@@ -733,11 +748,12 @@ a.infoCard:hover,
 .contentHero {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
-  padding: clamp(52px, 7vw, 84px) 0 42px;
+  padding: clamp(48px, 6vw, 76px) 0 38px;
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(280px, 0.75fr);
   gap: 46px;
   align-items: end;
+  border-bottom: 1px solid rgba(217, 223, 218, 0.72);
 }
 
 .contentHero.slim {
@@ -838,6 +854,20 @@ a.infoCard:hover,
 
 .contentCta {
   margin-top: 28px;
+  background: var(--ink);
+  border-radius: 8px;
+  color: #fff;
+  padding: clamp(24px, 4vw, 36px);
+}
+
+.contentCta p {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.contentCta .button.ghost {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.28);
+  color: #fff;
 }
 
 .faqStack {
@@ -877,7 +907,7 @@ a.infoCard:hover,
 .pageSurface {
   min-height: 100vh;
   background: linear-gradient(180deg, var(--soft), var(--paper));
-  padding: 36px 16px 80px;
+  padding: clamp(22px, 4vw, 36px) 16px 80px;
 }
 
 .wizardShell {
@@ -1386,7 +1416,7 @@ a.infoCard:hover,
 .quoteResult {
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #f8faf7;
+  background: #fff;
   min-width: 0;
   padding: 20px;
 }
@@ -1848,6 +1878,31 @@ a.infoCard:hover,
   display: none;
 }
 
+@media (min-width: 821px) and (max-height: 760px) {
+  .kitchenChatbot {
+    bottom: auto;
+    top: 104px;
+  }
+
+  .kitchenChatbotToggle {
+    font-size: 0;
+    gap: 0;
+    height: 46px;
+    justify-content: center;
+    max-width: 46px;
+    min-height: 46px;
+    padding: 0;
+    width: 46px;
+  }
+
+  .kitchenChatbotToggle span {
+    flex: 0 0 auto;
+    font-size: 0.95rem;
+    height: 34px;
+    width: 34px;
+  }
+}
+
 @media (max-width: 820px) {
   .nav {
     align-items: flex-start;
@@ -1946,7 +2001,7 @@ a.infoCard:hover,
   }
 
   .kitchenChatbot {
-    bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(82px + env(safe-area-inset-bottom, 0px));
     right: 10px;
   }
 
@@ -1979,7 +2034,7 @@ a.infoCard:hover,
 
   .wizardHeader h1,
   .contentTitle {
-    font-size: clamp(2.1rem, 14vw, 3.4rem);
+    font-size: clamp(2rem, 11vw, 3.2rem);
   }
 
   .heroActions,
@@ -2015,7 +2070,12 @@ a.infoCard:hover,
   }
 
   .siteBrand {
-    font-size: 0.98rem;
+    min-width: 0;
+  }
+
+  .siteBrand img {
+    max-width: min(244px, 62vw);
+    width: 244px;
   }
 
   .headerCta {
@@ -2042,22 +2102,22 @@ a.infoCard:hover,
 }
 
 .heroGrid {
-  align-items: center;
+  align-items: end;
   display: grid;
-  gap: clamp(24px, 4vw, 48px);
-  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 400px);
+  gap: clamp(24px, 4vw, 44px);
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 390px);
 }
 
 .estimatePreviewCard {
-  align-self: center;
+  align-self: end;
   background: rgba(255, 255, 255, 0.96);
   border: 1px solid rgba(255, 255, 255, 0.38);
   border-radius: 8px;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.28);
   color: var(--ink);
   display: grid;
-  gap: 12px;
-  padding: 24px;
+  gap: 10px;
+  padding: 24px 24px 22px;
   position: relative;
 }
 
@@ -2073,12 +2133,13 @@ a.infoCard:hover,
 }
 
 .estimatePreviewCard h2 {
-  font-size: 1.35rem;
+  font-size: 1.25rem;
+  line-height: 1.2;
 }
 
 .estimatePreviewCard strong {
   display: block;
-  font-size: clamp(2rem, 3.3vw, 2.7rem);
+  font-size: clamp(2rem, 3vw, 2.55rem);
   line-height: 1;
 }
 
@@ -2090,7 +2151,7 @@ a.infoCard:hover,
 
 .estimatePreviewCard ul {
   display: grid;
-  gap: 8px;
+  gap: 7px;
   margin: 0;
   padding-left: 20px;
 }
@@ -2221,7 +2282,7 @@ a.infoCard:hover,
 
   .hero h1 {
     max-width: 100%;
-    font-size: clamp(2.5rem, 9.5vw, 4.25rem);
+    font-size: clamp(2.35rem, 8.8vw, 3.85rem);
     line-height: 1.04;
   }
 
@@ -2287,7 +2348,7 @@ a.infoCard:hover,
 
 @media (max-width: 520px) {
   .hero h1 {
-    font-size: clamp(2.15rem, 10.5vw, 3rem);
+    font-size: clamp(2.05rem, 9.6vw, 2.82rem);
     line-height: 1.05;
   }
 
@@ -2307,5 +2368,34 @@ a.infoCard:hover,
 
   .estimatePreviewCard strong {
     font-size: clamp(1.9rem, 11vw, 2.5rem);
+  }
+
+  .kitchenChatbot {
+    bottom: auto;
+    right: 14px;
+    top: 82px;
+  }
+
+  .kitchenChatbotToggle {
+    font-size: 0;
+    gap: 0;
+    height: 46px;
+    justify-content: center;
+    max-width: 46px;
+    min-height: 46px;
+    padding: 0;
+    width: 46px;
+  }
+
+  .kitchenChatbotToggle span {
+    flex: 0 0 auto;
+    font-size: 0.95rem;
+    height: 34px;
+    width: 34px;
+  }
+
+  .kitchenChatbotPanel {
+    max-height: min(620px, calc(100vh - 102px));
+    width: min(360px, calc(100vw - 24px));
   }
 }

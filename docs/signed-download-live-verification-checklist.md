@@ -82,6 +82,7 @@ Stop testing and report if:
 
 - file metadata is missing
 - signed URL generation fails
+- signed URL opens `{"error":"requested path is invalid"}` instead of the file
 - browser response exposes any secret
 - wrong file is downloaded
 - signed URL appears public/permanent
@@ -98,4 +99,3 @@ Do not verify:
 - file preview
 
 Those are not part of this release candidate.
-

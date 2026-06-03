@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ReactNode } from 'react';
@@ -77,12 +78,13 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="canonical" href={`${canonicalBase}${canonicalPath}`} />
+        <link rel="icon" href="/brand/operon-kitchens-favicon.svg" type="image/svg+xml" />
       </Head>
       <div className="siteShell">
         <header className={isQuoteFlow ? 'siteHeader compact' : 'siteHeader'}>
           <div className="siteHeaderInner">
             <Link href="/" className="siteBrand" aria-label="Operon Kitchens home">
-              <span>Operon</span> Kitchens
+              <Image src="/brand/operon-kitchens-logo-header.svg" alt="Operon Kitchens" width={610} height={112} priority />
             </Link>
             <nav className="desktopNav" aria-label="Primary navigation">
               <Link href="/quote">Estimate</Link>
@@ -114,7 +116,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
         <footer className="siteFooter">
           <div className="footerIntro">
             <div>
-              <p className="eyebrow">Operon Kitchens</p>
+              <Image className="footerLogo" src="/brand/operon-kitchens-logo-horizontal.svg" alt="Operon Kitchens" width={980} height={190} />
               <h2>Kitchen renovation estimate and quote review support for Sydney homes, apartments and renovation projects.</h2>
             </div>
             <div className="footerActions">

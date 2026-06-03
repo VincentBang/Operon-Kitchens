@@ -96,10 +96,12 @@ Purpose: define commercial offer before payment.
 Scope:
 
 - quote-review report template
+- paid quote review service packaging
 - inclusions/exclusions
 - service ladder copy
 - refund/cancellation draft
 - no live checkout until approved
+- no payment implementation until Vincent approves a separate payment task
 
 Deploy: optional after service copy is approved.
 

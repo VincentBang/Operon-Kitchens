@@ -15,11 +15,13 @@ Implemented locally:
 - file metadata display polish
 - retention metadata SQL documentation
 - deletion design guardrail tests
+- Supabase signed URL normalisation fix
+- token-gated soft-delete function and tests
 
 Not implemented:
 
-- delete function
 - delete button
+- physical Supabase object deletion
 - retention automation
 - customer file portal
 - public file URLs
@@ -45,16 +47,16 @@ Cons:
 - Costs one Netlify deploy.
 - Requires controlled live verification.
 
-## Option B: Continue Local-Only Delete Function Work
+## Option B: Continue Local-Only Delete Button UI Design
 
 Use this if Netlify credits remain tight.
 
 Scope:
 
-- write delete function tests
-- implement token-gated soft-delete function
-- no delete UI yet
+- prepare delete-button UI design/tests
+- keep the visible delete button out of `/admin/leads`
 - no deploy
+- no physical object deletion
 
 Pros:
 
@@ -90,12 +92,11 @@ Cons:
 Recommended next local-only step:
 
 ```text
-Option B: implement token-gated soft-delete function tests and function, but no delete UI.
+Option B: prepare delete-button UI design/tests, but no visible delete button.
 ```
 
 Recommended next deploy step, when Vincent approves:
 
 ```text
-Option A: deploy signed downloads only and run one controlled live file-download test.
+Option A: deploy signed download fix + soft-delete function and run one controlled live file-download test.
 ```
-

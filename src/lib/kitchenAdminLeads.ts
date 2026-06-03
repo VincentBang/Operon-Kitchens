@@ -52,6 +52,10 @@ export interface KitchenAdminLeadFile {
   file_type: string;
   file_size: number;
   category: string;
+  retention_status?: string | null;
+  deleted_at?: string | null;
+  deleted_by?: string | null;
+  delete_reason?: string | null;
 }
 
 export type AdminLeadListResult =
@@ -135,6 +139,22 @@ const adminLeadFileColumns = [
   'file_type',
   'file_size',
   'category',
+  'retention_status',
+  'deleted_at',
+  'deleted_by',
+  'delete_reason',
+].join(',');
+
+const legacyAdminLeadFileColumns = [
+  'id',
+  'lead_id',
+  'created_at',
+  'bucket',
+  'object_path',
+  'file_name',
+  'file_type',
+  'file_size',
+  'category',
 ].join(',');
 
 function isMissingAttributionColumnError(detail: string) {
@@ -208,16 +228,23 @@ function serviceHeaders(serviceRoleKey: string, prefer?: string) {
 
 async function listKitchenAdminLeadFiles(config: { baseRestUrl: string; serviceRoleKey: string }, leadIds: string[]) {
   if (leadIds.length === 0) return new Map<string, KitchenAdminLeadFile[]>();
-  const params = new URLSearchParams({
-    select: adminLeadFileColumns,
+  const buildParams = (columns: string) => new URLSearchParams({
+    select: columns,
     lead_id: `in.(${leadIds.join(',')})`,
     order: 'created_at.desc',
   });
 
-  const response = await fetch(`${config.baseRestUrl}/kitchen_request_review_files?${params.toString()}`, {
+  let response = await fetch(`${config.baseRestUrl}/kitchen_request_review_files?${buildParams(adminLeadFileColumns).toString()}`, {
     method: 'GET',
     headers: serviceHeaders(config.serviceRoleKey),
   });
+
+  if (!response.ok) {
+    response = await fetch(`${config.baseRestUrl}/kitchen_request_review_files?${buildParams(legacyAdminLeadFileColumns).toString()}`, {
+      method: 'GET',
+      headers: serviceHeaders(config.serviceRoleKey),
+    });
+  }
 
   if (!response.ok) return new Map<string, KitchenAdminLeadFile[]>();
 

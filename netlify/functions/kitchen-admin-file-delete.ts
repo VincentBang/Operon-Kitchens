@@ -1,7 +1,9 @@
 import {
-  createKitchenAdminFileSignedDownload,
+  findUnsafeAdminFileMutationKeys,
   getKitchenAdminFileAuthState,
+  isAdminFileDeleteReason,
   isUuid,
+  softDeleteKitchenAdminFile,
 } from '../../src/lib/kitchenAdminFiles';
 
 interface NetlifyEvent {
@@ -56,34 +58,45 @@ export async function handler(event: NetlifyEvent): Promise<NetlifyResponse> {
     return json(400, { ok: false, error: 'Request body must be an object.' });
   }
 
+  const unsafeKeys = findUnsafeAdminFileMutationKeys(body);
+  if (unsafeKeys.length > 0) {
+    return json(400, { ok: false, error: 'Request includes unsupported file mutation fields.' });
+  }
+
   if (!isUuid(body.fileId)) {
     return json(400, { ok: false, error: 'A valid file id is required.' });
   }
 
-  const result = await createKitchenAdminFileSignedDownload({ fileId: body.fileId });
+  if (!isAdminFileDeleteReason(body.deleteReason)) {
+    return json(400, { ok: false, error: 'A supported delete reason is required.' });
+  }
+
+  const result = await softDeleteKitchenAdminFile({
+    fileId: body.fileId,
+    deleteReason: body.deleteReason,
+  });
 
   if (!result.configured) {
-    console.warn('operon_kitchens_admin_file_download_storage_env_missing', {
+    console.warn('operon_kitchens_admin_file_delete_storage_env_missing', {
       category: 'storage_env_missing',
     });
     return json(503, { ok: false, error: 'File storage is not configured.' });
   }
 
   if (!result.ok) {
-    console.warn('operon_kitchens_admin_file_download_failed', {
+    console.warn('operon_kitchens_admin_file_delete_failed', {
       category: result.error,
       status: result.status,
     });
     if (result.status === 404) return json(404, { ok: false, error: 'File is unavailable.' });
-    if (result.status === 409) return json(409, { ok: false, error: 'File has been deleted.' });
-    return json(502, { ok: false, error: 'File download is temporarily unavailable.' });
+    if (result.status === 409) return json(409, { ok: false, error: 'File is already deleted.' });
+    return json(502, { ok: false, error: 'File deletion is temporarily unavailable.' });
   }
 
   return json(200, {
     ok: true,
     fileId: result.fileId,
-    fileName: result.fileName,
-    downloadUrl: result.downloadUrl,
-    expiresInSeconds: result.expiresInSeconds,
+    deleted: result.deleted,
+    retentionStatus: result.retentionStatus,
   });
 }

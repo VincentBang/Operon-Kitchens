@@ -61,3 +61,33 @@ Implication: Avoid aggressive public launch, broad SEO rollout and repeated Netl
 Decision: Admin signed file download function and `/admin/leads` download UI are prepared locally for the Operon Kitchens file upload MVP.
 
 Implication: Signed downloads still require an approved push/deploy before live use. Delete buttons, delete function, retention automation and customer file portals remain deferred until separately approved.
+
+## 2026-06-03: Signed Download URL Fix And Soft Delete Prepared Locally
+
+Decision: A Supabase signed URL normalisation fix and token-gated soft-delete function are prepared locally after live testing showed signed URLs could open a `requested path is invalid` response.
+
+Implication: The next approved file-upload release should include the signed URL fix, admin file status display and soft-delete function together. Delete buttons, physical object deletion and retention automation remain deferred.
+
+## 2026-06-03: Paid Quote Review Packaging Documented Locally
+
+Decision: The future paid detailed quote-review service is documented as a customer-safe packaging layer before any payment implementation.
+
+Implication: The paid service should be based on scope clarity, allowance risk, missing information, customer questions, compliance prompts and recommended next step. Payment, checkout, PDF automation, customer accounts and full CRM remain deferred until explicitly approved.
+
+## 2026-06-03: Operon Branch Logo Structure Prepared Locally
+
+Decision: Operon Kitchens uses the master Operon emblem plus OPERON wordmark plus KITCHENS branch descriptor.
+
+Implication: Future Operon Flooring and Operon System marks should use the same structure. Kitchens should not use disconnected kitchen-only icons or literal kitchen symbols. Final designer/vector refinement remains deferred until review.
+
+## 2026-06-03: Header Compact Logo Variant Added Locally
+
+Decision: The public header uses a dedicated compact SVG variant instead of the full horizontal lockup.
+
+Implication: Desktop and mobile navigation get larger OPERON/KITCHENS text while preserving the master emblem and branch descriptor structure. The full horizontal lockup remains available for footer, document and larger brand placements.
+
+## 2026-06-04: Inline Operon Kitchens Logo Applied Locally
+
+Decision: Site brand assets now use the selected inline mark: Operon emblem, bold OPERON wordmark, slim muted-gold divider and inline KITCHENS descriptor.
+
+Implication: Header and footer use the same branch-logo direction across the public site. The favicon remains emblem-led. Final designer outline/vector exports remain deferred until release review.

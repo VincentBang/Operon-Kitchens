@@ -1,6 +1,6 @@
 # Local Release Bundle Checklist
 
-Last updated: 2 June 2026
+Last updated: 4 June 2026
 
 Purpose: batch local fixes into one controlled release candidate before Vincent approves any push/deploy. This protects Netlify credits and keeps controlled testing calm.
 
@@ -30,13 +30,72 @@ Allowed bundle items:
 - docs/playbook updates
 - tests for changed behavior
 
+## Current Waiting Bundle: File Upload Admin Controls
+
+Prepared locally and suitable for one future approved deploy:
+
+- Supabase signed URL normalisation fix for admin downloads
+- token-gated admin signed download function and `/admin/leads` button
+- file retention status display in `/admin/leads`
+- token-gated soft-delete function and tests
+- delete-button UI design/tests
+- no delete button yet
+- no physical object deletion yet
+- no retention automation yet
+
+Use the [file upload release candidate summary](./file-upload-release-candidate-summary.md) and [signed download live verification checklist](./signed-download-live-verification-checklist.md) before asking Vincent to spend a deploy.
+
+## Proposed Next Bundle: Brand, Header And Admin File Controls
+
+Prepared locally as a single possible release candidate. Deployment remains optional and requires Vincent approval.
+
+Customer-facing polish:
+
+- Operon Kitchens branch logo asset system under `public/brand/`
+- dedicated compact header logo with larger `OPERON` and readable `KITCHENS`
+- footer/full-lockup logo usage retained for larger brand placements
+- mobile/short-screen chatbot launcher reduced to a compact icon so it does not cover the homepage sample estimate preview
+- homepage/header responsive QA completed at `1280`, `1440`, `390` and `360` widths
+
+Admin/file-control batch:
+
+- Supabase signed URL normalisation fix for admin downloads
+- token-gated admin signed download function
+- `/admin/leads` download button for stored file metadata
+- admin file retention/status display where retention columns exist
+- token-gated soft-delete function and tests prepared locally
+- delete-button UI design documented only; visible delete control remains deferred
+
+Safety guardrails:
+
+- no public file URLs
+- no browser-side Supabase writes
+- no service keys exposed to browser responses
+- no supplier costs, margins, lead scores, admin priority or hidden pricing logic exposed
+- no payment, customer auth, full CRM, physical file deletion or retention automation
+
+Recommended release decision:
+
+- approve one deploy only if Vincent wants both the public visual polish and admin signed-download/soft-delete backend available for controlled testing
+- otherwise keep the bundle local and continue polishing docs/UI without spending Netlify credits
+
+Manual verification after one approved deploy:
+
+1. Confirm homepage header logo and mobile chatbot behavior.
+2. Submit one `/request-review` test with a small PDF/image.
+3. Confirm Supabase lead and file metadata rows exist.
+4. Open `/admin/leads` with the admin token.
+5. Confirm uploaded file metadata is visible.
+6. Click `Download` and confirm the signed URL opens the file.
+7. Confirm unsafe fields and service keys are absent from browser/network responses.
+
 ## Exclude Unless Separately Approved
 
 Do not include without explicit approval:
 
 - production Supabase setting changes
 - Netlify setting changes
-- file download/deletion features
+- file download/deletion features outside the approved file-upload release candidate
 - retention automation
 - payment or checkout
 - customer auth/login expansion

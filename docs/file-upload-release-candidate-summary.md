@@ -13,9 +13,11 @@ If approved and deployed, this release would add:
 - token-gated admin signed file download function
 - `/admin/leads` download buttons for uploaded file metadata
 - short-lived Supabase signed download links generated on demand
+- a fix for Supabase signed URL paths that omit `/storage/v1`
 - clearer admin copy that files are private and links expire shortly
-- retention metadata SQL documentation for future deletion controls
-- deletion design guardrail tests without delete runtime
+- retention-status display for file metadata where the SQL columns exist
+- a token-gated soft-delete function prepared locally
+- deletion guardrail tests without a public delete button
 
 ## Runtime Changes
 
@@ -25,6 +27,12 @@ New Netlify Function:
 POST /.netlify/functions/kitchen-admin-file-download
 ```
 
+Local Netlify Function prepared, but not exposed through a delete button yet:
+
+```text
+POST /.netlify/functions/kitchen-admin-file-delete
+```
+
 Behaviour:
 
 - requires `x-operon-admin-token`
@@ -32,7 +40,16 @@ Behaviour:
 - fetches file metadata from `public.kitchen_request_review_files`
 - signs only the metadata-owned bucket/object path
 - returns a short-lived signed URL
+- normalises Supabase signed paths that are returned as `/object/sign/...`
 - does not expose service role keys, raw Supabase errors, internal notes, supplier costs, margins, lead scores or admin priority
+
+Soft-delete behaviour:
+
+- requires `x-operon-admin-token`
+- validates `fileId` and delete reason
+- rejects unsafe browser-supplied fields such as bucket, object path, margin, supplier cost, lead score, admin priority or service keys
+- marks metadata as `retention_status = 'deleted'`
+- does not physically delete Supabase Storage objects in this release candidate
 
 ## Admin UI Changes
 
@@ -43,6 +60,8 @@ Behaviour:
 - MIME type
 - internal object path behind admin token access
 - `Download` button for each uploaded file
+- file retention status where available
+- deleted-file label where available
 - copy that deletion and retention workflows remain deferred
 
 No public navigation links are added.
@@ -102,7 +121,7 @@ Minimum live checks:
 ## Do Not Include In This Release
 
 - delete button
-- delete Netlify Function
+- physical object deletion
 - retention automation
 - customer file portal
 - public file URLs
@@ -117,4 +136,3 @@ Recommended release decision:
 
 - approve one deploy only if Vincent wants admin signed downloads live for controlled testing
 - otherwise keep this local until the next approved release checkpoint
-

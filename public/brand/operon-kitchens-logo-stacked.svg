@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 230" role="img" aria-labelledby="title desc">
+  <title id="title">Operon Kitchens stacked logo</title>
+  <desc id="desc">Stacked Operon Kitchens logo with circular emblem above the wordmark.</desc>
+  <defs>
+    <style>
+      .navy{fill:none;stroke:#08233F;stroke-width:8;stroke-linecap:square;stroke-linejoin:miter}
+      .goldStroke{fill:none;stroke:#B8842C;stroke-width:5;stroke-linecap:square;stroke-linejoin:miter}
+      .goldFill{fill:#B8842C}
+      .word{fill:#08233F;font-family:Inter,Arial,sans-serif;font-size:34px;font-weight:780;letter-spacing:8px}
+      .branch{fill:#B8842C;font-family:Inter,Arial,sans-serif;font-size:14px;font-weight:730;letter-spacing:11px}
+    </style>
+  </defs>
+  <g transform="translate(68 16)">
+    <path class="navy" d="M52 0A52 52 0 0 0 0 52"/>
+    <path class="navy" d="M104 52A52 52 0 0 0 52 0"/>
+    <path class="navy" d="M52 104A52 52 0 0 0 104 52"/>
+    <path class="navy" d="M0 52A52 52 0 0 0 52 104"/>
+    <path class="navy" d="M52 13v29M52 62v29M13 52h29M62 52h29"/>
+    <path class="goldStroke" d="M24 24l17 17M80 24L63 41M24 80l17-17M80 80L63 63"/>
+    <path class="navy" d="M32 32h20v14M72 32H52v14M32 72h20V58M72 72H52V58"/>
+    <circle cx="52" cy="52" r="17" fill="#fff" stroke="#B8842C" stroke-width="8"/>
+    <rect class="goldFill" x="46" y="-5" width="12" height="12"/>
+    <rect class="goldFill" x="46" y="97" width="12" height="12"/>
+    <rect class="goldFill" x="-5" y="46" width="12" height="12"/>
+    <rect class="goldFill" x="97" y="46" width="12" height="12"/>
+  </g>
+  <text class="word" x="26" y="171">OPERON</text>
+  <text class="branch" x="42" y="202">KITCHENS</text>
+</svg>

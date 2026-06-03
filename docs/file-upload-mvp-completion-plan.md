@@ -18,7 +18,7 @@ Operon Kitchens currently has safe file upload scaffolding for request-review in
 - Supabase remains the source of truth for leads
 - files are stored in a private kitchen-specific bucket when configured
 
-Admin-lite does not yet provide signed downloads, deletion buttons, retention state management or automated retention jobs.
+Admin-lite has a local signed-download function and download button prepared. A local soft-delete function and tests are also prepared. Delete buttons, physical object deletion and automated retention jobs remain deferred until Vincent approves the next release slice.
 
 ## MVP Goal
 
@@ -126,7 +126,7 @@ Do not show download links before click. Do not cache signed URLs in local stora
 
 ## Phase 3: Deletion And Soft-Delete Function
 
-Create a Netlify Function only after approval:
+Local runtime slice prepared:
 
 ```text
 POST /.netlify/functions/kitchen-admin-file-delete
@@ -140,7 +140,7 @@ Smallest safe deletion slice:
 delete function + tests only
 ```
 
-Do not add a delete button until the function has local tests and Vincent approves the UI slice.
+Do not add a delete button until Vincent approves the UI slice.
 
 Required request:
 
@@ -173,7 +173,7 @@ Server flow:
    - `deleted_at`
    - `deleted_by = 'admin-token'` or another safe non-secret operator label
    - `delete_reason`
-8. Optionally delete the storage object after metadata update succeeds.
+8. Do not delete the storage object in the first slice; metadata soft-delete comes first.
 9. Return safe confirmation.
 
 Recommended MVP response:
@@ -324,6 +324,7 @@ Delete function tests:
 - soft-deletes metadata with allowed delete reason
 - does not accept browser-supplied bucket/object path
 - response does not expose internal fields
+- does not remove storage objects in the first slice
 
 Admin UI tests:
 
@@ -367,7 +368,7 @@ Also confirm:
 3. Add signed download function and tests.
 4. Add admin download UI and tests.
 5. Add soft-delete function and tests.
-6. Add admin delete UI and tests.
+6. Prepare admin delete UI design/tests locally, but keep the visible button out of `/admin/leads` until Vincent approves that runtime slice.
 7. Update Privacy/Terms wording if retention/deletion details change.
 8. Run local gate.
 9. Ask Vincent for one approved deploy only.
@@ -462,6 +463,21 @@ Why this slice is small:
 - no retention metadata migration is required yet
 - no customer-facing route changes are required
 - no browser-side Supabase access is introduced
+
+## Delete Button UI Design
+
+Before adding a visible delete button, use:
+
+- [Admin file delete UI design](./admin-file-delete-ui-design.md)
+
+The design requires:
+
+- inline confirmation or modal
+- delete reason select
+- explicit confirmation checkbox
+- no browser-supplied bucket or object path
+- no physical object deletion in the first UI slice
+- safe messages only
 
 ## Deferred Beyond MVP
 

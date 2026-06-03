@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 190" role="img" aria-labelledby="title desc">
+  <title id="title">Operon Kitchens horizontal logo</title>
+  <desc id="desc">Operon circular emblem with bold OPERON wordmark, vertical divider and KITCHENS branch descriptor.</desc>
+  <defs>
+    <linearGradient id="navyGradient" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#08233F"/>
+      <stop offset="0.52" stop-color="#071B32"/>
+      <stop offset="1" stop-color="#08233F"/>
+    </linearGradient>
+    <linearGradient id="goldGradient" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#B8842C"/>
+      <stop offset="0.48" stop-color="#D0A24A"/>
+      <stop offset="1" stop-color="#9E6F24"/>
+    </linearGradient>
+    <style>
+      .navy{fill:none;stroke:url(#navyGradient);stroke-width:8;stroke-linecap:square;stroke-linejoin:miter}
+      .goldStroke{fill:none;stroke:url(#goldGradient);stroke-width:5.6;stroke-linecap:square;stroke-linejoin:miter}
+      .goldFill{fill:url(#goldGradient)}
+      .word{fill:url(#navyGradient);font-family:Inter,Arial,sans-serif;font-size:78px;font-weight:900;letter-spacing:6px}
+      .branch{fill:url(#goldGradient);font-family:Inter,Arial,sans-serif;font-size:42px;font-weight:850;letter-spacing:12px}
+      .divider{stroke:url(#goldGradient);stroke-width:3.4;stroke-linecap:square}
+    </style>
+  </defs>
+  <g transform="translate(34 38)">
+    <path class="navy" d="M57 0A57 57 0 0 0 0 57"/>
+    <path class="navy" d="M114 57A57 57 0 0 0 57 0"/>
+    <path class="navy" d="M57 114A57 57 0 0 0 114 57"/>
+    <path class="navy" d="M0 57A57 57 0 0 0 57 114"/>
+    <path class="navy" d="M57 14v31M57 69v31M14 57h31M69 57h31"/>
+    <path class="goldStroke" d="M26 26l18 18M88 26L70 44M26 88l18-18M88 88L70 70"/>
+    <path class="navy" d="M35 35h22v15M79 35H57v15M35 79h22V64M79 79H57V64"/>
+    <circle cx="57" cy="57" r="17" fill="#fff" stroke="url(#goldGradient)" stroke-width="8"/>
+    <rect class="goldFill" x="51" y="-7" width="13" height="13"/>
+    <rect class="goldFill" x="51" y="108" width="13" height="13"/>
+    <rect class="goldFill" x="-7" y="51" width="13" height="13"/>
+    <rect class="goldFill" x="108" y="51" width="13" height="13"/>
+  </g>
+  <text class="word" x="210" y="116">OPERON</text>
+  <path class="divider" d="M705 54v82"/>
+  <text class="branch" x="735" y="115">KITCHENS</text>
+</svg>

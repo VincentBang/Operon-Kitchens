@@ -8,6 +8,7 @@ Use this checklist as the hub for controlled testing. Operon Kitchens is still i
 
 - [Controlled testing playbook](./controlled-testing-playbook.md)
 - [Request-review and admin mobile QA checklist](./request-review-admin-mobile-qa.md)
+- [Operon Flooring UI alignment audit](./operon-flooring-ui-alignment.md)
 - [Lead handling playbook](./lead-handling-playbook.md)
 - [Quote review report template](./quote-review-report-template.md)
 - [Quote review report readiness checklist](./quote-review-report-readiness-checklist.md)
@@ -36,6 +37,7 @@ git diff --check
 Use this before any approved release.
 
 - Check homepage copy and CTAs locally.
+- Check homepage against the [Operon Flooring UI alignment audit](./operon-flooring-ui-alignment.md) for hero fit, path cards, quote clarity, quote validation, example profiles, service paths, Sydney areas, FAQ and final CTA.
 - Check `/quote` locally.
 - Check `/quote/review` locally.
 - Check `/request-review` locally.
@@ -122,7 +124,8 @@ If testing uploads:
 - confirm `delivery.filesStored: true`
 - confirm metadata appears in `public.kitchen_request_review_files`
 - confirm `/admin/leads` shows metadata only
-- do not expect signed downloads until that feature is explicitly approved
+- if signed downloads have been deployed, confirm `Download` opens the file and not a Supabase path error
+- do not test delete controls until that feature is explicitly approved
 
 ## 5. Logs And Runtime Checks
 
@@ -180,8 +183,8 @@ Deferred until explicit approval:
 
 - custom domain and branded email activation
 - Resend production notification verification
-- admin signed file downloads
-- file deletion and retention workflows
+- admin signed file downloads unless the file-upload release candidate has been approved
+- admin delete buttons, physical file deletion and retention automation
 - proper authenticated admin system
 - full CRM pipeline
 - paid quote review

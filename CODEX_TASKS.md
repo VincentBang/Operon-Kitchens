@@ -17,9 +17,18 @@ Make controlled customer testing operationally smoother without adding major run
 Current local file-upload status:
 
 - admin signed-download function and `/admin/leads` download button are prepared locally
+- Supabase signed URL normalisation fix is prepared locally after live download returned `requested path is invalid`
+- token-gated soft-delete function and tests are prepared locally
 - file retention SQL and deletion design guardrails are documented
-- no delete button, delete runtime, retention automation or customer file portal is live
-- next decision: deploy signed downloads once, or continue local-only with delete-function tests and function
+- no delete button, physical object deletion, retention automation or customer file portal is live
+- next decision: approve one release for signed download + soft-delete function, or keep working local-only
+
+Current quote-review packaging status:
+
+- quote-review report template and readiness checklist are documented
+- Paid quote-review service packaging is documented for future detailed review
+- payment, checkout, PDF automation, customer accounts and full CRM remain deferred
+- next quote-review decision: run manual unpaid report trials from controlled leads, then refine report copy before any paid-service implementation
 
 ## Local-Only Task Queue
 
@@ -47,6 +56,7 @@ Current local file-upload status:
    - Compliance prompts.
    - Recommended next step.
    - No legal approval or final quote claims.
+   - Keep the paid quote-review service packaging aligned with the report template before payment is considered.
 
 5. Prepare file-upload architecture spec without new runtime implementation.
    - Current storage path.
@@ -57,8 +67,8 @@ Current local file-upload status:
    - Keep the file upload MVP completion plan aligned before runtime file operations.
 
 8. Prepare the next file-operation slice.
-   - Option A: approved one-deploy signed-download release and verification.
-   - Option B: local-only delete-function tests and token-gated soft-delete function.
+   - Option A: approved one-deploy signed-download + soft-delete function release and verification.
+   - Option B: local-only delete-button UI design/tests without runtime deployment.
    - Option C: pause file operations and return to quote-review service packaging.
 
 6. Prepare lead handling playbook.
