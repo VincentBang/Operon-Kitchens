@@ -29,14 +29,26 @@ Rules:
 
 Assets live in `public/brand/`:
 
+- `operon-kitchens-logo-horizontal.png`
+  - Current live-site horizontal brand lockup for footer, documents, larger brand panels and review contexts.
+  - Generated from Vincent's approved raster reference so the circular emblem matches the supplied file exactly.
+
+- `operon-kitchens-logo-header.png`
+  - Current live-site compact navigation logo.
+  - Generated from the same approved raster reference and used by `PublicLayout`.
+
+- `operon-emblem.png`
+  - Current live-site emblem-only master icon, cropped from the approved raster reference.
+
+- `operon-kitchens-favicon.png`
+  - Current live-site favicon/app icon candidate, cropped from the approved raster reference.
+
 - `operon-kitchens-logo-horizontal.svg`
-  - Full horizontal brand lockup for footer, documents, larger brand panels and review contexts.
-  - Emblem plus bold OPERON wordmark plus a muted-gold divider and inline KITCHENS descriptor.
-  - Emblem geometry uses heavier block-like central brackets, longer cross-lines and a stronger gold centre ring to align more closely with the selected reference mark.
+  - Editable SVG approximation retained for designer/vector reference only.
+  - Not the current live-site logo because the SVG circle/emblem does not match the supplied raster reference exactly.
 
 - `operon-kitchens-logo-header.svg`
-  - Dedicated compact navigation logo.
-  - Uses the same inline divider structure, tuned tighter so the descriptor remains readable in desktop and mobile headers.
+  - Editable SVG approximation retained for designer/vector reference only.
 
 - `operon-kitchens-logo-stacked.svg`
   - Stacked variant for compact brand blocks, documents or square-ish placements.
@@ -44,15 +56,14 @@ Assets live in `public/brand/`:
 - `operon-emblem.svg`
   - Emblem-only master icon.
   - Useful for future app icons, loading states or small brand marks.
-  - Kept as clean SVG geometry; final designer exports may add exact optical refinements from the reference raster.
+  - Kept as clean SVG geometry; not an exact match to the supplied raster reference.
 
 - `operon-kitchens-favicon.svg`
-  - Favicon/app icon candidate.
-  - Referenced locally from `PublicLayout`.
+  - Older SVG favicon candidate retained for reference.
 
 ## Colours
 
-Current local asset colours:
+Current local PNG asset colours are inherited from the approved reference image. Current editable SVG reference colours:
 
 - Deep navy: `#08233F`
 - Muted gold: `#B8842C`
@@ -70,26 +81,25 @@ The SVGs currently use live text with system font fallback:
 Designer/vector refinement still required:
 
 - convert final wordmark text to outlines
-- fine-tune emblem stroke joins at small sizes
-- confirm the final emblem against the selected raster reference once a designer/vector export is available
+- trace the approved raster emblem exactly if a future vector master is required
 - confirm final letter spacing for `OPERON FLOORING` and `OPERON SYSTEM`
-- export final PNG fallbacks if needed for social/profile surfaces
+- export transparent PNG/SVG fallbacks if needed for social/profile surfaces
 
 ## Usage
 
 Header:
 
-- Use `operon-kitchens-logo-header.svg`.
+- Use `operon-kitchens-logo-header.png`.
 - Keep width restrained so the navigation remains readable while the branch descriptor remains legible.
-- Do not replace it with plain text unless the SVG fails to load.
+- Do not replace it with plain text unless the image fails to load.
 
 Footer:
 
-- Use `operon-kitchens-logo-horizontal.svg` on a light panel when placed over the dark footer.
+- Use `operon-kitchens-logo-horizontal.png` on a light panel when placed over the dark footer.
 
 Favicon/app icon:
 
-- Use `operon-kitchens-favicon.svg` as a local candidate.
+- Use `operon-kitchens-favicon.png` as the current candidate.
 - Final favicon can be replaced after designer review.
 
 ## Do Not
@@ -106,7 +116,7 @@ Favicon/app icon:
 Before release:
 
 - Check header readability on desktop and mobile.
-- Confirm the header uses the compact navigation SVG rather than the full lockup.
+- Confirm the header uses the compact navigation PNG rather than the full lockup.
 - Check footer contrast.
 - Check favicon rendering in local build output.
 - Check the logo does not crowd the mobile menu.

@@ -103,3 +103,9 @@ Implication: The Kitchens visual system feels closer to the Operon family while 
 Decision: A local visual-system test protects the white page/header chrome, rounded dark footer, footer/button colour, shared brand assets and mobile sticky CTA guardrails.
 
 Implication: Future local edits should fail tests if they accidentally drift away from the approved Operon-style visual direction.
+
+## 2026-06-05: Approved Raster Logo Source Used Across Site Locally
+
+Decision: The active header, footer, emblem and favicon assets now use PNG crops generated from Vincent's approved logo reference image.
+
+Implication: The public site matches the supplied circular emblem exactly instead of using a hand-built SVG approximation. SVG files remain as editable reference drafts until a final designer vector master is produced.

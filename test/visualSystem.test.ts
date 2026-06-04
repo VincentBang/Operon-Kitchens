@@ -30,19 +30,20 @@ describe('Operon Kitchens visual system guardrails', () => {
 
   it('uses the current Operon Kitchens brand assets across header, footer and favicon', () => {
     const layout = read('src/components/PublicLayout.tsx');
-    const headerLogo = read('public/brand/operon-kitchens-logo-header.svg');
-    const horizontalLogo = read('public/brand/operon-kitchens-logo-horizontal.svg');
-    const favicon = read('public/brand/operon-kitchens-favicon.svg');
+    const liveAssets = [
+      'public/brand/operon-kitchens-logo-header.png',
+      'public/brand/operon-kitchens-logo-horizontal.png',
+      'public/brand/operon-emblem.png',
+      'public/brand/operon-kitchens-favicon.png',
+    ];
 
-    expect(layout).toContain('/brand/operon-kitchens-logo-header.svg');
-    expect(layout).toContain('/brand/operon-kitchens-logo-horizontal.svg');
-    expect(layout).toContain('/brand/operon-kitchens-favicon.svg');
-    expect(headerLogo).toContain('<rect class="divider"');
-    expect(horizontalLogo).toContain('<rect class="divider"');
-    expect(headerLogo).toContain('KITCHENS');
-    expect(horizontalLogo).toContain('OPERON');
-    expect(favicon).toContain('#08233F');
-    expect(favicon).toContain('#B8842C');
+    expect(layout).toContain('/brand/operon-kitchens-logo-header.png');
+    expect(layout).toContain('/brand/operon-kitchens-logo-horizontal.png');
+    expect(layout).toContain('/brand/operon-kitchens-favicon.png');
+    liveAssets.forEach((asset) => {
+      const stats = fs.statSync(path.join(process.cwd(), asset));
+      expect(stats.size).toBeGreaterThan(10_000);
+    });
   });
 
   it('keeps the mobile sticky CTA compact and customer-facing', () => {

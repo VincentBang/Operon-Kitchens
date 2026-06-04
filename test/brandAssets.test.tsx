@@ -11,6 +11,10 @@ jest.mock('next/router', () => ({
 }));
 
 const brandAssets = [
+  'public/brand/operon-kitchens-logo-horizontal.png',
+  'public/brand/operon-kitchens-logo-header.png',
+  'public/brand/operon-emblem.png',
+  'public/brand/operon-kitchens-favicon.png',
   'public/brand/operon-kitchens-logo-horizontal.svg',
   'public/brand/operon-kitchens-logo-header.svg',
   'public/brand/operon-kitchens-logo-stacked.svg',
@@ -23,12 +27,13 @@ function read(relativePath: string) {
 }
 
 describe('Operon Kitchens brand asset system', () => {
-  it('provides local SVG logo variants for review', () => {
+  it('provides live PNG logo assets and local SVG variants for review', () => {
     for (const asset of brandAssets) {
       expect(existsSync(join(process.cwd(), asset))).toBe(true);
-      expect(read(asset)).toContain('<svg');
     }
 
+    expect(read('public/brand/operon-kitchens-logo-horizontal.svg')).toContain('<svg');
+    expect(read('public/brand/operon-kitchens-logo-header.svg')).toContain('<svg');
     const horizontal = read('public/brand/operon-kitchens-logo-horizontal.svg');
     expect(horizontal).toContain('OPERON');
     expect(horizontal).toContain('KITCHENS');
@@ -45,11 +50,12 @@ describe('Operon Kitchens brand asset system', () => {
     );
 
     expect(screen.getByRole('link', { name: /Operon Kitchens home/i })).toBeInTheDocument();
-    expect(screen.getAllByAltText('Operon Kitchens').length).toBeGreaterThanOrEqual(2);
+    expect(screen.getByAltText('Operon Kitchens')).toBeInTheDocument();
+    expect(screen.getByAltText('Operon Kitchens logo')).toBeInTheDocument();
     const layout = read('src/components/PublicLayout.tsx');
-    expect(layout).toContain('/brand/operon-kitchens-logo-header.svg');
-    expect(layout).toContain('/brand/operon-kitchens-logo-horizontal.svg');
-    expect(layout).toContain('/brand/operon-kitchens-favicon.svg');
+    expect(layout).toContain('/brand/operon-kitchens-logo-header.png');
+    expect(layout).toContain('/brand/operon-kitchens-logo-horizontal.png');
+    expect(layout).toContain('/brand/operon-kitchens-favicon.png');
   });
 
   it('documents branch logo rules without literal kitchen icons', () => {
@@ -58,7 +64,7 @@ describe('Operon Kitchens brand asset system', () => {
     const decisionLog = read('DECISION_LOG.md');
 
     expect(doc).toContain('[Operon circular emblem] + OPERON wordmark + vertical divider + KITCHENS descriptor');
-    expect(doc).toContain('operon-kitchens-logo-header.svg');
+    expect(doc).toContain('operon-kitchens-logo-header.png');
     expect(doc).toContain('OPERON | KITCHENS');
     expect(doc).toContain('Do not create a disconnected kitchen-only logo');
     expect(doc).toContain('Do not add literal kitchen icons');

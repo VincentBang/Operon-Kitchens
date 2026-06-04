@@ -52,6 +52,7 @@ Prepared locally as a single possible release candidate. Deployment remains opti
 Customer-facing polish:
 
 - Operon Kitchens branch logo asset system under `public/brand/`
+- active header, footer, emblem and favicon PNGs generated from Vincent's approved logo reference
 - dedicated compact header logo with larger `OPERON` and readable `KITCHENS`
 - footer/full-lockup logo usage retained for larger brand placements
 - header and footer logo lockups tightened so `OPERON` and `KITCHENS` read as one branch brand rather than separated labels

@@ -26,22 +26,30 @@ jest.mock('next/router', () => ({
 }));
 
 describe('public site structure', () => {
-  it('renders global navigation and footer links', () => {
-    render(
+  it('renders global navigation and a compact organised footer', () => {
+    const { container } = render(
       <PublicLayout>
         <main><h1>Page content</h1></main>
       </PublicLayout>,
     );
 
     expect(screen.getByRole('link', { name: /Operon Kitchens home/i })).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: 'Operon Kitchens logo' })).toBeInTheDocument();
     expect(screen.getAllByRole('link', { name: /Start kitchen estimate/i }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /How it works/i }).length).toBeGreaterThan(0);
-    expect(screen.getAllByRole('link', { name: /Quote review service/i }).length).toBeGreaterThan(0);
-    expect(screen.getAllByRole('link', { name: /Contact/i }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /Request review/i }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /Privacy Policy/i }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /Terms/i }).length).toBeGreaterThan(0);
+    expect(screen.getByRole('heading', { name: /Quote & review/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Services/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Guides/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Areas & company/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /View all areas/i })).toHaveAttribute('href', '/areas');
+    expect(screen.queryByRole('link', { name: /admin leads/i })).not.toBeInTheDocument();
+    expect(container.querySelector('a[href="/admin/leads"]')).not.toBeInTheDocument();
     expect(screen.getByText(/Kitchen renovation estimate and quote review support/i)).toBeInTheDocument();
+    expect(screen.getByText(/brand\. Planning guidance only/i)).toBeInTheDocument();
+    expect(document.body.textContent).not.toContain('scope??Ask');
   });
 
   it('renders the area index and individual area template', () => {

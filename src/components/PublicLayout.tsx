@@ -3,52 +3,45 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ReactNode } from 'react';
-import { getAreaHref, priorityFooterAreas } from '@/lib/areas';
+import { getAreaHref } from '@/lib/areas';
 import TrackedCtaLink from '@/components/TrackedCtaLink';
 
 interface PublicLayoutProps {
   children: ReactNode;
 }
 
-const quoteTools = [
+const quoteReviewLinks = [
   ['Start kitchen estimate', '/quote'],
   ['Review existing kitchen quote', '/quote/review'],
-  ['How it works', '/how-it-works'],
-  ['Quote review service', '/quote-review-service'],
-  ['Request site measure', '/site-measure'],
+  ['Request review', '/request-review'],
   ['Kitchen quote Sydney', '/kitchen-quote-sydney'],
   ['Kitchen renovation cost Sydney', '/kitchen-renovation-cost-sydney'],
-  ['Quote vs estimate', '/kitchen-quote-vs-estimate'],
-  ['Quote checklist', '/kitchen-renovation-quote-checklist'],
 ];
 
-const planningGuides = [
-  ['Kitchen renovation process', '/kitchen-renovation-process'],
-  ['PC sums and provisional sums', '/kitchen-pc-sums-and-provisional-sums'],
-  ['Benchtop options after engineered stone restrictions', '/kitchen-benchtop-options-after-engineered-stone-ban'],
-  ['Apartment kitchen renovation Sydney', '/apartment-kitchen-renovation-sydney'],
-  ['Kitchen renovation glossary', '/kitchen-renovation-glossary'],
-  ['Why kitchen quotes vary', '/why-kitchen-quotes-vary'],
-  ['Questions before accepting a quote', '/questions-before-accepting-kitchen-quote'],
-  ['FAQ', '/faqs'],
-];
-
-const projectTypes = [
+const serviceLinks = [
   ['Full kitchen renovation', '/full-kitchen-renovation-sydney'],
   ['Cabinetry and benchtop refresh', '/kitchen-cabinetry-benchtop-refresh'],
-  ['Apartment kitchen renovation', '/apartment-kitchen-renovation-sydney'],
+  ['Apartment kitchen renovation Sydney', '/apartment-kitchen-renovation-sydney'],
   ['Benchtop replacement', '/kitchen-benchtop-replacement-sydney'],
+  ['Site measure', '/site-measure'],
   ['Design/specification package', '/design-specification-package'],
-  ['Quote review', '/quote/review'],
+];
+
+const guideLinks = [
+  ['Kitchen renovation process', '/kitchen-renovation-process'],
+  ['PC sums and provisional sums', '/kitchen-pc-sums-and-provisional-sums'],
+  ['Benchtop options', '/kitchen-benchtop-options-after-engineered-stone-ban'],
+  ['Kitchen renovation glossary', '/kitchen-renovation-glossary'],
+  ['FAQ', '/faqs'],
 ];
 
 const companyLinks = [
   ['Projects/examples', '/projects'],
-  ['Contact', '/contact'],
-  ['Request review', '/request-review'],
   ['Privacy Policy', '/privacy'],
   ['Terms', '/terms'],
 ];
+
+const footerAreas = ['Mosman', 'Vaucluse', 'Double Bay', 'Bellevue Hill', 'Neutral Bay', 'Manly'];
 
 function FooterColumn({ title, links }: { title: string; links: string[][] }) {
   return (
@@ -78,13 +71,13 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="canonical" href={`${canonicalBase}${canonicalPath}`} />
-        <link rel="icon" href="/brand/operon-kitchens-favicon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/brand/operon-kitchens-favicon.png" type="image/png" />
       </Head>
       <div className="siteShell">
         <header className={isQuoteFlow ? 'siteHeader compact' : 'siteHeader'}>
           <div className="siteHeaderInner">
             <Link href="/" className="siteBrand" aria-label="Operon Kitchens home">
-              <Image src="/brand/operon-kitchens-logo-header.svg" alt="Operon Kitchens" width={620} height={128} priority />
+              <Image src="/brand/operon-kitchens-logo-header.png" alt="Operon Kitchens" width={920} height={208} priority />
             </Link>
             <nav className="desktopNav" aria-label="Primary navigation">
               <Link href="/quote">Estimate</Link>
@@ -116,7 +109,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
         <footer className="siteFooter">
           <div className="footerIntro">
             <div>
-              <Image className="footerLogo" src="/brand/operon-kitchens-logo-horizontal.svg" alt="Operon Kitchens" width={920} height={210} />
+              <Image className="footerLogo" src="/brand/operon-kitchens-logo-horizontal.png" alt="Operon Kitchens logo" width={1400} height={317} />
               <h2>Kitchen renovation estimate and quote review support for Sydney homes, apartments and renovation projects.</h2>
             </div>
             <div className="footerActions">
@@ -126,21 +119,29 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
           </div>
 
           <div className="footerGrid">
-            <FooterColumn title="Quote tools" links={quoteTools} />
-            <FooterColumn title="Planning guides" links={planningGuides} />
-            <FooterColumn title="Kitchen project types" links={projectTypes} />
-            <div>
-              <h2>Sydney areas</h2>
+            <FooterColumn title="Quote & review" links={quoteReviewLinks} />
+            <FooterColumn title="Services" links={serviceLinks} />
+            <FooterColumn title="Guides" links={guideLinks} />
+            <div className="footerStack">
+              <h2>Areas & company</h2>
+              <h3>Sydney areas</h3>
               <ul>
-                {priorityFooterAreas.map((area) => (
+                {footerAreas.map((area) => (
                   <li key={area}>
                     <Link href={getAreaHref(area)}>{area}</Link>
                   </li>
                 ))}
-                <li><Link href="/areas">View all kitchen renovation service areas</Link></li>
+                <li><Link href="/areas">View all areas</Link></li>
+              </ul>
+              <h3>Company</h3>
+              <ul>
+                {companyLinks.map(([label, href]) => (
+                  <li key={href}>
+                    <Link href={href}>{label}</Link>
+                  </li>
+                ))}
               </ul>
             </div>
-            <FooterColumn title="Company/legal" links={companyLinks} />
           </div>
 
           <p className="footerBottom">

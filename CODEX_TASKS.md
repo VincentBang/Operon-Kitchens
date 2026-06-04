@@ -32,7 +32,7 @@ Current quote-review packaging status:
 
 Current visual-system status:
 
-- Operon Kitchens branch logo refresh is prepared locally
+- Operon Kitchens branch logo refresh is prepared locally using PNG assets generated from Vincent's approved raster logo reference
 - white Operon Flooring-style header/page chrome is prepared locally
 - rounded dark footer container with white spacing is prepared locally
 - primary CTA/button ink now follows the Operon Flooring footer colour `#142f38`
