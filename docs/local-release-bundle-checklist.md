@@ -54,8 +54,13 @@ Customer-facing polish:
 - Operon Kitchens branch logo asset system under `public/brand/`
 - dedicated compact header logo with larger `OPERON` and readable `KITCHENS`
 - footer/full-lockup logo usage retained for larger brand placements
+- header and footer logo lockups tightened so `OPERON` and `KITCHENS` read as one branch brand rather than separated labels
+- white Operon Flooring-style page/header chrome
+- exact Operon Flooring footer ink colour `#142f38` applied to the rounded footer container and primary CTA surfaces
+- footer changed to a rounded dark container with white spacing around it
 - mobile/short-screen chatbot launcher reduced to a compact icon so it does not cover the homepage sample estimate preview
 - homepage/header responsive QA completed at `1280`, `1440`, `390` and `360` widths
+- visual-system regression tests added for brand assets, footer colour, footer spacing and mobile sticky CTA behaviour
 
 Admin/file-control batch:
 

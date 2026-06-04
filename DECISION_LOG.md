@@ -91,3 +91,15 @@ Implication: Desktop and mobile navigation get larger OPERON/KITCHENS text while
 Decision: Site brand assets now use the selected inline mark: Operon emblem, bold OPERON wordmark, slim muted-gold divider and inline KITCHENS descriptor.
 
 Implication: Header and footer use the same branch-logo direction across the public site. The favicon remains emblem-led. Final designer outline/vector exports remain deferred until release review.
+
+## 2026-06-04: Operon Flooring Footer Colour And White Chrome Applied Locally
+
+Decision: Operon Kitchens now uses the live Operon Flooring footer ink colour `#142f38` for its rounded footer container and primary CTA surfaces, with white page/header chrome and white spacing around the footer.
+
+Implication: The Kitchens visual system feels closer to the Operon family while remaining a separate kitchen renovation quote/review brand. This is local-only until Vincent approves a bundled release.
+
+## 2026-06-04: Visual-System Regression Tests Added Locally
+
+Decision: A local visual-system test protects the white page/header chrome, rounded dark footer, footer/button colour, shared brand assets and mobile sticky CTA guardrails.
+
+Implication: Future local edits should fail tests if they accidentally drift away from the approved Operon-style visual direction.

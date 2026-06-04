@@ -20,7 +20,9 @@ Use this index to choose the right document before starting work. Operon Kitchen
 - [Controlled testing playbook](./controlled-testing-playbook.md): how Vincent and trusted testers should submit fake enquiries and record confusion points.
 - [Request-review and admin mobile QA](./request-review-admin-mobile-qa.md): local visual checklist for `/request-review` and `/admin/leads` screenshots, spacing and usability.
 - [Operon Flooring UI alignment audit](./operon-flooring-ui-alignment.md): how Kitchens should follow the Operon family layout rhythm without copying Flooring content or weakening kitchen safety rules.
+- [Operon Flooring colour alignment](./operon-flooring-color-alignment.md): Flooring-inspired navy/gold/warm-neutral token mapping for the Kitchens visual system.
 - [Brand asset system](./brand-system.md): Operon Kitchens logo variants, colours, usage guidance and final designer/vector work notes.
+- [Local hardening batch: 4 June 2026](./local-hardening-batch-2026-06-04.md): no-deploy 50-task execution log for logo, header, footer, button and visual regression guardrails.
 - [Lead handling playbook](./lead-handling-playbook.md): lead statuses, follow-up timing, internal notes style, site-measure triggers and what not to promise.
 
 ## Quote Review

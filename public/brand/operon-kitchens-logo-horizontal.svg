@@ -1,11 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 190" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 210" role="img" aria-labelledby="title desc">
   <title id="title">Operon Kitchens horizontal logo</title>
   <desc id="desc">Operon circular emblem with bold OPERON wordmark, vertical divider and KITCHENS branch descriptor.</desc>
   <defs>
     <linearGradient id="navyGradient" x1="0" x2="1" y1="0" y2="1">
       <stop offset="0" stop-color="#08233F"/>
-      <stop offset="0.52" stop-color="#071B32"/>
-      <stop offset="1" stop-color="#08233F"/>
+      <stop offset="0.52" stop-color="#061A31"/>
+      <stop offset="1" stop-color="#092541"/>
     </linearGradient>
     <linearGradient id="goldGradient" x1="0" x2="1" y1="0" y2="1">
       <stop offset="0" stop-color="#B8842C"/>
@@ -13,29 +13,36 @@
       <stop offset="1" stop-color="#9E6F24"/>
     </linearGradient>
     <style>
-      .navy{fill:none;stroke:url(#navyGradient);stroke-width:8;stroke-linecap:square;stroke-linejoin:miter}
-      .goldStroke{fill:none;stroke:url(#goldGradient);stroke-width:5.6;stroke-linecap:square;stroke-linejoin:miter}
+      .navy{fill:none;stroke:url(#navyGradient);stroke-width:10;stroke-linecap:square;stroke-linejoin:miter}
+      .goldStroke{fill:none;stroke:url(#goldGradient);stroke-width:5.5;stroke-linecap:square;stroke-linejoin:miter}
+      .navyFill{fill:url(#navyGradient)}
       .goldFill{fill:url(#goldGradient)}
-      .word{fill:url(#navyGradient);font-family:Inter,Arial,sans-serif;font-size:78px;font-weight:900;letter-spacing:6px}
-      .branch{fill:url(#goldGradient);font-family:Inter,Arial,sans-serif;font-size:42px;font-weight:850;letter-spacing:12px}
-      .divider{stroke:url(#goldGradient);stroke-width:3.4;stroke-linecap:square}
+      .word{fill:url(#navyGradient);font-family:Inter,Arial,sans-serif;font-size:82px;font-weight:950;letter-spacing:-1px}
+      .branch{fill:url(#goldGradient);font-family:Inter,Arial,sans-serif;font-size:40px;font-weight:900;letter-spacing:3px}
+      .divider{fill:url(#goldGradient)}
     </style>
   </defs>
-  <g transform="translate(34 38)">
-    <path class="navy" d="M57 0A57 57 0 0 0 0 57"/>
-    <path class="navy" d="M114 57A57 57 0 0 0 57 0"/>
-    <path class="navy" d="M57 114A57 57 0 0 0 114 57"/>
-    <path class="navy" d="M0 57A57 57 0 0 0 57 114"/>
-    <path class="navy" d="M57 14v31M57 69v31M14 57h31M69 57h31"/>
-    <path class="goldStroke" d="M26 26l18 18M88 26L70 44M26 88l18-18M88 88L70 70"/>
-    <path class="navy" d="M35 35h22v15M79 35H57v15M35 79h22V64M79 79H57V64"/>
-    <circle cx="57" cy="57" r="17" fill="#fff" stroke="url(#goldGradient)" stroke-width="8"/>
-    <rect class="goldFill" x="51" y="-7" width="13" height="13"/>
-    <rect class="goldFill" x="51" y="108" width="13" height="13"/>
-    <rect class="goldFill" x="-7" y="51" width="13" height="13"/>
-    <rect class="goldFill" x="108" y="51" width="13" height="13"/>
+  <g transform="translate(22 22)">
+    <path class="navy" d="M83 0A83 83 0 0 0 0 83"/>
+    <path class="navy" d="M166 83A83 83 0 0 0 83 0"/>
+    <path class="navy" d="M83 166A83 83 0 0 0 166 83"/>
+    <path class="navy" d="M0 83A83 83 0 0 0 83 166"/>
+    <rect class="navyFill" x="75" y="9" width="16" height="59"/>
+    <rect class="navyFill" x="75" y="98" width="16" height="59"/>
+    <rect class="navyFill" x="9" y="75" width="59" height="16"/>
+    <rect class="navyFill" x="98" y="75" width="59" height="16"/>
+    <path class="goldStroke" d="M34 34l32 32M132 34l-32 32M34 132l32-32M132 132l-32-32"/>
+    <path class="navyFill" d="M54 55h29v14H68v14H54z"/>
+    <path class="navyFill" d="M83 55h29v28H98V69H83z"/>
+    <path class="navyFill" d="M54 83h14v14h15v14H54z"/>
+    <path class="navyFill" d="M98 83h14v28H83V97h15z"/>
+    <circle cx="83" cy="83" r="25" fill="#fff" stroke="url(#goldGradient)" stroke-width="13"/>
+    <rect class="goldFill" x="73" y="-10" width="20" height="20"/>
+    <rect class="goldFill" x="73" y="156" width="20" height="20"/>
+    <rect class="goldFill" x="-10" y="73" width="20" height="20"/>
+    <rect class="goldFill" x="156" y="73" width="20" height="20"/>
   </g>
-  <text class="word" x="210" y="116">OPERON</text>
-  <path class="divider" d="M705 54v82"/>
-  <text class="branch" x="735" y="115">KITCHENS</text>
+  <text class="word" x="240" y="128">OPERON</text>
+  <rect class="divider" x="620" y="54" width="4" height="98"/>
+  <text class="branch" x="652" y="125">KITCHENS</text>
 </svg>

@@ -32,6 +32,7 @@ Assets live in `public/brand/`:
 - `operon-kitchens-logo-horizontal.svg`
   - Full horizontal brand lockup for footer, documents, larger brand panels and review contexts.
   - Emblem plus bold OPERON wordmark plus a muted-gold divider and inline KITCHENS descriptor.
+  - Emblem geometry uses heavier block-like central brackets, longer cross-lines and a stronger gold centre ring to align more closely with the selected reference mark.
 
 - `operon-kitchens-logo-header.svg`
   - Dedicated compact navigation logo.
@@ -43,6 +44,7 @@ Assets live in `public/brand/`:
 - `operon-emblem.svg`
   - Emblem-only master icon.
   - Useful for future app icons, loading states or small brand marks.
+  - Kept as clean SVG geometry; final designer exports may add exact optical refinements from the reference raster.
 
 - `operon-kitchens-favicon.svg`
   - Favicon/app icon candidate.
@@ -54,7 +56,7 @@ Current local asset colours:
 
 - Deep navy: `#08233F`
 - Muted gold: `#B8842C`
-- Warm paper: `#F7F4EE`
+- White logo surface: `#FFFFFF`
 
 The gold has been made slightly darker and heavier than the initial concept for better header readability.
 
@@ -69,6 +71,7 @@ Designer/vector refinement still required:
 
 - convert final wordmark text to outlines
 - fine-tune emblem stroke joins at small sizes
+- confirm the final emblem against the selected raster reference once a designer/vector export is available
 - confirm final letter spacing for `OPERON FLOORING` and `OPERON SYSTEM`
 - export final PNG fallbacks if needed for social/profile surfaces
 

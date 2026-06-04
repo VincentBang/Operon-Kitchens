@@ -56,6 +56,7 @@ Purpose: fix only real blockers found by trusted testers.
 
 Examples:
 
+- visual polish already prepared locally, including white header/page chrome, Operon Flooring-style footer colour and rounded footer spacing
 - request-review form confusion
 - quote-review submission friction
 - admin lead readability

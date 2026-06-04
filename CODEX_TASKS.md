@@ -1,6 +1,6 @@
 # Operon Kitchens Codex Tasks
 
-Last updated: 2 June 2026
+Last updated: 4 June 2026
 
 Read `AGENTS.md`, `PROJECT_BRIEF.md`, `DEPLOYMENT_RULES.md`, `DECISION_LOG.md` and `docs/release-checkpoints.md` before every implementation task.
 
@@ -29,6 +29,16 @@ Current quote-review packaging status:
 - Paid quote-review service packaging is documented for future detailed review
 - payment, checkout, PDF automation, customer accounts and full CRM remain deferred
 - next quote-review decision: run manual unpaid report trials from controlled leads, then refine report copy before any paid-service implementation
+
+Current visual-system status:
+
+- Operon Kitchens branch logo refresh is prepared locally
+- white Operon Flooring-style header/page chrome is prepared locally
+- rounded dark footer container with white spacing is prepared locally
+- primary CTA/button ink now follows the Operon Flooring footer colour `#142f38`
+- visual-system regression tests are prepared locally
+- no visual bundle has been pushed or deployed
+- next visual decision: review `/`, `/request-review`, `/quote/review` and `/admin/leads` locally at desktop and mobile widths, then decide whether to include this in one approved release checkpoint
 
 ## Local-Only Task Queue
 
@@ -84,6 +94,15 @@ Current quote-review packaging status:
    - `DECISION_LOG.md`
    - `docs/release-checkpoints.md`
    - `docs/controlled-testing-playbook.md`
+
+9. Review the local visual release candidate.
+   - Homepage white header and logo.
+   - Operon Flooring-style rounded footer.
+   - Button colour consistency.
+   - Mobile hero and sticky CTA wrapping.
+   - Request-review and quote-review form spacing.
+   - Admin lead readability.
+   - Do not deploy until Vincent approves a release checkpoint.
 
 ## Explicitly Deferred
 

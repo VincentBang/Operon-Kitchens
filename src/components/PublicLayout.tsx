@@ -84,7 +84,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
         <header className={isQuoteFlow ? 'siteHeader compact' : 'siteHeader'}>
           <div className="siteHeaderInner">
             <Link href="/" className="siteBrand" aria-label="Operon Kitchens home">
-              <Image src="/brand/operon-kitchens-logo-header.svg" alt="Operon Kitchens" width={610} height={112} priority />
+              <Image src="/brand/operon-kitchens-logo-header.svg" alt="Operon Kitchens" width={620} height={128} priority />
             </Link>
             <nav className="desktopNav" aria-label="Primary navigation">
               <Link href="/quote">Estimate</Link>
@@ -116,7 +116,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
         <footer className="siteFooter">
           <div className="footerIntro">
             <div>
-              <Image className="footerLogo" src="/brand/operon-kitchens-logo-horizontal.svg" alt="Operon Kitchens" width={980} height={190} />
+              <Image className="footerLogo" src="/brand/operon-kitchens-logo-horizontal.svg" alt="Operon Kitchens" width={920} height={210} />
               <h2>Kitchen renovation estimate and quote review support for Sydney homes, apartments and renovation projects.</h2>
             </div>
             <div className="footerActions">

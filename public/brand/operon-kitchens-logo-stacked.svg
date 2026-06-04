@@ -1,29 +1,36 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 230" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 292" role="img" aria-labelledby="title desc">
   <title id="title">Operon Kitchens stacked logo</title>
   <desc id="desc">Stacked Operon Kitchens logo with circular emblem above the wordmark.</desc>
   <defs>
     <style>
-      .navy{fill:none;stroke:#08233F;stroke-width:8;stroke-linecap:square;stroke-linejoin:miter}
-      .goldStroke{fill:none;stroke:#B8842C;stroke-width:5;stroke-linecap:square;stroke-linejoin:miter}
+      .navy{fill:none;stroke:#08233F;stroke-width:10;stroke-linecap:square;stroke-linejoin:miter}
+      .goldStroke{fill:none;stroke:#B8842C;stroke-width:5.5;stroke-linecap:square;stroke-linejoin:miter}
+      .navyFill{fill:#08233F}
       .goldFill{fill:#B8842C}
-      .word{fill:#08233F;font-family:Inter,Arial,sans-serif;font-size:34px;font-weight:780;letter-spacing:8px}
-      .branch{fill:#B8842C;font-family:Inter,Arial,sans-serif;font-size:14px;font-weight:730;letter-spacing:11px}
+      .word{fill:#08233F;font-family:Inter,Arial,sans-serif;font-size:44px;font-weight:950;letter-spacing:0}
+      .branch{fill:#B8842C;font-family:Inter,Arial,sans-serif;font-size:20px;font-weight:900;letter-spacing:5px}
     </style>
   </defs>
-  <g transform="translate(68 16)">
-    <path class="navy" d="M52 0A52 52 0 0 0 0 52"/>
-    <path class="navy" d="M104 52A52 52 0 0 0 52 0"/>
-    <path class="navy" d="M52 104A52 52 0 0 0 104 52"/>
-    <path class="navy" d="M0 52A52 52 0 0 0 52 104"/>
-    <path class="navy" d="M52 13v29M52 62v29M13 52h29M62 52h29"/>
-    <path class="goldStroke" d="M24 24l17 17M80 24L63 41M24 80l17-17M80 80L63 63"/>
-    <path class="navy" d="M32 32h20v14M72 32H52v14M32 72h20V58M72 72H52V58"/>
-    <circle cx="52" cy="52" r="17" fill="#fff" stroke="#B8842C" stroke-width="8"/>
-    <rect class="goldFill" x="46" y="-5" width="12" height="12"/>
-    <rect class="goldFill" x="46" y="97" width="12" height="12"/>
-    <rect class="goldFill" x="-5" y="46" width="12" height="12"/>
-    <rect class="goldFill" x="97" y="46" width="12" height="12"/>
+  <g transform="translate(67 12)">
+    <path class="navy" d="M83 0A83 83 0 0 0 0 83"/>
+    <path class="navy" d="M166 83A83 83 0 0 0 83 0"/>
+    <path class="navy" d="M83 166A83 83 0 0 0 166 83"/>
+    <path class="navy" d="M0 83A83 83 0 0 0 83 166"/>
+    <rect class="navyFill" x="75" y="9" width="16" height="59"/>
+    <rect class="navyFill" x="75" y="98" width="16" height="59"/>
+    <rect class="navyFill" x="9" y="75" width="59" height="16"/>
+    <rect class="navyFill" x="98" y="75" width="59" height="16"/>
+    <path class="goldStroke" d="M34 34l32 32M132 34l-32 32M34 132l32-32M132 132l-32-32"/>
+    <path class="navyFill" d="M54 55h29v14H68v14H54z"/>
+    <path class="navyFill" d="M83 55h29v28H98V69H83z"/>
+    <path class="navyFill" d="M54 83h14v14h15v14H54z"/>
+    <path class="navyFill" d="M98 83h14v28H83V97h15z"/>
+    <circle cx="83" cy="83" r="25" fill="#fff" stroke="#B8842C" stroke-width="13"/>
+    <rect class="goldFill" x="73" y="-10" width="20" height="20"/>
+    <rect class="goldFill" x="73" y="156" width="20" height="20"/>
+    <rect class="goldFill" x="-10" y="73" width="20" height="20"/>
+    <rect class="goldFill" x="156" y="73" width="20" height="20"/>
   </g>
-  <text class="word" x="26" y="171">OPERON</text>
-  <text class="branch" x="42" y="202">KITCHENS</text>
+  <text class="word" x="45" y="226">OPERON</text>
+  <text class="branch" x="64" y="260">KITCHENS</text>
 </svg>
