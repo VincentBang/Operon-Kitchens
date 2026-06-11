@@ -50,7 +50,25 @@ describe('QuoteWizard', () => {
     window.localStorage.setItem(designStorageKey, JSON.stringify({ ...defaultDesignPlan, exportedAt: '2026-01-01T00:00:00.000Z' }));
     render(<QuoteWizard />);
 
-    expect(await screen.findByText('Step 1 of 9: Basics')).toBeInTheDocument();
+    expect(await screen.findByText('Step 1 of 9: Project')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Start a Sydney kitchen renovation planning estimate/i })).toBeInTheDocument();
+    expect(screen.getByText(/Planning estimate only\. Site measure, selections, licensed trade checks/i)).toBeInTheDocument();
+    expect(screen.getByText(/Takes about 3–5 minutes/i)).toBeInTheDocument();
+    expect(screen.getByText(/Already have a quote\?/i)).toBeInTheDocument();
+    expect(screen.getByText(/planning estimate range, confidence score, assumptions/i)).toBeInTheDocument();
+    expect(screen.getByText('Planning estimate')).toBeInTheDocument();
+    expect(screen.getByText('Quote review')).toBeInTheDocument();
+    expect(screen.getByText('Site measure')).toBeInTheDocument();
+    expect(screen.getByText('Written scope')).toBeInTheDocument();
+    expect(screen.getByText(/Not sure yet is okay/i)).toBeInTheDocument();
+    expect(screen.getByText(/project intent, suburb and timing/i)).toBeInTheDocument();
+    expect(screen.getByText(/Use the suburb and timing/i)).toBeInTheDocument();
+    expect(screen.getByText(/You can add quote details later for review/i)).toBeInTheDocument();
+    expect(screen.getByText(/An indicative Sydney kitchen renovation range before site measure/i)).toBeInTheDocument();
+    expect(screen.getByText(/Confidence signal/i)).toBeInTheDocument();
+    expect(screen.getByText(/Review risk/i)).toBeInTheDocument();
+    expect(screen.getByText(/Next step clarity/i)).toBeInTheDocument();
+    expect(document.body.textContent).not.toContain('You can upload it later for review');
 
     fireEvent.click(screen.getByRole('button', { name: 'Next' }));
     expect(screen.getByText('Property and access')).toBeInTheDocument();
@@ -63,6 +81,7 @@ describe('QuoteWizard', () => {
     fireEvent.change(screen.getByLabelText('Panels (qty)'), { target: { value: '4' } });
     fireEvent.click(screen.getByRole('button', { name: 'Next' }));
 
+    expect(screen.getByText('Step 4 of 9: Inclusions')).toBeInTheDocument();
     expect(screen.getByText('Scope inclusions')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Next' }));
 
@@ -76,7 +95,8 @@ describe('QuoteWizard', () => {
     fireEvent.change(screen.getByLabelText(/Proposed deposit percent/), { target: { value: '12' } });
     fireEvent.click(screen.getByRole('button', { name: 'Next' }));
 
-    expect(screen.getByText('Upload photos, plans or current quote')).toBeInTheDocument();
+    expect(screen.getByText('Quote details and prepared files')).toBeInTheDocument();
+    expect(screen.getByText(/File upload is optional and not required to complete this planning estimate/i)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Next' }));
 
     expect(screen.getByText('Contact details and privacy notice')).toBeInTheDocument();
@@ -94,6 +114,10 @@ describe('QuoteWizard', () => {
     expect(screen.getByText(/What improved confidence/)).toBeInTheDocument();
     expect(screen.getAllByText(/Review risk/).length).toBeGreaterThan(0);
     expect(screen.getByText(/Compliance prompts/)).toBeInTheDocument();
+    expect(screen.getByText(/Use this as planning guidance only/i)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Request professional review/i })).toHaveAttribute('href', '/request-review');
+    expect(screen.getAllByRole('link', { name: /Review an existing quote/i }).some((link) => link.getAttribute('href') === '/quote/review')).toBe(true);
+    expect(screen.getByRole('link', { name: /Prepare for site measure/i })).toHaveAttribute('href', '/site-measure');
     fireEvent.click(screen.getByRole('button', { name: 'Request professional review' }));
 
     expect(await screen.findByText(/your estimate has been saved/i)).toBeInTheDocument();

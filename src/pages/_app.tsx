@@ -13,6 +13,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const publicPage = isPublicPage(router.pathname);
   const chatbotHiddenRoutes = ['/privacy', '/terms', '/request-review', '/contact'];
   const showChatbot = publicPage && !chatbotHiddenRoutes.includes(router.pathname);
+  const chatbotPlacement = router.pathname.startsWith('/quote') ? 'bottom' : 'top';
 
   return (
     <>
@@ -23,7 +24,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       ) : (
         <Component {...pageProps} />
       )}
-      {showChatbot && <KitchenChatbot />}
+      {showChatbot && <KitchenChatbot placement={chatbotPlacement} />}
     </>
   );
 }

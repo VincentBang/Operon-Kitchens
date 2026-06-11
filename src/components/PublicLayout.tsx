@@ -144,9 +144,12 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
             </div>
           </div>
 
-          <p className="footerBottom">
-            Operon Kitchens is a separate customer-facing kitchen renovation brand. Planning guidance only. Site measure and written scope confirmation are required before contract pricing.
-          </p>
+          <div className="footerBottom">
+            <p>
+              Operon Kitchens is a separate customer-facing kitchen renovation brand. Planning guidance only. Site measure and written scope confirmation are required before contract pricing.
+            </p>
+            <p className="footerCopyright">© 2026 Operon Kitchens. All rights reserved.</p>
+          </div>
         </footer>
         {showStickyCta && (
           <div className="stickyMobileCta" aria-label="Quick actions">

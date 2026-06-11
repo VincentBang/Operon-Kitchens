@@ -15,7 +15,7 @@ import {
 import { RequestReviewFileCategoryOption, requestReviewFileLimits } from '@/lib/requestReview';
 
 const reviewValueCards = [
-  ['Missing inclusions', 'Demolition, rubbish removal, delivery, final clean, painting and patching can change the real comparison.'],
+  ['Missing inclusions and exclusions', 'Demolition, rubbish removal, delivery, final clean, painting and patching can change the real comparison.'],
   ['Allowance clarity', 'PC sums, provisional sums, appliance allowances and benchtop allowances should be clear before you compare totals.'],
   ['Trade scope', 'Plumbing, electrical, gas and relocation assumptions need licensed trade confirmation.'],
   ['Benchtop and splashback clarity', 'Material, cut-outs, joins, waterfalls and splashback inclusions should be visible in the scope.'],
@@ -30,6 +30,16 @@ const sampleReviewResult = [
   ['Missing items', 'Rubbish removal, wall patching and splashback cut-outs should be checked.'],
   ['Recommended next step', 'Request revised written scope before comparing totals.'],
 ];
+
+const reviewCheckGroups: { title: string; keys: ReviewCheckKey[] }[] = [
+  { title: 'Scope and inclusions', keys: ['missingInclusions', 'exclusions', 'demolitionWaste', 'siteMeasure'] },
+  { title: 'Allowances and provisional sums', keys: ['pcSums', 'provisionalSums'] },
+  { title: 'Trades and services', keys: ['serviceRelocation'] },
+  { title: 'Benchtop, splashback and appliances', keys: ['applianceAssumptions', 'benchtopSplashback'] },
+  { title: 'Apartment, strata and contract prompts', keys: ['strataApartment', 'depositHbc'] },
+];
+
+const reviewChecksByKey = Object.fromEntries(reviewChecks.map((check) => [check.key, check])) as Record<ReviewCheckKey, typeof reviewChecks[number]>;
 
 function readinessLabel(status: 'notReady' | 'partial' | 'reviewReady') {
   if (status === 'reviewReady') return 'Strong review ready';
@@ -83,6 +93,10 @@ export default function QuoteReview() {
   const [fileUploadWarning, setFileUploadWarning] = useState('');
 
   const result = useMemo(() => evaluateKitchenQuoteReview({ checkedItems: checked, files, jobDetails }), [checked, files, jobDetails]);
+  const hasReviewInputs = useMemo(() => {
+    const jobDetailsChanged = JSON.stringify(jobDetails) !== JSON.stringify(createDefaultReviewJobDetails());
+    return Object.values(checked).some(Boolean) || files.length > 0 || Boolean(lookup.trim()) || jobDetailsChanged;
+  }, [checked, files.length, jobDetails, lookup]);
   const contactReady = Boolean(contactName.trim() && contactEmail.trim() && privacyAcknowledged && termsAcknowledged && fileStatus !== 'reading');
 
   const updateJobDetails = (patch: Partial<KitchenQuoteReviewJobDetails>) => {
@@ -190,34 +204,61 @@ export default function QuoteReview() {
   return (
     <main className="pageSurface">
       <Head>
-        <title>Kitchen quote review | Operon Kitchens</title>
+        <title>Kitchen quote review Sydney | Operon Kitchens</title>
         <meta
           name="description"
-          content="Upload an existing kitchen quote, photos or plans for structured review of inclusions, allowances, exclusions, compliance prompts and site measure requirements."
+          content="Kitchen quote review Sydney support for checking scope, PC sums, provisional sums, exclusions, site measure requirements and written scope confirmation before comparing totals."
         />
       </Head>
       <section className="wizardShell">
         <div className="wizardHeader">
-          <p className="eyebrow">Quote review</p>
-          <h1>Review your kitchen quote</h1>
-          <p className="muted">Understand what is included, what is provisional and what may require confirmation before relying on a kitchen quote.</p>
-          <p className="heroLead reviewLead">Already received a kitchen quote? Don’t compare totals until the scope is clear.</p>
+          <p className="eyebrow">Kitchen quote review Sydney</p>
+          <h1>Kitchen quote review Sydney — check scope before comparing totals.</h1>
+          <p className="muted">
+            Kitchen quotes can look similar while hiding different inclusions, allowances, exclusions and site risks. Use this review intake to identify what needs confirmation before relying on the headline total.
+          </p>
+          <p className="heroLead reviewLead">General guidance only. Site measure, selections, licensed trade checks and written scope confirmation are required before contract pricing.</p>
           <div className="flexActions">
-            <Link href="/quote-review-service" className="button primary">How quote review works</Link>
-            <Link href="/site-measure" className="button ghost">Prepare for site measure</Link>
+            <a href="#quote-review-intake" className="button primary">Start quote review</a>
+            <Link href="/quote" className="button ghost">Need a planning estimate instead?</Link>
           </div>
         </div>
 
         <div className="wizardPanel stepStack">
           <section className="quoteResult">
-            <h2>What a quote review can uncover</h2>
+            <h2>What a kitchen quote review can uncover.</h2>
             <p className="muted">
-              Upload your quote or answer the checklist. Operon Kitchens identifies unclear inclusions, allowances, exclusions and review items before you rely on the total. This is general guidance only, not legal advice, approval or certification.
+              Start with the quote details you have now. The checklist helps identify what is clear, missing or still needs professional confirmation before kitchen renovation quote comparison.
             </p>
             <div className="choiceGrid compact">
               {reviewValueCards.map(([title, body]) => (
                 <article className="checkCard tall" key={title}>
                   <span><strong>{title}</strong><small>{body}</small></span>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="quoteResult">
+            <h2>What Operon Kitchens checks before you compare kitchen quotes.</h2>
+            <p className="muted">
+              These are review prompts only. Some items may require supplier, licensed trade, strata or project-specific professional confirmation. This is general guidance only, not legal advice.
+            </p>
+            <div className="choiceGrid compact">
+              {[
+                'Missing inclusions and exclusions',
+                'PC sums and provisional sums',
+                'Cabinetry, hardware, labour and GST clarity',
+                'Benchtop, splashback, cut-outs, joins and edge details',
+                'Appliance model and installation assumptions',
+                'Plumbing, electrical, gas and lighting relocation',
+                'Demolition, protection, waste and make-good',
+                'Apartment, lift, strata and access risks',
+                'Deposit, HBC and contract review prompts',
+                'Final site measure requirement',
+              ].map((item) => (
+                <article className="checkCard tall" key={item}>
+                  <span><strong>{item}</strong><small>Review prompt that may require confirmation before commitment.</small></span>
                 </article>
               ))}
             </div>
@@ -266,9 +307,9 @@ export default function QuoteReview() {
           </section>
 
           <section className="quoteResult">
-            <h2>Quote, photo or plan context</h2>
+            <h2>Quote details, photos and plans</h2>
             <p className="muted">
-              Attach quote, photo or plan files for secure kitchen review storage, or continue without a file and use the checklist below. Only upload documents you are authorised to share.
+              Prepare or describe the quote, photos and plans you have. If you choose to attach files, they are sent through the request-review pathway for secure kitchen review storage where configured. Continue without a file if you prefer to use the checklist first.
             </p>
             <div className="formGrid two">
               <label className="uploadBox"><span>Existing quote</span><input type="file" accept=".pdf,image/*" onChange={(event) => addFiles(event.target.files, 'existingQuote')} /></label>
@@ -326,63 +367,84 @@ export default function QuoteReview() {
           </section>
 
           <section className="quoteResult">
-            <h2>Quote clarity checklist</h2>
-            <p className="muted">Tick only what the quote clearly states.</p>
-            <div className="choiceGrid">
-              {reviewChecks.map((check) => (
-                <label key={check.key} className="checkCard">
-                  <input type="checkbox" checked={Boolean(checked[check.key])} onChange={(event) => setChecked((current) => ({ ...current, [check.key]: event.target.checked }))} />
-                  <span><strong>{check.label}</strong><small>{check.explanation}</small></span>
-                </label>
+            <h2 id="quote-review-intake">Quote clarity checklist</h2>
+            <p className="muted">Tick only what the quote clearly states. Grouped checks keep the review intake easier to complete.</p>
+            <div className="reviewChecklistGroups">
+              {reviewCheckGroups.map((group) => (
+                <article className="reviewChecklistGroup" key={group.title}>
+                  <h3>{group.title}</h3>
+                  <div className="choiceGrid">
+                    {group.keys.map((key) => {
+                      const check = reviewChecksByKey[key];
+                      return (
+                        <label key={check.key} className="checkCard">
+                          <input type="checkbox" checked={Boolean(checked[check.key])} onChange={(event) => setChecked((current) => ({ ...current, [check.key]: event.target.checked }))} />
+                          <span><strong>{check.label}</strong><small>{check.explanation}</small></span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </article>
               ))}
             </div>
           </section>
 
           <section className="quoteResult">
             <h2>Structured review preview</h2>
-            <div className="resultTopline">
-              <div>
-                <span className="eyebrow">Review readiness</span>
-                <strong>{readinessLabel(result.status)}</strong>
+            {!hasReviewInputs ? (
+              <div className="emptyStatePanel">
+                <h3>Add quote details to generate a review readiness preview.</h3>
+                <p>Tick the items your quote clearly states, add basic job details, or attach files if you want them included in the review request.</p>
+                <p className="muted">This form organises your review details only. It does not provide full AI document review, legal advice or final price comparison.</p>
               </div>
-              <span className={`confidence ${result.confidenceScore >= 80 ? 'high' : result.confidenceScore >= 45 ? 'medium' : 'low'}`}>Completeness score {result.confidenceScore}/100</span>
-            </div>
-            <p className="muted">{result.disclaimer}</p>
-            <div className="summaryMetricGrid">
-              <article>
-                <span>Scope clarity</span>
-                <strong>{result.reviewScores.scopeClarity}/100</strong>
-                <p>How clearly the quote describes included work.</p>
-              </article>
-              <article>
-                <span>Allowance risk</span>
-                <strong>{result.reviewScores.allowanceRisk}/100</strong>
-                <p>Higher means more allowance wording needs review.</p>
-              </article>
-              <article>
-                <span>Missing information</span>
-                <strong>{result.reviewScores.missingInformation}/100</strong>
-                <p>Checklist items still unclear or missing.</p>
-              </article>
-              <article>
-                <span>Review readiness</span>
-                <strong>{result.reviewScores.reviewReadiness}/100</strong>
-                <p>Document and checklist completeness.</p>
-              </article>
-            </div>
-            <p><strong>Recommended next step:</strong> {result.recommendedNextStep}</p>
-            {result.missingItems.length > 0 && (
-              <details className="advancedPanel" open>
-                <summary>Missing or unclear items</summary>
-                <ul>{result.unclearItems.map((item) => <li key={item}>{item}</li>)}</ul>
-              </details>
+            ) : (
+              <>
+                <div className="resultTopline">
+                  <div>
+                    <span className="eyebrow">Review readiness</span>
+                    <strong>{readinessLabel(result.status)}</strong>
+                  </div>
+                  <span className={`confidence ${result.confidenceScore >= 80 ? 'high' : result.confidenceScore >= 45 ? 'medium' : 'low'}`}>Completeness score {result.confidenceScore}/100</span>
+                </div>
+                <p className="muted">This form organises your review details only. It does not provide full AI document review, legal advice or final price comparison.</p>
+                <p className="muted">{result.disclaimer}</p>
+                <div className="summaryMetricGrid">
+                  <article>
+                    <span>Scope clarity</span>
+                    <strong>{result.reviewScores.scopeClarity}/100</strong>
+                    <p>How clearly the quote describes included work.</p>
+                  </article>
+                  <article>
+                    <span>Allowance risk</span>
+                    <strong>{result.reviewScores.allowanceRisk}/100</strong>
+                    <p>Higher means more allowance wording needs review.</p>
+                  </article>
+                  <article>
+                    <span>Missing information</span>
+                    <strong>{result.reviewScores.missingInformation}/100</strong>
+                    <p>Checklist items still unclear or missing.</p>
+                  </article>
+                  <article>
+                    <span>Review readiness</span>
+                    <strong>{result.reviewScores.reviewReadiness}/100</strong>
+                    <p>Document and checklist completeness.</p>
+                  </article>
+                </div>
+                <p><strong>Recommended next step:</strong> {result.recommendedNextStep}</p>
+                {result.missingItems.length > 0 && (
+                  <details className="advancedPanel" open>
+                    <summary>Missing or unclear items</summary>
+                    <ul>{result.unclearItems.map((item) => <li key={item}>{item}</li>)}</ul>
+                  </details>
+                )}
+                <details className="advancedPanel" open>
+                  <summary>Manual review and compliance flags</summary>
+                  <ul className="warningList">
+                    {[...result.manualReviewFlags, ...result.compliancePrompts].map((flag) => <li key={flag}>{flag}</li>)}
+                  </ul>
+                </details>
+              </>
             )}
-            <details className="advancedPanel" open>
-              <summary>Manual review and compliance flags</summary>
-              <ul className="warningList">
-                {[...result.manualReviewFlags, ...result.compliancePrompts].map((flag) => <li key={flag}>{flag}</li>)}
-              </ul>
-            </details>
           </section>
 
           <ReviewContactFields
@@ -409,7 +471,7 @@ export default function QuoteReview() {
           )}
           <div className="wizardActions">
             <Link href="/quote" className="button ghost">Start estimate instead</Link>
-            <Link href="/request-review" className="button ghost">Ask about site measure</Link>
+            <Link href="/site-measure" className="button ghost">Prepare for site measure</Link>
             <button onClick={saveReviewLead} className="button primary" disabled={!contactReady || isSubmittingLead}>
               {isSubmittingLead ? 'Saving...' : fileStatus === 'reading' ? 'Preparing files...' : 'Request quote review'}
             </button>
@@ -521,7 +583,8 @@ function ReviewContactFields({
 }: ReviewContactFieldsProps) {
   return (
     <section className="quoteResult">
-      <h2>Contact details</h2>
+      <h2>Request a quote review follow-up</h2>
+      <p className="muted">Send your review details so Operon Kitchens can identify the next step: clarify the written scope, prepare for site measure, or request more quote information.</p>
       <div className="formGrid">
         <label className="field"><span>Name</span><input value={name} onChange={(event) => onName(event.target.value)} required aria-invalid={!name.trim()} /></label>
         <label className="field"><span>Email</span><input type="email" value={email} onChange={(event) => onEmail(event.target.value)} required aria-invalid={!email.trim()} /></label>

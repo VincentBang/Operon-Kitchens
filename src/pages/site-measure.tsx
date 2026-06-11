@@ -33,6 +33,7 @@ export default function SiteMeasurePage() {
           <div className="flexActions">
             <Link href="/request-review" className="button primary">Request site measure</Link>
             <Link href="/quote" className="button ghost">Start estimate first</Link>
+            <Link href="/quote/review" className="button ghost">Review existing quote</Link>
           </div>
         </div>
       </section>
@@ -72,6 +73,7 @@ export default function SiteMeasurePage() {
           <div className="flexActions">
             <Link href="/request-review" className="button primary">Request site measure</Link>
             <Link href="/quote" className="button ghost">Start estimate first</Link>
+            <Link href="/quote/review" className="button ghost">Review existing quote</Link>
           </div>
         </section>
       </section>

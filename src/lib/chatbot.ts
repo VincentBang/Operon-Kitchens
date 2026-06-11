@@ -26,11 +26,11 @@ export interface KitchenChatbotResponse {
 
 const routeMap: Record<Exclude<KitchenChatbotIntent, 'unsupported' | 'general' | 'operator'>, KitchenChatbotRoute> = {
   quote: { label: 'Start kitchen estimate', href: '/quote' },
-  design: { label: 'Open beta design sketch', href: '/design' },
+  design: { label: 'Prepare for site measure', href: '/site-measure' },
   review: { label: 'Review existing quote', href: '/quote/review' },
-  materials: { label: 'Browse kitchen products', href: '/products/benchtops' },
-  compliance: { label: 'Start quote with compliance checks', href: '/quote' },
-  measurement: { label: 'Sketch measurements', href: '/design' },
+  materials: { label: 'Review benchtop and material scope', href: '/kitchen-benchtop-options-after-engineered-stone-ban' },
+  compliance: { label: 'Request review', href: '/request-review' },
+  measurement: { label: 'Prepare for site measure', href: '/site-measure' },
 };
 
 function includesAny(value: string, words: string[]) {
@@ -130,11 +130,11 @@ export function getKitchenChatbotResponse(input: string): KitchenChatbotResponse
 
 export const kitchenChatbotWelcome: KitchenChatbotResponse = {
   intent: 'general',
-  text: 'Hi, I can help with kitchen quote scope, materials, measurements, NSW review flags and where to go next. I do not provide confirmed pricing, legal advice or compliance certainty.',
+  text: 'Hi, I can help you understand kitchen quote scope, measurements, materials, PC sums, provisional sums, strata prompts and next steps before site measure. I do not provide final pricing or legal advice.',
   actions: [
-    'Ask about deposit, HBC or strata checks.',
-    'Ask what measurements to prepare.',
-    'Ask whether a material needs review.',
+    'Ask what to prepare before starting an estimate.',
+    'Ask what to check in an existing quote.',
+    'Ask which details may require site-measure confirmation.',
   ],
   route: { label: 'Start kitchen estimate', href: '/quote' },
   requiresReview: true,

@@ -22,7 +22,16 @@ interface LoadedContact {
   marketingOptIn: boolean;
 }
 
-const stepLabels = ['Basics', 'Access', 'Layout', 'Scope', 'Finishes', 'Services', 'Uploads', 'Contact', 'Summary'];
+const stepLabels = ['Project', 'Property', 'Layout', 'Inclusions', 'Finishes', 'Services', 'Quote details', 'Contact', 'Estimate'];
+
+const estimateOutcomeCards = [
+  ['Planning range', 'An indicative Sydney kitchen renovation range before site measure.'],
+  ['Confidence signal', 'How complete the supplied project information is before professional review.'],
+  ['Review risk', 'Scope, access, strata, service and allowance items that may need manual review.'],
+  ['Next step clarity', 'Assumptions, exclusions, review flags and the path toward written scope.'],
+];
+
+const estimateJourneySteps = ['Planning estimate', 'Quote review', 'Site measure', 'Written scope'];
 
 const QuoteWizard = () => {
   const router = useRouter();
@@ -150,8 +159,31 @@ const QuoteWizard = () => {
           <Link href="/quote/review" className="textLink">Review existing quote</Link>
         </div>
         <p className="eyebrow">Estimate builder</p>
-        <h1>Kitchen quote wizard</h1>
-        <p className="muted">Build a planning estimate range with confidence, assumptions, exclusions and review flags before professional review, site measure and written scope confirmation.</p>
+        <h1>Start a Sydney kitchen renovation planning estimate</h1>
+        <p className="muted">Answer the key project, layout, finish and service questions so Operon Kitchens can estimate a planning range, confidence level, assumptions and review flags before site measure.</p>
+        <p className="wizardTrustLine">Planning estimate only. Site measure, selections, licensed trade checks and written scope confirmation are required before contract pricing.</p>
+        <div className="wizardRewardGrid" aria-label="Estimate completion rewards">
+          <span>Takes about 3–5 minutes</span>
+          <span>You can refine details later</span>
+          <span>Already have a quote? <Link href="/quote/review">Review it instead</Link></span>
+        </div>
+        <ol className="wizardJourneyStrip" aria-label="Estimate to written scope path">
+          {estimateJourneySteps.map((item, index) => (
+            <li key={item}>
+              <span>{index + 1}</span>
+              <strong>{item}</strong>
+            </li>
+          ))}
+        </ol>
+        <p className="wizardReward">At the end, you’ll see a planning estimate range, confidence score, assumptions, exclusions, review flags and recommended next step.</p>
+      </div>
+      <div className="wizardOutcomeGrid" aria-label="What the estimate gives you">
+        {estimateOutcomeCards.map(([title, body]) => (
+          <article key={title}>
+            <strong>{title}</strong>
+            <span>{body}</span>
+          </article>
+        ))}
       </div>
       <div className="wizardPanel">
         {loadError && <div className="p-4 mb-4 bg-red-50 border border-red-200 rounded text-red-700">{loadError}</div>}

@@ -25,7 +25,8 @@ export default function ProjectBasicsStep({ data, onChange, onNext }: Props) {
     <div className="stepStack">
       <div className="stepIntro">
         <h2>Project basics</h2>
-        <p>Start with the project type and timing. Keep it approximate; the estimate will separate confidence from review risk later.</p>
+        <p>Start with your project intent, suburb and timing. This first step keeps the estimate moving while separating information confidence from items that may need review.</p>
+        <p className="stepHint">Not sure yet is okay. The planning estimate improves as more details are added.</p>
       </div>
 
       <section className="stepMiniSection">
@@ -50,6 +51,7 @@ export default function ProjectBasicsStep({ data, onChange, onNext }: Props) {
 
       <section className="stepMiniSection">
         <h3>Where and when?</h3>
+        <p className="sectionHelper">Use the suburb and timing to shape the planning range and follow-up pathway. Budget band is optional.</p>
         <div className="formGrid two">
           <label className="field">
             <span>Suburb</span>
@@ -90,10 +92,11 @@ export default function ProjectBasicsStep({ data, onChange, onNext }: Props) {
 
       <section className="stepMiniSection">
         <h3>Helpful context</h3>
+        <p className="sectionHelper">These answers help Operon Kitchens decide whether quote review, site measure preparation or more scope detail should come next.</p>
         <div className="formGrid two">
           <label className="checkCard">
             <input type="checkbox" checked={data.hasExistingQuote} onChange={(event) => onChange({ ...data, hasExistingQuote: event.target.checked })} />
-            <span><strong>I have an existing quote</strong><small>You can upload it later for review.</small></span>
+            <span><strong>I have an existing quote</strong><small>You can add quote details later for review.</small></span>
           </label>
           <label className="checkCard">
             <input type="checkbox" checked={data.layoutChange} onChange={(event) => onChange({ ...data, layoutChange: event.target.checked })} />

@@ -10,7 +10,7 @@ const sourceDirs = [
 ];
 
 const requiredCopy = [
-  'Clear kitchen renovation estimates for Sydney homes — before the site visit.',
+  'Sydney kitchen renovation estimates and quote review before you commit.',
   'Need help with scope? Ask Operon',
   'Operon Kitchens is a separate customer-facing kitchen renovation brand. Planning guidance only. Site measure and written scope confirmation are required before contract pricing.',
   'Planning range preview',

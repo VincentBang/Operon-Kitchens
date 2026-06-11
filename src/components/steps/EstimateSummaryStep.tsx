@@ -64,7 +64,7 @@ export default function EstimateSummaryStep({ data, contact, rateCard, quoteId, 
     <div className="stepStack">
       <div className="stepIntro">
         <h2>Estimate summary</h2>
-        <p>Review the planning range, confidence, assumptions, exclusions and review flags before requesting professional follow-up.</p>
+        <p>Review the planning range, confidence, assumptions, exclusions and review flags before choosing the next step toward quote review, site measure or written scope.</p>
       </div>
       <div className="quoteResult">
         <div className="resultTopline">
@@ -89,7 +89,7 @@ export default function EstimateSummaryStep({ data, contact, rateCard, quoteId, 
           <article>
             <span>Next action</span>
             <strong>Professional review</strong>
-          <p>Use this report to prepare site measure and confirmed written scope.</p>
+            <p>Use this report to prepare site measure and confirmed written scope.</p>
           </article>
         </div>
         <div className="guideSummary">
@@ -110,12 +110,23 @@ export default function EstimateSummaryStep({ data, contact, rateCard, quoteId, 
         <ul className="lineItemList">
           {quoteSummary.includedScope.map((item) => <li key={item}><span>{item}</span><span>Included</span></li>)}
         </ul>
-        <div className="compliancePanel">
+        <div className="compliancePanel summaryCtaPanel">
           <h3>Recommended next step</h3>
           <p>{quoteSummary.recommendedNextStep}</p>
-          <div className="flexActions">
-            <Link href="/request-review" className="button primary">Request professional review</Link>
-            <Link href="/site-measure" className="button ghost">Understand site measure</Link>
+          <p className="muted">Use this as planning guidance only. Project-specific pricing requires site measure, confirmed selections and written scope confirmation.</p>
+          <div className="summaryCtaGrid" aria-label="Estimate summary next steps">
+            <Link href="/request-review" className="summaryCtaCard primary">
+              <strong>Request professional review</strong>
+              <span>Send the estimate context for human follow-up before site measure.</span>
+            </Link>
+            <Link href="/quote/review" className="summaryCtaCard">
+              <strong>Review an existing quote</strong>
+              <span>Check inclusions, allowances, exclusions and unclear scope items.</span>
+            </Link>
+            <Link href="/site-measure" className="summaryCtaCard">
+              <strong>Prepare for site measure</strong>
+              <span>Use measurements, services and access notes to prepare written scope.</span>
+            </Link>
           </div>
         </div>
         <div className="compliancePanel">

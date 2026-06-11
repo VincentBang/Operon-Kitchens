@@ -43,7 +43,7 @@ export function getDeployInfo(): DeployInfo {
     siteVersion: readSafeEnv('NEXT_PUBLIC_SITE_VERSION'),
     buildTimestamp: process.env.NEXT_PUBLIC_BUILD_TIMESTAMP || process.env.BUILD_TIMESTAMP || 'not available',
     expectedCopy: {
-      hero: 'Clear kitchen renovation estimates for Sydney homes — before the site visit.',
+      hero: 'Sydney kitchen renovation estimates and quote review before you commit.',
       chatbot: 'Need help with scope? Ask Operon',
       footerSpacingFixed: 'yes',
     },

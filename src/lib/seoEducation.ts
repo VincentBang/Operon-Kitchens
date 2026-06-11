@@ -85,7 +85,7 @@ export const educationPages: SeoEducationPage[] = [
     slug: 'kitchen-quote-review',
     eyebrow: 'Kitchen quote review',
     title: 'Review an existing kitchen quote before you compare totals.',
-    summary: 'Upload a current quote, photos and plans so the unclear inclusions, allowances, exclusions and risk items can be captured for professional review.',
+    summary: 'Use your current quote, photos and plans to help capture unclear inclusions, allowances, exclusions and risk items for professional review.',
     primaryCta: 'Review existing kitchen quote',
     primaryHref: '/quote/review',
     secondaryCta: 'Start new estimate',
@@ -171,24 +171,53 @@ export const educationPages: SeoEducationPage[] = [
   {
     slug: 'kitchen-renovation-process',
     eyebrow: 'Kitchen renovation process',
-    title: 'A calm process for kitchen renovation decisions.',
-    summary: 'Move from online estimate to document upload, review, site measure, selections and written scope confirmation without pretending everything is known on day one.',
+    title: 'Kitchen renovation process in Sydney: from planning estimate to written scope.',
+    summary: 'A practical guide to moving from early budget planning to quote review, site measure, licensed trade prompts, confirmed selections and written scope confirmation.',
     primaryCta: 'Start kitchen estimate',
     primaryHref: '/quote',
     secondaryCta: 'Review current quote',
     secondaryHref: '/quote/review',
     sections: [
       {
-        heading: '1. Online estimate',
-        body: 'Capture project basics, property type, layout, scope, finishes, services, uploads and contact details to produce a budget range and confidence score.',
+        heading: '1. Start with your kitchen goal and budget range',
+        body: 'Clarify whether the project is a refresh, full renovation, apartment kitchen or premium renovation. A broad budget band is enough to start; the range improves as more detail is added.',
       },
       {
-        heading: '2. Review and site measure',
-        body: 'Photos, plans and current quotes are reviewed so assumptions, exclusions, access constraints and compliance flags can be checked before site measure.',
+        heading: '2. Measure layout, access and existing conditions',
+        body: 'Record the current layout, approximate dimensions, access, parking, lift conditions, strata constraints and visible service locations. These details affect quote confidence before site measure.',
       },
       {
-        heading: '3. Written scope confirmation',
-        body: 'Written scope confirmation follows confirmed site conditions, product selections, trade requirements and client decisions. The early estimate is a planning range only.',
+        heading: '3. Choose scope: refresh, full renovation or apartment kitchen',
+        body: 'Separate cabinetry and benchtop refresh work from full renovation work. Apartment kitchens often need extra review around access, strata, work hours, class 2 prompts and waste handling.',
+      },
+      {
+        heading: '4. Check selections, finishes and allowances',
+        body: 'Cabinetry finish, hardware, benchtop, splashback, appliances and ventilation assumptions should be visible before a kitchen quote is treated as comparable.',
+      },
+      {
+        heading: '5. Compare quotes beyond the headline total',
+        body: 'A lower total can still carry more risk if demolition, rubbish removal, licensed trades, appliance allowances, benchtop details or exclusions are unclear.',
+      },
+      {
+        heading: '6. Review PC sums, provisional sums and exclusions',
+        body: 'Prime cost sums, provisional sums and exclusions should be reviewed so uncertain selections or work do not become surprise variation discussions later.',
+      },
+      {
+        heading: '7. Prepare for site measure',
+        body: 'Prepare quote details, photos, plans, service locations and questions before site measure. File upload is helpful where available but is not required to complete a planning estimate.',
+      },
+      {
+        heading: '8. Confirm licensed trades, strata and contract prompts',
+        body: 'Electrical, plumbing and gas work require licensed trade review. Apartment, HBC, deposit, written contract, older-property and material prompts may also require project-specific confirmation.',
+      },
+      {
+        heading: '9. Confirm written scope before pricing commitment',
+        body: 'Project-specific pricing should follow site measure, confirmed selections, site condition review, trade confirmation where needed and written scope confirmation.',
+        expandable: true,
+      },
+      {
+        heading: '10. Request review or start estimate',
+        body: 'If you do not have a quote, start the planning estimate. If you already have a quote, review scope, allowances, exclusions and review prompts before comparing totals.',
         expandable: true,
       },
     ],

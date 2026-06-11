@@ -9,10 +9,10 @@ interface Props {
 }
 
 const categories: { value: QuoteAttachment['category']; label: string }[] = [
-  { value: 'photo', label: 'Photos' },
-  { value: 'plan', label: 'Plans' },
-  { value: 'currentQuote', label: 'Current quote' },
-  { value: 'other', label: 'Other' },
+  { value: 'photo', label: 'Prepared photos' },
+  { value: 'plan', label: 'Prepared plans' },
+  { value: 'currentQuote', label: 'Existing quote details' },
+  { value: 'other', label: 'Other documents' },
 ];
 
 export default function UploadDocumentsStep({ data, onChange, onNext, onBack }: Props) {
@@ -35,8 +35,8 @@ export default function UploadDocumentsStep({ data, onChange, onNext, onBack }: 
   return (
     <div className="stepStack">
       <div className="stepIntro">
-        <h2>Upload photos, plans or current quote</h2>
-        <p>Photos and plans improve estimate confidence. Price confirmation still requires site measure and written scope confirmation.</p>
+        <h2>Quote details and prepared files</h2>
+        <p>Photos, plans and written quote details can help improve review confidence. File upload is optional and not required to complete this planning estimate. Project-specific pricing still requires site measure and written scope confirmation.</p>
       </div>
       <div className="formGrid two">
         {categories.map((category) => (

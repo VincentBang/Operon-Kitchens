@@ -13,6 +13,24 @@ describe('quote review page submission', () => {
     fireEvent.click(screen.getByLabelText(/I acknowledge the Terms of Use/i));
   }
 
+  it('shows grouped checklist sections and avoids a discouraging default score before input', () => {
+    render(<QuoteReviewPage />);
+
+    expect(screen.getByRole('heading', { name: /Kitchen quote review Sydney/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Scope and inclusions/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Allowances and provisional sums/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Trades and services/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Benchtop, splashback and appliances/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Apartment, strata and contract prompts/i })).toBeInTheDocument();
+    expect(screen.getByText(/Add quote details to generate a review readiness preview/i)).toBeInTheDocument();
+    expect(screen.queryByText(/Completeness score 0\/100/i)).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByLabelText(/Missing inclusions/i));
+
+    expect(screen.getByText(/Completeness score/i)).toBeInTheDocument();
+    expect(screen.getByText(/Manual review and compliance flags/i)).toBeInTheDocument();
+  });
+
   it('uses the request-review Netlify Function instead of static-export API routes', async () => {
     const fetchMock = jest.fn(async () => ({
       ok: true,

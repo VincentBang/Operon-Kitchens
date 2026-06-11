@@ -6,10 +6,10 @@ import TrackedCtaLink from '@/components/TrackedCtaLink';
 import { getAreaHref, priorityFooterAreas } from '@/lib/areas';
 
 const pathCards = [
-  ['Start a kitchen estimate', 'Build a planning budget range with confidence scoring and review flags.', '/quote'],
-  ['Review an existing kitchen quote', 'Upload a current quote and check inclusions, allowances and exclusions.', '/quote/review'],
-  ['Prepare for site measure', 'Understand what should be checked before written scope confirmation.', '/site-measure'],
-  ['Prepare a design/spec package', 'Clarify selections, allowances and quote-ready documentation later in the journey.', '/design-specification-package'],
+  ['Start kitchen estimate', 'Build a planning range with confidence score and review flags.', '/quote'],
+  ['Review existing quote', 'Check inclusions, exclusions, PC sums, provisional sums and scope risk before comparing totals.', '/quote/review'],
+  ['Request scope review', 'Send project details so Operon Kitchens can prepare the next review step.', '/request-review'],
+  ['Prepare for site measure', 'Understand what needs checking before written scope and project-specific pricing.', '/site-measure'],
 ];
 
 const quoteChangeDrivers = [
@@ -24,7 +24,7 @@ const quoteChangeDrivers = [
 const claritySteps = [
   ['01', 'Describe the project', 'Capture project type, suburb, timing, budget band and whether you already have a quote.'],
   ['02', 'Add layout and scope', 'Record property type, access, layout, size, inclusions, finishes and service assumptions.'],
-  ['03', 'Upload context', 'Photos, plans and current quotes help reduce uncertainty before professional review.'],
+  ['03', 'Prepare review evidence', 'Photos, plans and written quote details can help reduce uncertainty before professional review.'],
   ['04', 'Review confidence', 'See estimate range, confidence score, assumptions, exclusions and manual review flags.'],
   ['05', 'Confirm on site', 'Move toward site measure, selection confirmation and written scope before contract pricing.'],
 ];
@@ -53,7 +53,18 @@ const sampleReportSections = [
   ['Assumptions', 'Services mostly stay in place and photos match site conditions'],
   ['Exclusions', 'Structural work, strata approval and final selections not confirmed'],
   ['Review flags', 'Apartment access, licensed trades, HBC/deposit prompt'],
-  ['Next step', 'Upload plans or book site measure for written scope confirmation'],
+  ['Next step', 'Prepare photos, plans or quote details, then request review or site measure'],
+];
+
+const quoteReviewChecks = [
+  'Missing inclusions and exclusions',
+  'PC sums and provisional sums',
+  'Cabinetry finish and hardware assumptions',
+  'Benchtop, splashback, joins, cut-outs and edge details',
+  'Appliance allowance and ventilation assumptions',
+  'Plumbing, electrical, gas and lighting relocation',
+  'Apartment access, lift bookings, strata and class 2 screening',
+  'HBC, deposit and contract review prompts',
 ];
 
 const projectExamples = [
@@ -65,7 +76,7 @@ const projectExamples = [
 
 const faqs = [
   ['Is this a confirmed quote?', 'No. It is a planning estimate range and review framework. Site measure, selections and written scope confirmation are still required.'],
-  ['Why upload photos or plans?', 'They help identify service locations, access, layout, existing conditions and missing scope items.'],
+  ['Why prepare photos, plans or quote details?', 'They help identify service locations, access, layout, existing conditions and missing scope items.'],
   ['Can you review another kitchen quote?', 'Yes. The review intake captures inclusions, allowances, exclusions, compliance prompts and items requiring professional confirmation.'],
 ];
 
@@ -92,7 +103,7 @@ export default function Home() {
         <title>Operon Kitchens | Sydney kitchen estimates and quote review</title>
         <meta
           name="description"
-          content="Clear Sydney kitchen renovation estimate ranges, quote confidence, scope clarity, assumptions, exclusions and professional review pathways."
+          content="Sydney kitchen renovation estimate and quote review support for planning ranges, scope clarity, site measure preparation and written scope confirmation."
         />
       </Head>
       <SchemaJsonLd data={schema} />
@@ -101,15 +112,16 @@ export default function Home() {
         <div className="heroContent heroGrid">
           <div>
             <p className="eyebrow">Sydney kitchen quote clarity</p>
-            <h1>Clear kitchen renovation estimates for Sydney homes — before the site visit.</h1>
+            <h1>Sydney kitchen renovation estimates and quote review before you commit.</h1>
             <p className="heroLead">
-              Build a planning range, understand assumptions and exclusions, then move toward professional review and site measure.
+              Get a planning estimate, review hidden quote risks, and prepare for site measure before locking in kitchen renovation pricing.
             </p>
             <div className="heroActions">
               <TrackedCtaLink href="/quote" className="button primary" eventName="estimate_start_click" eventProperties={{ route: '/', cta_location: 'home_hero' }}>Start kitchen estimate</TrackedCtaLink>
               <TrackedCtaLink href="/quote/review" className="button secondary" eventName="quote_review_start_click" eventProperties={{ route: '/', cta_location: 'home_hero' }}>Review existing quote</TrackedCtaLink>
-              <Link href="/how-it-works" className="button ghost">See how it works</Link>
+              <Link href="/request-review" className="heroTextLink">Request review</Link>
             </div>
+            <p className="heroTrustLine">Planning estimate only. Site measure, selections and written scope confirmation are required before contract pricing.</p>
           </div>
           <div className="estimatePreviewCard" aria-label="Example estimate preview">
             <span className="eyebrow">Example only</span>
@@ -130,7 +142,7 @@ export default function Home() {
       <section className="proofStrip">
         <span>Estimate range, not guesswork</span>
         <span>Scope and allowance clarity</span>
-        <span>Photos and plans improve confidence</span>
+        <span>Photos and plans can improve confidence</span>
         <span>NSW compliance-aware prompts</span>
       </section>
 
@@ -154,7 +166,7 @@ export default function Home() {
         <div className="sectionIntro">
           <p className="eyebrow">Choose your path</p>
           <h2>Start from where you are now.</h2>
-          <p className="muted">Estimate, review a written quote, prepare site measure or get a specification pathway ready.</p>
+          <p className="muted">Start with estimate or quote review first. Guides and areas support the journey after the main path is clear.</p>
         </div>
         <div className="cardGrid four">
           {pathCards.map(([title, body, href]) => (
@@ -170,9 +182,9 @@ export default function Home() {
       <section className="section twoColumn">
         <div>
           <p className="eyebrow">Quote clarity</p>
-          <h2>How Operon keeps kitchen quotes clear.</h2>
+          <h2>How Operon Kitchens keeps renovation quotes clearer.</h2>
           <p className="muted">
-            The online estimate is built to show uncertainty clearly, so the next professional review can focus on the right questions.
+            The online estimate is built to show uncertainty clearly, so the next professional review can focus on the right questions for a Sydney kitchen renovation.
           </p>
           <Link href="/quote" className="textLink">Start the estimate wizard</Link>
         </div>
@@ -185,7 +197,7 @@ export default function Home() {
         <Image src="/images/kitchen-living.jpg" alt="Modern kitchen living space for renovation quote planning" width={980} height={735} sizes="(max-width: 820px) 100vw, 52vw" priority />
         <div>
           <p className="eyebrow">Why kitchen quotes change</p>
-          <h2>Kitchen pricing moves when the scope is unclear.</h2>
+          <h2>Kitchen renovation cost factors in Sydney.</h2>
           <p className="muted">
             Two quotes can look different because they include different selections, service assumptions, access constraints or allowance wording.
           </p>
@@ -216,12 +228,13 @@ export default function Home() {
       <section className="section twoColumn">
         <div>
           <p className="eyebrow">Quote validation</p>
-          <h2>Want to check a written kitchen quote before deciding?</h2>
+          <h2>Review an existing kitchen quote before comparing totals.</h2>
           <p className="muted">
             The review intake checks missing inclusions, PC sums, provisional sums, service relocation, appliance assumptions, benchtop clarity, strata risks and site measure requirements.
           </p>
           <div className="flexActions">
             <TrackedCtaLink href="/quote/review" className="button primary" eventName="quote_review_start_click" eventProperties={{ route: '/', cta_location: 'home_quote_review_section' }}>Review existing quote</TrackedCtaLink>
+            <TrackedCtaLink href="/request-review" className="button secondary" eventName="quote_review_start_click" eventProperties={{ route: '/', cta_location: 'home_request_review_section' }}>Request review</TrackedCtaLink>
             <Link href="/quote-review-service" className="button ghost">View quote review service</Link>
           </div>
         </div>
@@ -237,8 +250,27 @@ export default function Home() {
 
       <section className="section">
         <div className="sectionIntro">
+          <p className="eyebrow">Quote review checks</p>
+          <h2>What Operon Kitchens checks before you compare kitchen quotes.</h2>
+          <p className="muted">
+            These are review prompts only. Some items may require confirmation by a licensed trade, strata manager, supplier or project-specific professional review. This is general guidance only, not legal advice.
+          </p>
+        </div>
+        <div className="cardGrid four">
+          {quoteReviewChecks.map((item) => (
+            <article className="infoCard" key={item}>
+              <h3>{item}</h3>
+              <p>Captured as a scope or risk prompt so the next review step is clearer before commitment.</p>
+            </article>
+          ))}
+        </div>
+        <Link href="/request-review" className="textLink">Request scope review</Link>
+      </section>
+
+      <section className="section">
+        <div className="sectionIntro">
           <p className="eyebrow">Service paths</p>
-          <h2>Browse kitchen paths after you know the quote path.</h2>
+          <h2>Planning support for apartments, homes and premium renovations.</h2>
           <p className="muted">Operon Kitchens keeps early selections practical: enough detail for estimate confidence without exposing behind-the-scenes commercial details or pretending every product is final.</p>
         </div>
         <div className="cardGrid">
@@ -313,10 +345,11 @@ export default function Home() {
 
       <section className="section finalCta">
         <p className="eyebrow">Ready to clarify the scope?</p>
-        <h2>Start with a planning estimate range, then move to professional review and site measure.</h2>
+        <h2>Start with a planning estimate, then confirm written scope.</h2>
         <div className="heroActions">
           <TrackedCtaLink href="/quote" className="button primary" eventName="estimate_start_click" eventProperties={{ route: '/', cta_location: 'home_final' }}>Start kitchen estimate</TrackedCtaLink>
           <TrackedCtaLink href="/quote/review" className="button secondary" eventName="quote_review_start_click" eventProperties={{ route: '/', cta_location: 'home_final' }}>Review existing quote</TrackedCtaLink>
+          <TrackedCtaLink href="/request-review" className="button ghost" eventName="quote_review_start_click" eventProperties={{ route: '/', cta_location: 'home_final_request_review' }}>Request review</TrackedCtaLink>
           <Link href="/site-measure" className="button ghost">Prepare for site measure</Link>
         </div>
       </section>

@@ -13,9 +13,17 @@ interface ChatMessage {
 
 const quickPrompts = [
   'What measurements should I prepare?',
-  'Can I use engineered stone?',
-  'How does deposit and HBC work?',
   'Can you review my existing quote?',
+  'What are PC sums and provisional sums?',
+  'What should I check before site measure?',
+  'Do apartment kitchens need strata review?',
+];
+
+const pathwayLinks = [
+  ['Start kitchen estimate', '/quote'],
+  ['Review existing quote', '/quote/review'],
+  ['Request review', '/request-review'],
+  ['Prepare for site measure', '/site-measure'],
 ];
 
 function createAssistantMessage(response: KitchenChatbotResponse): ChatMessage {
@@ -28,7 +36,11 @@ function createAssistantMessage(response: KitchenChatbotResponse): ChatMessage {
   };
 }
 
-export default function KitchenChatbot() {
+interface KitchenChatbotProps {
+  placement?: 'top' | 'bottom';
+}
+
+export default function KitchenChatbot({ placement = 'top' }: KitchenChatbotProps) {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState('');
   const [currentResponse, setCurrentResponse] = useState<KitchenChatbotResponse>(kitchenChatbotWelcome);
@@ -65,21 +77,21 @@ export default function KitchenChatbot() {
   };
 
   return (
-    <div className="kitchenChatbot" data-open={open ? 'true' : 'false'}>
+    <div className="kitchenChatbot" data-open={open ? 'true' : 'false'} data-placement={placement}>
       <section id="kitchen-chatbot-panel" className="kitchenChatbotPanel" role="dialog" aria-label="Operon Kitchens assistant" aria-hidden={!open}>
         <header className="kitchenChatbotHeader">
           <div>
-            <strong>Operon Kitchens assistant</strong>
-            <span>Scope, material and quote guidance</span>
+            <strong>Operon Kitchens Assistant</strong>
+            <span>Scope, quote and site-measure guidance</span>
           </div>
-          <button type="button" aria-label="Close assistant" onClick={() => setOpen(false)}>x</button>
+          <button type="button" aria-label="Close assistant" onClick={() => setOpen(false)}>×</button>
         </header>
 
         <div className="kitchenChatbotMessages" aria-live="polite">
           {messages.map((message) => (
             <article className={`kitchenChatbotMessage ${message.role}`} key={message.id}>
               <p>{message.text}</p>
-              {message.requiresReview && <small>Needs professional confirmation before decisions are made.</small>}
+              {message.requiresReview && <small>Site measure and written scope confirmation are required before contract pricing.</small>}
               {message.actions && message.actions.length > 0 && (
                 <ul>
                   {message.actions.map((action) => <li key={action}>{action}</li>)}
@@ -115,6 +127,14 @@ export default function KitchenChatbot() {
         <Link className="kitchenChatbotRoute" href={currentResponse.route.href} onClick={() => trackKitchenEvent('chatbot_cta_click', { intent: currentResponse.intent, href: currentResponse.route.href })}>
           {currentResponse.route.label}
         </Link>
+
+        <nav className="kitchenChatbotPaths" aria-label="Kitchen next steps">
+          {pathwayLinks.map(([label, href]) => (
+            <Link key={href} href={href} onClick={() => trackKitchenEvent('chatbot_cta_click', { intent: 'general', href })}>
+              {label}
+            </Link>
+          ))}
+        </nav>
       </section>
 
       <button
