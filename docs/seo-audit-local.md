@@ -1,6 +1,6 @@
 # Local SEO Audit
 
-Last updated: 11 June 2026
+Last updated: 12 June 2026
 
 Deployment status: not deployed. This audit covers the local Operon Kitchens repo only.
 
@@ -129,12 +129,14 @@ Continue avoiding “upload now” promises on pages that do not actually submit
 - Existing service/education pages are data-driven and generally useful, but future suburb pages must not be generated as thin doorway pages.
 - Future SEO rollout should build fewer, richer pages with conversion CTAs.
 
-## Phase 1 Foundation Fixes Applied Locally
+## Phase 1 Foundation Status
 
 - `/quote` hero and wizard labels refined with planning estimate, quote review, site measure and written scope journey language.
 - `/quote` final summary CTAs refined into clear next-step cards.
 - `/site-measure` internal links expanded to include quote review.
 - SEO master plan and implementation tracker added.
+- Homepage, quote, quote review, request review, how-it-works, FAQ, areas, privacy/terms, footer/header and chatbot are considered Phase 1 conversion-complete locally.
+- See `docs/phase-1-conversion-completion.md` for the public-experience completion record.
 
 ## Deployment Status
 

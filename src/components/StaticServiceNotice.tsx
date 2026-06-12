@@ -23,7 +23,7 @@ export default function StaticServiceNotice({
   return (
     <>
       <Head>
-        <title>{title} | Operon Kitchens</title>
+        <title>{`${title} | Operon Kitchens`}</title>
         <meta name="robots" content="noindex,nofollow" />
       </Head>
       <main className="pageSurface">

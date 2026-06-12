@@ -24,7 +24,7 @@ export default function LocationPage({ info }: Props) {
   return (
     <main>
       <Head>
-        <title>{info.name} kitchen renovation guidance | Operon Kitchens</title>
+        <title>{`${info.name} kitchen renovation guidance | Operon Kitchens`}</title>
         <meta name="description" content={`${info.name} kitchen renovation estimate and quote review guidance, including access, strata and scope notes.`} />
       </Head>
       <section className="contentHero slim">

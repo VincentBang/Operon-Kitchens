@@ -109,3 +109,9 @@ Implication: Future local edits should fail tests if they accidentally drift awa
 Decision: The active header, footer, emblem and favicon assets now use PNG crops generated from Vincent's approved logo reference image.
 
 Implication: The public site matches the supplied circular emblem exactly instead of using a hand-built SVG approximation. SVG files remain as editable reference drafts until a final designer vector master is produced.
+
+## 2026-06-12: Phase 1 Public Conversion Experience Completed Locally
+
+Decision: The conversion-grade public experience is considered complete locally for Phase 1.
+
+Implication: Homepage, quote, quote review, request review, how-it-works, FAQ, areas, privacy/terms, shared header/footer and chatbot should now be maintained through targeted blocker fixes rather than broad Phase 1 reopening. The next master-plan work should focus on controlled testing, file-upload MVP release decisions, domain/email setup, quote-review packaging trials and SEO rollout.

@@ -40,7 +40,7 @@ export default function QuoteReviewServicePage() {
             A lower total can still become expensive if demolition, trades, appliances, benchtops, exclusions, PC sums or access conditions are unclear.
           </p>
           <div className="flexActions">
-            <Link href="/quote/review" className="button primary">Upload existing quote</Link>
+            <Link href="/quote/review" className="button primary">Review existing quote</Link>
             <Link href="/request-review" className="button ghost">Start quote review</Link>
           </div>
         </div>
@@ -83,7 +83,7 @@ export default function QuoteReviewServicePage() {
             <p>A future paid detailed review could produce a more formal written report with side-by-side scope notes and clarification questions. No checkout is active yet.</p>
           </article>
           <article>
-            <h2>What to upload</h2>
+            <h2>What to prepare</h2>
             <p>Use the review form for your existing quote, photos, plans, appliance list, screenshots or notes you are authorised to share.</p>
           </article>
         </section>
@@ -95,9 +95,9 @@ export default function QuoteReviewServicePage() {
 
         <section className="contentCta">
           <h2>Already have a quote?</h2>
-          <p>Upload it with photos or plans so the review can focus on inclusions, allowances, exclusions and site-measure questions.</p>
+          <p>Add the quote details and prepare any photos or plans so the review can focus on inclusions, allowances, exclusions and site-measure questions.</p>
           <div className="flexActions">
-            <Link href="/quote/review" className="button primary">Upload existing quote</Link>
+            <Link href="/quote/review" className="button primary">Review existing quote</Link>
             <Link href="/how-it-works" className="button ghost">See how it works</Link>
           </div>
         </section>

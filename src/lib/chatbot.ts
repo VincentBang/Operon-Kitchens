@@ -89,7 +89,7 @@ export function getKitchenChatbotResponse(input: string): KitchenChatbotResponse
       text: 'I can help prepare the context for a person to follow up. This is not live chat, but the quote flow can capture your project details for Operon Kitchens review.',
       actions: [
         'Start the quote wizard and add your contact details at the end.',
-        'Attach photos, plans or an existing quote if available.',
+        'Prepare photos, plans or existing quote details if available.',
         'Use the notes field to explain what you want reviewed.',
       ],
       route: { label: 'Request follow-up through quote', href: '/quote' },
@@ -116,7 +116,7 @@ export function getKitchenChatbotResponse(input: string): KitchenChatbotResponse
       intent,
       text: 'The quote review tool is useful when you already have a written quote and want to understand scope clarity, assumptions and missing items. It should not be treated as confirmed price comparison.',
       actions: [
-        'Upload or describe the existing quote.',
+        'Add or describe the existing quote details.',
         'Check whether cabinetry, benchtop, trades, GST and exclusions are visible.',
         'Ask for manual review when scope is unclear.',
       ],

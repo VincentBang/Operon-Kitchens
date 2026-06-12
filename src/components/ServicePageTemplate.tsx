@@ -30,7 +30,7 @@ export default function ServicePageTemplate({ page }: Props) {
   return (
     <main>
       <Head>
-        <title>{page.title} | Operon Kitchens</title>
+        <title>{`${page.title} | Operon Kitchens`}</title>
         <meta name="description" content={page.summary} />
       </Head>
       <SchemaJsonLd data={[serviceSchema, faqSchema]} />
@@ -141,7 +141,7 @@ export default function ServicePageTemplate({ page }: Props) {
 
         <section className="contentCta">
           <h2>Turn this into a project-specific review</h2>
-          <p>Use the estimate wizard or upload a current kitchen quote so assumptions, exclusions and review flags can be captured clearly.</p>
+          <p>Use the estimate wizard or add current kitchen quote details so assumptions, exclusions and review flags can be captured clearly.</p>
           <div className="flexActions">
             <Link href="/quote" className="button primary">Start kitchen estimate</Link>
             <Link href="/request-review" className="button ghost">Request review</Link>

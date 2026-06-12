@@ -31,7 +31,7 @@ export default function AreaPage({ area }: Props) {
   return (
     <main>
       <Head>
-        <title>Kitchen renovation quotes in {area.name} | Operon Kitchens</title>
+        <title>{`Kitchen renovation quotes in ${area.name} | Operon Kitchens`}</title>
         <meta
           name="description"
           content={`Kitchen renovation quote guidance for ${area.name}: project types, quote risks, strata or access notes, what to prepare and next steps before site measure.`}
@@ -76,6 +76,30 @@ export default function AreaPage({ area }: Props) {
           </ul>
         </section>
 
+        <section>
+          <h2>{area.name} quote review pathway</h2>
+          <p>
+            Use the suburb context to decide whether you need a planning estimate, quote review or site-measure preparation. Quote review is useful when totals are hard to compare because scope, allowances, access or exclusions are unclear.
+          </p>
+          <div className="detailGrid three">
+            <article className="infoCard">
+              <h3>Start with estimate</h3>
+              <p>Use project type, property details, access and finish direction to build a planning range before site measure.</p>
+              <TrackedCtaLink href="/quote" className="textLink" eventName="area_cta_click" eventProperties={{ area: area.name, cta_type: 'pathway_estimate' }}>Start estimate</TrackedCtaLink>
+            </article>
+            <article className="infoCard">
+              <h3>Review quote detail</h3>
+              <p>Check inclusions, exclusions, allowances, licensed trade assumptions and strata or access prompts before comparing totals.</p>
+              <TrackedCtaLink href="/quote/review" className="textLink" eventName="area_cta_click" eventProperties={{ area: area.name, cta_type: 'pathway_quote_review' }}>Review existing quote</TrackedCtaLink>
+            </article>
+            <article className="infoCard">
+              <h3>Prepare site measure</h3>
+              <p>Bring photos, plans, appliance direction, access notes and current quote details so written scope confirmation can be clearer.</p>
+              <TrackedCtaLink href="/site-measure" className="textLink" eventName="area_cta_click" eventProperties={{ area: area.name, cta_type: 'pathway_site_measure' }}>Prepare for site measure</TrackedCtaLink>
+            </article>
+          </div>
+        </section>
+
         <aside className="compliancePanel">
           <h2>Review note for {area.name}</h2>
           <p>
@@ -105,16 +129,18 @@ export default function AreaPage({ area }: Props) {
           </details>
           <details className="faqItem">
             <summary>Can you review another kitchen quote?</summary>
-            <p>Yes. Upload the quote and supporting files so missing inclusions, unclear allowances, exclusions and compliance prompts can be captured for review.</p>
+            <p>Yes. Add the quote details and any supporting context so missing inclusions, unclear allowances, exclusions and compliance prompts can be captured for review.</p>
           </details>
         </section>
 
         <section className="contentCta">
           <h2>Start with clearer scope in {area.name}</h2>
-          <p>Build a planning estimate or upload an existing quote before booking site measure.</p>
+          <p>Build a planning estimate or review existing quote details before booking site measure.</p>
           <div className="flexActions">
             <TrackedCtaLink href="/quote" className="button primary" eventName="area_cta_click" eventProperties={{ area: area.name, cta_type: 'estimate_bottom' }}>Start kitchen estimate</TrackedCtaLink>
+            <TrackedCtaLink href="/quote/review" className="button secondary" eventName="area_cta_click" eventProperties={{ area: area.name, cta_type: 'quote_review_bottom' }}>Review existing quote</TrackedCtaLink>
             <TrackedCtaLink href="/request-review" className="button ghost" eventName="area_cta_click" eventProperties={{ area: area.name, cta_type: 'request_review_bottom' }}>Request review</TrackedCtaLink>
+            <TrackedCtaLink href="/site-measure" className="button ghost" eventName="area_cta_click" eventProperties={{ area: area.name, cta_type: 'site_measure_bottom' }}>Prepare site measure</TrackedCtaLink>
           </div>
         </section>
       </section>

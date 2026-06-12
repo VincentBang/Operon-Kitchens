@@ -23,7 +23,7 @@ export default function GuidePage({ guide }: Props) {
   return (
     <main>
       <Head>
-        <title>{guide.title} | Operon Kitchens</title>
+        <title>{`${guide.title} | Operon Kitchens`}</title>
         <meta name="description" content={`${guide.title} from Operon Kitchens, with practical quote clarity and site-measure guidance.`} />
       </Head>
       <section className="contentHero slim">
@@ -41,7 +41,7 @@ export default function GuidePage({ guide }: Props) {
         </section>
         <section className="contentCta">
           <h2>Make this project-specific</h2>
-          <p>Start an estimate or upload an existing quote so the guide can become a clearer review checklist.</p>
+          <p>Start an estimate or add existing quote details so the guide can become a clearer review checklist.</p>
           <div className="flexActions">
             <Link href="/quote" className="button primary">Start kitchen estimate</Link>
             <Link href="/quote/review" className="button ghost">Review existing quote</Link>

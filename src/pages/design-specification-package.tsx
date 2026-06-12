@@ -85,7 +85,7 @@ export default function DesignSpecificationPackagePage() {
 
         <section className="contentCta">
           <h2>Start with the right amount of detail</h2>
-          <p>Use the estimate wizard or upload an existing quote first, then move toward site measure and specification when the scope is ready.</p>
+          <p>Use the estimate wizard or review existing quote details first, then move toward site measure and specification when the scope is ready.</p>
           <div className="flexActions">
             <Link href="/quote" className="button primary">Start estimate</Link>
             <Link href="/quote/review" className="button ghost">Review existing quote</Link>

@@ -231,7 +231,7 @@ export default function RequestReviewPage() {
           </p>
           <div className="flexActions">
             <Link href="/quote" className="button ghost">Start estimate instead</Link>
-            <Link href="/quote/review" className="button ghost">Upload existing quote</Link>
+            <Link href="/quote/review" className="button ghost">Review existing quote</Link>
           </div>
         </div>
       </section>
@@ -359,13 +359,13 @@ export default function RequestReviewPage() {
             <button className="button primary" type="submit" disabled={!ready || status === 'saving'}>
               {status === 'saving' ? 'Submitting...' : fileStatus === 'reading' ? 'Preparing files...' : 'Submit request'}
             </button>
-            <Link href="/quote/review" className="button ghost">Upload quote/photos/plans</Link>
+            <Link href="/quote/review" className="button ghost">Add quote details</Link>
           </div>
         </form>
 
         <section className="contentCta">
           <h2>Prefer a structured path?</h2>
-          <p>Use the estimate wizard for a planning range, or upload a quote if you already have one.</p>
+          <p>Use the estimate wizard for a planning range, or review an existing quote if you already have one.</p>
           <div className="flexActions">
             <Link href="/quote" className="button primary">Start kitchen estimate</Link>
             <Link href="/quote/review" className="button ghost">Review existing quote</Link>

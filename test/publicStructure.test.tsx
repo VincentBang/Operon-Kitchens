@@ -8,6 +8,7 @@ import DeployCheckPage from '../src/pages/deploy-check';
 import DesignSpecificationPackagePage from '../src/pages/design-specification-package';
 import HowItWorksPage from '../src/pages/how-it-works';
 import HomePage from '../src/pages';
+import KitchenRenovationProcessPage from '../src/pages/kitchen-renovation-process';
 import QuoteReviewServicePage from '../src/pages/quote-review-service';
 import RequestReviewPage from '../src/pages/request-review';
 import QuoteReviewPage from '../src/pages/quote/review';
@@ -86,9 +87,38 @@ describe('public site structure', () => {
     expect(container.querySelector('a[href="/faqs"]')).toBeInTheDocument();
     expect(document.body.textContent).not.toMatch(/final quote|approved quote|certified quote|guaranteed savings/i);
 
-    render(<AreaPage area={kitchenAreas[0]} />);
+    const areaPage = render(<AreaPage area={kitchenAreas[0]} />);
     expect(screen.getByRole('heading', { name: /Kitchen renovation quotes in Mosman/i })).toBeInTheDocument();
     expect(screen.getByText(/Quote risks to check/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Mosman quote review pathway/i })).toBeInTheDocument();
+    expect(screen.getByText(/Quote review is useful when totals are hard to compare/i)).toBeInTheDocument();
+    expect(areaPage.container.querySelector('a[href="/quote/review"]')).toBeInTheDocument();
+    expect(areaPage.container.querySelector('a[href="/site-measure"]')).toBeInTheDocument();
+  });
+
+  it('keeps high-value area pages unique without doorway-page repetition', () => {
+    const mosman = kitchenAreas.find((area) => area.name === 'Mosman');
+    const doubleBay = kitchenAreas.find((area) => area.name === 'Double Bay');
+    const neutralBay = kitchenAreas.find((area) => area.name === 'Neutral Bay');
+    const manly = kitchenAreas.find((area) => area.name === 'Manly');
+    const vaucluse = kitchenAreas.find((area) => area.name === 'Vaucluse');
+
+    expect(mosman?.projectStyles).toContain('Harbour-side apartment quote review');
+    expect(mosman?.quoteRisks.join(' ')).toContain('Steep access');
+    expect(mosman?.preparation.join(' ')).toContain('Parking, driveway, strata or building-management notes');
+
+    expect(doubleBay?.quoteRisks.join(' ')).toContain('Lift booking');
+    expect(doubleBay?.quoteRisks.join(' ')).toContain('class 2 review prompts');
+    expect(doubleBay?.preparation.join(' ')).toContain('renovation by-laws');
+
+    expect(neutralBay?.quoteRisks.join(' ')).toContain('common-area protection');
+    expect(neutralBay?.projectStyles).toContain('Compact kitchen and appliance allowance review');
+
+    expect(manly?.quoteRisks.join(' ')).toContain('Coastal durability');
+    expect(manly?.quoteRisks.join(' ')).toContain('ventilation');
+
+    expect(vaucluse?.quoteRisks.join(' ')).toContain('engineered-stone restriction prompts');
+    expect(vaucluse?.preparation.join(' ')).toContain('steep sites');
   });
 
   it('renders public terms with estimate and disclaimer guidance', () => {
@@ -208,6 +238,49 @@ describe('public site structure', () => {
     });
   });
 
+  it('deepens the strata kitchen service page with access and approval review prompts', () => {
+    const page = getServicePage('strata-kitchen-renovation-sydney');
+    expect(page).toBeTruthy();
+    if (!page) throw new Error('Missing strata-kitchen-renovation-sydney service page');
+
+    expect(page.whoFor.length).toBeGreaterThanOrEqual(4);
+    expect(page.typicalScope.length).toBeGreaterThanOrEqual(4);
+    expect(page.scopeDrivers.length).toBeGreaterThanOrEqual(5);
+    expect(page.preparation.length).toBeGreaterThanOrEqual(5);
+    expect(page.confidenceBoosters.length).toBeGreaterThanOrEqual(5);
+    expect(page.quoteRisks.length).toBeGreaterThanOrEqual(5);
+    expect(page.exclusionsToCheck.length).toBeGreaterThanOrEqual(5);
+    expect(page.relatedAreas).toEqual(expect.arrayContaining(['Neutral Bay', 'Manly']));
+    expect(page.related.map(([, href]) => href)).toEqual(expect.arrayContaining(['/kitchen-quote-sydney', '/kitchen-pc-sums-and-provisional-sums', '/quote/review']));
+    expect(JSON.stringify(page)).toContain('DBP/class 2');
+    expect(JSON.stringify(page)).toContain('lift booking');
+    expect(JSON.stringify(page)).toContain('written scope confirmation');
+    expect(JSON.stringify(page)).toContain('project-specific confirmation');
+  });
+
+  it('deepens the benchtop replacement service page for material, access and exclusion review', () => {
+    const page = getServicePage('kitchen-benchtop-replacement-sydney');
+    expect(page).toBeTruthy();
+    if (!page) throw new Error('Missing kitchen-benchtop-replacement-sydney service page');
+
+    expect(page.whoFor.length).toBeGreaterThanOrEqual(5);
+    expect(page.typicalScope.length).toBeGreaterThanOrEqual(5);
+    expect(page.scopeDrivers.length).toBeGreaterThanOrEqual(6);
+    expect(page.preparation.length).toBeGreaterThanOrEqual(6);
+    expect(page.confidenceBoosters.length).toBeGreaterThanOrEqual(6);
+    expect(page.quoteRisks.length).toBeGreaterThanOrEqual(6);
+    expect(page.exclusionsToCheck.length).toBeGreaterThanOrEqual(6);
+    expect(page.related.map(([, href]) => href)).toEqual(expect.arrayContaining([
+      '/kitchen-benchtop-options-after-engineered-stone-ban',
+      '/kitchen-pc-sums-and-provisional-sums',
+      '/quote/review',
+    ]));
+    expect(JSON.stringify(page)).toContain('engineered-stone');
+    expect(JSON.stringify(page)).toContain('splashback');
+    expect(JSON.stringify(page)).toContain('Licensed plumbing, electrical or gas');
+    expect(JSON.stringify(page)).toContain('project-specific confirmation');
+  });
+
   it('renders quote review with a sample result preview', () => {
     render(<QuoteReviewPage />);
     expect(screen.getByRole('heading', { name: /Kitchen quote review Sydney/i })).toBeInTheDocument();
@@ -247,7 +320,7 @@ describe('public site structure', () => {
     expect(screen.getByText(/Review PC sums, provisional sums and exclusions/i)).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /Prepare for site measure/i })).toBeInTheDocument();
     expect(screen.getByText(/Confirm licensed trades, strata and contract prompts/i)).toBeInTheDocument();
-    expect(screen.getByText(/Confirm written scope before pricing commitment/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Confirm written scope before pricing commitment/i).length).toBeGreaterThan(0);
     expect(screen.getByText(/Request review or start estimate/i)).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /What you receive from the process/i })).toBeInTheDocument();
     expect(screen.getByText(/planning estimate range/i)).toBeInTheDocument();
@@ -265,7 +338,16 @@ describe('public site structure', () => {
     expect(screen.getByRole('heading', { name: /Review your kitchen quote before comparing totals/i })).toBeInTheDocument();
     expect(screen.getByText(/What the customer receives/i)).toBeInTheDocument();
     expect(screen.getByText(/Future detailed review/i)).toBeInTheDocument();
-    expect(screen.getAllByRole('link', { name: /Upload existing quote/i }).length).toBeGreaterThan(0);
+    expect(screen.getByText(/What to prepare/i)).toBeInTheDocument();
+    expect(screen.getAllByRole('link', { name: /Review existing quote/i }).length).toBeGreaterThan(0);
+
+    render(<KitchenRenovationProcessPage />);
+    expect(screen.getByRole('heading', { name: /Kitchen renovation process in Sydney: from planning estimate to written scope/i })).toBeInTheDocument();
+    expect(screen.getAllByText(/Start with your kitchen goal and budget range/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Confirm written scope before pricing commitment/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole('link', { name: /Review existing quote/i }).length).toBeGreaterThan(0);
+    expect(document.body.textContent).not.toContain('Upload quote, photos or plans');
+    expect(document.body.textContent).not.toContain('upload a quote');
 
     render(<SiteMeasurePage />);
     expect(screen.getByRole('heading', { name: /Confirm the kitchen scope before locking in price/i })).toBeInTheDocument();

@@ -27,7 +27,7 @@ export default function GlossaryPage() {
         </div>
         <section className="contentCta">
           <h2>Use the glossary with your own scope</h2>
-          <p>Start an estimate or upload an existing quote to see which terms need project-specific review.</p>
+          <p>Start an estimate or add existing quote details to see which terms need project-specific review.</p>
           <div className="flexActions">
             <Link href="/quote" className="button primary">Start kitchen estimate</Link>
             <Link href="/quote/review" className="button ghost">Review existing quote</Link>

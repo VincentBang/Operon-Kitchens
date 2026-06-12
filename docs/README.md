@@ -13,6 +13,7 @@ Use this index to choose the right document before starting work. Operon Kitchen
 - [Decision log](../DECISION_LOG.md): major architecture and operating decisions already made.
 - [Release checkpoints](./release-checkpoints.md): approved future release gates.
 - [Local release bundle checklist](./local-release-bundle-checklist.md): how to batch local fixes before asking Vincent to approve one deploy.
+- [Phase 1 conversion completion](./phase-1-conversion-completion.md): local completion record for the public homepage, quote, quote review, FAQ, trust and shared layout experience.
 
 ## Controlled Testing
 
@@ -22,6 +23,8 @@ Use this index to choose the right document before starting work. Operon Kitchen
 - [Operon Flooring UI alignment audit](./operon-flooring-ui-alignment.md): how Kitchens should follow the Operon family layout rhythm without copying Flooring content or weakening kitchen safety rules.
 - [Operon Flooring colour alignment](./operon-flooring-color-alignment.md): Flooring-inspired navy/gold/warm-neutral token mapping for the Kitchens visual system.
 - [Brand asset system](./brand-system.md): Operon Kitchens logo variants, colours, usage guidance and final designer/vector work notes.
+- [Sitewide professional polish audit](./sitewide-professional-polish-audit.md): local audit for quote-first conversion, footer, chatbot, upload wording, FAQ, areas and shared layout polish.
+- [Sitewide layout QA](./sitewide-layout-qa.md): local visual checklist and notes for shared article spacing, footer, chatbot and mobile overlap checks.
 - [Local hardening batch: 4 June 2026](./local-hardening-batch-2026-06-04.md): no-deploy 50-task execution log for logo, header, footer, button and visual regression guardrails.
 - [Lead handling playbook](./lead-handling-playbook.md): lead statuses, follow-up timing, internal notes style, site-measure triggers and what not to promise.
 

@@ -24,7 +24,7 @@ export default function ProductPage({ category, slug }: Props) {
   return (
     <main>
       <Head>
-        <title>{category.title} | Operon Kitchens</title>
+        <title>{`${category.title} | Operon Kitchens`}</title>
         <meta name="description" content={`${category.summary} Kitchen estimate guidance for ${category.title.toLowerCase()} in Sydney renovations.`} />
       </Head>
       <section className="contentHero">

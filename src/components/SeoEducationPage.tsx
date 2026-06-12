@@ -17,7 +17,7 @@ export default function SeoEducationPage({ page }: Props) {
   return (
     <main>
       <Head>
-        <title>{page.title} | Operon Kitchens</title>
+        <title>{`${page.title} | Operon Kitchens`}</title>
         <meta name="description" content={page.summary} />
       </Head>
 
@@ -171,7 +171,7 @@ export default function SeoEducationPage({ page }: Props) {
         <section className="contentCta">
           <h2>Next step</h2>
           <p>
-            Build a clearer estimate or upload an existing quote for structured review before comparing totals.
+            Build a clearer estimate or add existing quote details for structured review before comparing totals.
           </p>
           <div className="flexActions">
             <Link href="/quote" className="button primary">Start kitchen estimate</Link>

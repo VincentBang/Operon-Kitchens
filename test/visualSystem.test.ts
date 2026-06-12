@@ -61,4 +61,14 @@ describe('Operon Kitchens visual system guardrails', () => {
     expect(css).toContain('max-width: 100vw;');
     expect(css).toContain('text-overflow: ellipsis;');
   });
+
+  it('keeps shared article pages spaced without negative heading margins', () => {
+    const css = read('src/styles/globals.css');
+
+    expect(css).toContain('gap: clamp(28px, 4vw, 42px);');
+    expect(css).toContain('line-height: 1.18;');
+    expect(css).toContain('margin: 0 0 12px;');
+    expect(css).toContain('.articleBody h2 + p');
+    expect(css).not.toContain('margin: 8px 0 -8px;');
+  });
 });

@@ -14,6 +14,8 @@ Vincent is low on Netlify credits. Do not deploy, push to `main`, create deploy 
 
 Make controlled customer testing operationally smoother without adding major runtime features.
 
+Phase 1 conversion-grade public experience is complete locally. Do not keep re-opening homepage, quote/review positioning, FAQ, trust pages, header/footer or chatbot as broad Phase 1 work unless Vincent reports a specific blocker from testing.
+
 Current local file-upload status:
 
 - admin signed-download function and `/admin/leads` download button are prepared locally

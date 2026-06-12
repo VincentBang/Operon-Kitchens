@@ -162,7 +162,7 @@ export default function PrivacyPage() {
 
       <section className="contentCta">
         <h2>Continue planning</h2>
-        <p>Return to the estimate pathway or upload an existing quote for structured review.</p>
+        <p>Return to the estimate pathway or add existing quote details for structured review.</p>
         <div className="flexActions">
           <Link href="/quote" className="button primary">Start kitchen estimate</Link>
           <Link href="/quote/review" className="button ghost">Review existing quote</Link>

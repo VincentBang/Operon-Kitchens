@@ -44,6 +44,7 @@ Operon Kitchens can later become a kitchen vertical proof layer for Operon OS, a
 
 Current controlled-launch state:
 
+- Phase 1 conversion-grade public experience is complete locally: homepage, estimate entry, quote review, request review, how-it-works, FAQ, areas, privacy/terms, footer/header and chatbot have customer-safe conversion paths.
 - static export deploys from `out`
 - request-review form posts to Netlify Function `kitchen-request-review`
 - Supabase table `public.kitchen_request_reviews` stores durable leads

@@ -78,7 +78,7 @@ export function answerKitchenPlanningQuestion(question: string): PlanningAssista
       answer: 'A practical kitchen quote process starts with guided intake, then estimate review, then site measure and selection confirmation before written scope confirmation.',
       suggestedNextSteps: [
         'Complete the quote wizard.',
-        'Attach photos, plans or an existing quote for comparison.',
+        'Prepare photos, plans or existing quote details for comparison.',
         'Use the review output to identify assumptions, exclusions and manual review flags.',
       ],
       requiresProfessionalReview: false,
