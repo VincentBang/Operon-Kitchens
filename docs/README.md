@@ -16,6 +16,7 @@ Use this index to choose the right document before starting work. Operon Kitchen
 - [Current stage execution order](./current-stage-execution-order.md): one-by-one order for trust polish, visual review, file-upload MVP, domain/email and quote-review trials.
 - [Next 30 local tasks: 17 June 2026](./next-30-local-tasks-2026-06-17.md): local execution queue for controlled-testing hardening while deploys remain paused.
 - [Next 30 local tasks: controlled testing handoff batch](./next-30-local-tasks-2026-06-17-handoff-batch.md): second approved no-deploy queue for the operator handoff, request/admin audit, file-operation checklists and quote-review manual trial pack.
+- [Next 100 local tasks: controlled testing readiness](./next-100-local-tasks-2026-06-17.md): no-deploy execution batch covering release gates, file upload, domain/email, quote-review trials, admin operations, SEO backlog and risks.
 - [Phase 1 conversion completion](./phase-1-conversion-completion.md): local completion record for the public homepage, quote, quote review, FAQ, trust and shared layout experience.
 - [Trust polish release bundle: 13 June 2026](./trust-polish-release-bundle-2026-06-13.md): local release-candidate note for chatbot, quote-review wording, layout consistency and public copy guardrails.
 
@@ -32,6 +33,7 @@ Use this index to choose the right document before starting work. Operon Kitchen
 - [Lead first response script](./lead-first-response-script.md): safe first-response wording for estimate, quote review and site-measure leads.
 - [Site measure readiness checklist](./site-measure-readiness-checklist.md): operator checklist for deciding when to suggest site measure.
 - [Release bundle decision matrix](./release-bundle-decision-matrix.md): local decision aid for trust, visual, file-upload and email release bundles.
+- [Release gate: trust, visual and file upload](./release-gate-trust-visual-file-upload.md): decision note separating trust/visual polish from backend file-operation releases.
 - [Request-review and admin mobile QA](./request-review-admin-mobile-qa.md): local visual checklist for `/request-review` and `/admin/leads` screenshots, spacing and usability.
 - [Request-review and admin handoff audit](./request-review-admin-handoff-audit-2026-06-17.md): local audit against the controlled-testing handoff, including remaining controlled-testing friction.
 - [Operon Flooring UI alignment audit](./operon-flooring-ui-alignment.md): how Kitchens should follow the Operon family layout rhythm without copying Flooring content or weakening kitchen safety rules.
@@ -42,6 +44,9 @@ Use this index to choose the right document before starting work. Operon Kitchen
 - [Local hardening batch: 4 June 2026](./local-hardening-batch-2026-06-04.md): no-deploy 50-task execution log for logo, header, footer, button and visual regression guardrails.
 - [Visual release review: 17 June 2026](./visual-release-review-2026-06-17.md): local static-export viewport check for homepage, quote review, request review, FAQ and admin leads.
 - [Lead handling playbook](./lead-handling-playbook.md): lead statuses, follow-up timing, internal notes style, site-measure triggers and what not to promise.
+- [Controlled testing feedback scorecard](./controlled-testing-feedback-scorecard.md): scoring template for trusted-tester clarity, mobile friction, admin handling and next-step confidence.
+- [Admin operations weekly review](./admin-operations-weekly-review.md): weekly internal review for lead statuses, notes, UTM/source, upload metadata and no-email fallback.
+- [Operations risk register](./operations-risk-register.md): risk tracker for Netlify credits, Supabase storage, admin token handling, file retention, paid-service expectations and SEO rollout.
 
 ## Quote Review
 
@@ -49,6 +54,7 @@ Use this index to choose the right document before starting work. Operon Kitchen
 - [Quote review report readiness checklist](./quote-review-report-readiness-checklist.md): manual trial checklist before paid review, PDF export, payment or CRM workflows.
 - [Quote review manual trial worksheet](./quote-review-manual-trial-worksheet.md): operator worksheet for unpaid controlled-lead quote-review trials.
 - [Quote review manual trial pack](./quote-review-manual-trial-pack.md): one-page guide linking the worksheet, snippets, trial log, sample and paid-service packaging.
+- [Quote review manual trial runbook](./quote-review-manual-trial-runbook.md): operator workflow for unpaid manual quote-review trials before payment or PDF automation.
 - [Quote review sample trial](./quote-review-sample-trial.md): fake no-customer-data sample for training and template review.
 - [Quote review trial log](./quote-review-trial-log.md): repeatable log for manual controlled quote-review trials.
 - [Quote review wording snippets](./quote-review-wording-snippets.md): customer-safe snippets for scope clarity, allowance risk, site measure and compliance prompts.
@@ -62,6 +68,7 @@ Use this index to choose the right document before starting work. Operon Kitchen
 - [File upload MVP completion plan](./file-upload-mvp-completion-plan.md): implementation-ready sequence for admin signed downloads, deletion controls and retention metadata before runtime work.
 - [File upload release candidate summary](./file-upload-release-candidate-summary.md): what the signed-download batch would release and how to verify it.
 - [File upload release preflight](./file-upload-release-preflight.md): pre-deploy checklist for env vars, private bucket, metadata table and local tests.
+- [File upload approved release runbook](./file-upload-approved-release-runbook.md): one-approved-release flow for storage, metadata, signed download and metadata soft-delete verification.
 - [Signed download live verification checklist](./signed-download-live-verification-checklist.md): one-deploy production verification steps after approval.
 - [Signed download one-deploy checklist](./signed-download-one-deploy-checklist.md): compact release checklist for one future approved signed-download deploy.
 - [Signed download troubleshooting](./signed-download-troubleshooting.md): safe diagnostic guide for admin signed-download failures.
@@ -76,10 +83,12 @@ Use this index to choose the right document before starting work. Operon Kitchen
 ## Domain, Email And Operations
 
 - [Domain and email launch checklist](./domain-email-launch-checklist.md): future domain, DNS and Resend setup steps.
+- [Domain, email and Resend verification runbook](./domain-email-resend-verification-runbook.md): source-of-truth, env var, email content and failure-handling guide.
 - [Analytics events](./analytics-events.md): analytics event names and intended future usage.
 - [Operational readiness](./operational-readiness.md): future operational path and backend readiness notes.
 - [Deployment parity](./deployment-parity.md): static export and Netlify publish-directory parity notes.
 - [Architecture](./architecture.md): broader system architecture and roadmap notes.
+- [SEO controlled rollout backlog](./seo-controlled-rollout-backlog.md): safe SEO sequence for existing quote-risk, materials, apartment/strata and area pages before new page expansion.
 
 ## Quick Rules
 

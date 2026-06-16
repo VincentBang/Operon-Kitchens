@@ -30,6 +30,8 @@ Use `docs/controlled-testing-handoff.md` as the daily operator-facing summary be
 
 Use `docs/next-30-local-tasks-2026-06-17-handoff-batch.md` for the second approved no-deploy queue covering the handoff, request-review/admin audit, file-operation checklists and manual quote-review trial pack.
 
+Use `docs/next-100-local-tasks-2026-06-17.md` for the current 100-task no-deploy readiness batch covering release gates, file upload, domain/email, manual quote-review trials, admin operations, SEO backlog and risk tracking.
+
 Current local file-upload status:
 
 - admin signed-download function and `/admin/leads` download button are prepared locally
@@ -45,6 +47,18 @@ Current quote-review packaging status:
 - Paid quote-review service packaging is documented for future detailed review
 - payment, checkout, PDF automation, customer accounts and full CRM remain deferred
 - next quote-review decision: run manual unpaid report trials from controlled leads, then refine report copy before any paid-service implementation
+
+Current 100-task readiness status:
+
+- release gate decision note is documented
+- file-upload approved-release runbook is documented
+- domain/email/Resend verification runbook is documented
+- quote-review manual trial runbook is documented
+- controlled testing feedback scorecard is documented
+- admin weekly operations review is documented
+- SEO controlled rollout backlog is documented
+- operations risk register is documented
+- no deploy, no push and no production verification are approved by this local batch
 
 Current visual-system status:
 
