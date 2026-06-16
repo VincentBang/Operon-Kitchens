@@ -103,7 +103,7 @@ Controlled-launch QA is documented in `docs/controlled-launch-checklist.md`.
 
 Supabase setup instructions and SQL are documented in `docs/supabase-kitchen-request-reviews.md`.
 
-File uploads are enabled through the same request-review Netlify Function when `OPERON_KITCHENS_UPLOAD_BUCKET` and the kitchen Supabase storage bucket/table are configured. Files are validated server-side, stored in a private kitchen-specific Supabase Storage bucket, and linked to the lead through `public.kitchen_request_review_files`. Upload limits are 6 files, 4MB each and 10MB total, with PDF and common image formats only. Admin-lite displays file metadata only; it does not expose public file URLs or signed downloads yet.
+File uploads are enabled through the same request-review Netlify Function when `OPERON_KITCHENS_UPLOAD_BUCKET` and the kitchen Supabase storage bucket/table are configured. Files are validated server-side, stored in a private kitchen-specific Supabase Storage bucket, and linked to the lead through `public.kitchen_request_review_files`. Upload limits are 6 files, 4MB each and 10MB total, with PDF and common image formats only. Admin-lite displays file metadata. A token-gated signed-download release candidate is prepared locally for a future approved deploy; it must not expose public file URLs, service keys or browser-side Supabase writes.
 
 This is request intake only. It is not a final quote, order submission, payment flow, legal advice, compliance approval or project acceptance.
 

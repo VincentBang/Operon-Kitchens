@@ -93,7 +93,7 @@ Do not expose these values in browser copy, logs or chat.
 
 ## Local Verification Completed
 
-Current local gate:
+Current local gate before approval:
 
 ```bash
 npm test -- --runInBand
@@ -103,6 +103,19 @@ git diff --check
 ```
 
 Expected result before release approval: all pass.
+
+## Release Gate
+
+Before asking Vincent to approve one deploy, confirm:
+
+- required Netlify env vars are present in the target site
+- `public.kitchen_request_review_files` exists in the kitchen Supabase project
+- the upload bucket named by `OPERON_KITCHENS_UPLOAD_BUCKET` is private
+- retention metadata SQL has been applied if soft-delete verification is included
+- `/admin/leads` remains out of public navigation
+- no delete button is visible yet
+- signed download and soft-delete tests pass locally
+- no service keys, supplier costs, internal rates, margins, lead scores or admin priority are exposed in tests or browser responses
 
 ## Manual Verification After One Approved Deploy
 

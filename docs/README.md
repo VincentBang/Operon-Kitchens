@@ -13,6 +13,7 @@ Use this index to choose the right document before starting work. Operon Kitchen
 - [Decision log](../DECISION_LOG.md): major architecture and operating decisions already made.
 - [Release checkpoints](./release-checkpoints.md): approved future release gates.
 - [Local release bundle checklist](./local-release-bundle-checklist.md): how to batch local fixes before asking Vincent to approve one deploy.
+- [Current stage execution order](./current-stage-execution-order.md): one-by-one order for trust polish, visual review, file-upload MVP, domain/email and quote-review trials.
 - [Phase 1 conversion completion](./phase-1-conversion-completion.md): local completion record for the public homepage, quote, quote review, FAQ, trust and shared layout experience.
 - [Trust polish release bundle: 13 June 2026](./trust-polish-release-bundle-2026-06-13.md): local release-candidate note for chatbot, quote-review wording, layout consistency and public copy guardrails.
 
@@ -27,12 +28,14 @@ Use this index to choose the right document before starting work. Operon Kitchen
 - [Sitewide professional polish audit](./sitewide-professional-polish-audit.md): local audit for quote-first conversion, footer, chatbot, upload wording, FAQ, areas and shared layout polish.
 - [Sitewide layout QA](./sitewide-layout-qa.md): local visual checklist and notes for shared article spacing, footer, chatbot and mobile overlap checks.
 - [Local hardening batch: 4 June 2026](./local-hardening-batch-2026-06-04.md): no-deploy 50-task execution log for logo, header, footer, button and visual regression guardrails.
+- [Visual release review: 17 June 2026](./visual-release-review-2026-06-17.md): local static-export viewport check for homepage, quote review, request review, FAQ and admin leads.
 - [Lead handling playbook](./lead-handling-playbook.md): lead statuses, follow-up timing, internal notes style, site-measure triggers and what not to promise.
 
 ## Quote Review
 
 - [Quote review report template](./quote-review-report-template.md): customer-safe future report structure covering scope clarity, allowance risk, missing information, questions, compliance prompts and recommended next step.
 - [Quote review report readiness checklist](./quote-review-report-readiness-checklist.md): manual trial checklist before paid review, PDF export, payment or CRM workflows.
+- [Quote review manual trial worksheet](./quote-review-manual-trial-worksheet.md): operator worksheet for unpaid controlled-lead quote-review trials.
 - [Paid quote review service packaging](./paid-quote-review-service-packaging.md): future paid detailed review inclusions, exclusions, customer-safe report structure, delivery expectations and refund/cancellation principles without payment implementation.
 
 ## File Uploads

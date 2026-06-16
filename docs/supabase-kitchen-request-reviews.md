@@ -280,7 +280,9 @@ Recommended storage posture for Phase 1:
 - No public object reads.
 - No anonymous object uploads.
 - Netlify Function uses the service role key server-side.
-- Admin-lite lists metadata only; it does not expose signed download URLs yet.
+- Admin-lite lists metadata.
+- A token-gated signed-download release candidate is prepared locally for a future approved deploy.
+- Signed download URLs must be short-lived, generated server-side, and never exposed as public/permanent file URLs.
 
 If file upload storage is not configured and a customer submits files, the response will show the request delivery state without pretending files were stored. Supabase lead storage remains the source of truth for the enquiry record.
 
@@ -327,6 +329,28 @@ Allowed status values:
 - `spam`
 
 Admin-lite updates are limited to `status` and `internal_notes`. The functions reject attempts to update contact details, created dates, pricing, supplier costs, lead scores, admin priority or other unsupported fields.
+
+## Admin Signed Downloads Release Candidate
+
+Prepared local function:
+
+```text
+POST /.netlify/functions/kitchen-admin-file-download
+```
+
+Prepared local behaviour:
+
+- requires `x-operon-admin-token`
+- fetches file metadata from `public.kitchen_request_review_files`
+- signs only the metadata-owned bucket/object path
+- returns a short-lived signed URL
+- normalises Supabase signed paths that omit `/storage/v1`
+- rejects deleted file metadata
+- does not expose service role keys, raw Supabase errors, supplier costs, margins, lead scores, admin priority or internal notes
+
+This release candidate requires an explicit Vincent-approved deploy before live use. Use `docs/signed-download-live-verification-checklist.md` for the one-deploy verification.
+
+Do not add public file URLs, browser-side Supabase writes, customer file portals, physical object deletion or retention automation from this release candidate.
 
 ## Storage Boundary
 

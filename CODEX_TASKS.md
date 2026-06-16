@@ -16,6 +16,14 @@ Make controlled customer testing operationally smoother without adding major run
 
 Phase 1 conversion-grade public experience is complete locally. Do not keep re-opening homepage, quote/review positioning, FAQ, trust pages, header/footer or chatbot as broad Phase 1 work unless Vincent reports a specific blocker from testing.
 
+Use `docs/current-stage-execution-order.md` for the one-by-one order of the current stage. The current sequence is:
+
+1. trust polish release bundle
+2. local visual-system release review
+3. file-upload MVP release prep
+4. domain/email/Resend readiness
+5. quote-review manual trial
+
 Current local file-upload status:
 
 - admin signed-download function and `/admin/leads` download button are prepared locally

@@ -84,13 +84,14 @@ Do not include:
 ## Manual Trial Workflow
 
 1. Select a controlled-test lead from `/admin/leads`.
-2. Copy only customer-safe details into the report draft.
-3. Mark readiness as `Needs more detail`, `Basic review ready` or `Strong review ready`.
-4. Complete each required customer section.
-5. List questions the customer can ask before comparing totals.
-6. Add the compliance/risk prompt disclaimer.
-7. Add the recommended next step.
-8. Save trial notes internally; do not send as a paid product until approved.
+2. Use the [quote review manual trial worksheet](./quote-review-manual-trial-worksheet.md).
+3. Copy only customer-safe details into the report draft.
+4. Mark readiness as `Needs more detail`, `Basic review ready` or `Strong review ready`.
+5. Complete each required customer section.
+6. List questions the customer can ask before comparing totals.
+7. Add the compliance/risk prompt disclaimer.
+8. Add the recommended next step.
+9. Save trial notes internally; do not send as a paid product until approved.
 
 ## When To Recommend Site Measure
 
