@@ -121,3 +121,9 @@ Implication: Homepage, quote, quote review, request review, how-it-works, FAQ, a
 Decision: The next stage is organised as trust polish, visual review, file-upload MVP release prep, domain/email readiness and manual quote-review trials.
 
 Implication: Work should proceed one task at a time using local docs, tests and static-export checks. Netlify deploys, production verification and production Supabase changes remain paused unless Vincent explicitly approves a release checkpoint.
+
+## 2026-06-17: Controlled-Testing Handoff Added Locally
+
+Decision: A single operator-facing handoff now condenses daily admin checks, trusted tester flow, promises boundary, site-measure triggers, file-upload status, quote-review manual trials and release checkpoints.
+
+Implication: Future Codex runs and Vincent's manual testing can start from `docs/controlled-testing-handoff.md` before opening deeper playbooks. This is local documentation and does not approve deployment.

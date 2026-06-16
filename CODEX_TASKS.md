@@ -26,6 +26,10 @@ Use `docs/current-stage-execution-order.md` for the one-by-one order of the curr
 
 Use `docs/next-30-local-tasks-2026-06-17.md` for the current no-deploy execution queue.
 
+Use `docs/controlled-testing-handoff.md` as the daily operator-facing summary before opening the deeper controlled-testing docs.
+
+Use `docs/next-30-local-tasks-2026-06-17-handoff-batch.md` for the second approved no-deploy queue covering the handoff, request-review/admin audit, file-operation checklists and manual quote-review trial pack.
+
 Current local file-upload status:
 
 - admin signed-download function and `/admin/leads` download button are prepared locally

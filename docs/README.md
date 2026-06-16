@@ -15,11 +15,13 @@ Use this index to choose the right document before starting work. Operon Kitchen
 - [Local release bundle checklist](./local-release-bundle-checklist.md): how to batch local fixes before asking Vincent to approve one deploy.
 - [Current stage execution order](./current-stage-execution-order.md): one-by-one order for trust polish, visual review, file-upload MVP, domain/email and quote-review trials.
 - [Next 30 local tasks: 17 June 2026](./next-30-local-tasks-2026-06-17.md): local execution queue for controlled-testing hardening while deploys remain paused.
+- [Next 30 local tasks: controlled testing handoff batch](./next-30-local-tasks-2026-06-17-handoff-batch.md): second approved no-deploy queue for the operator handoff, request/admin audit, file-operation checklists and quote-review manual trial pack.
 - [Phase 1 conversion completion](./phase-1-conversion-completion.md): local completion record for the public homepage, quote, quote review, FAQ, trust and shared layout experience.
 - [Trust polish release bundle: 13 June 2026](./trust-polish-release-bundle-2026-06-13.md): local release-candidate note for chatbot, quote-review wording, layout consistency and public copy guardrails.
 
 ## Controlled Testing
 
+- [Controlled testing handoff](./controlled-testing-handoff.md): one-page daily operating guide for admin checks, trusted testers, promises boundary, file status, quote-review trials and release checkpoints.
 - [Controlled launch checklist](./controlled-launch-checklist.md): hub checklist for local testing, manual Supabase/admin checks and approved release checkpoints.
 - [Controlled testing playbook](./controlled-testing-playbook.md): how Vincent and trusted testers should submit fake enquiries and record confusion points.
 - [Trusted tester instructions](./trusted-tester-instructions.md): short script for 2-3 trusted controlled testers.
@@ -31,6 +33,7 @@ Use this index to choose the right document before starting work. Operon Kitchen
 - [Site measure readiness checklist](./site-measure-readiness-checklist.md): operator checklist for deciding when to suggest site measure.
 - [Release bundle decision matrix](./release-bundle-decision-matrix.md): local decision aid for trust, visual, file-upload and email release bundles.
 - [Request-review and admin mobile QA](./request-review-admin-mobile-qa.md): local visual checklist for `/request-review` and `/admin/leads` screenshots, spacing and usability.
+- [Request-review and admin handoff audit](./request-review-admin-handoff-audit-2026-06-17.md): local audit against the controlled-testing handoff, including remaining controlled-testing friction.
 - [Operon Flooring UI alignment audit](./operon-flooring-ui-alignment.md): how Kitchens should follow the Operon family layout rhythm without copying Flooring content or weakening kitchen safety rules.
 - [Operon Flooring colour alignment](./operon-flooring-color-alignment.md): Flooring-inspired navy/gold/warm-neutral token mapping for the Kitchens visual system.
 - [Brand asset system](./brand-system.md): Operon Kitchens logo variants, colours, usage guidance and final designer/vector work notes.
@@ -45,6 +48,8 @@ Use this index to choose the right document before starting work. Operon Kitchen
 - [Quote review report template](./quote-review-report-template.md): customer-safe future report structure covering scope clarity, allowance risk, missing information, questions, compliance prompts and recommended next step.
 - [Quote review report readiness checklist](./quote-review-report-readiness-checklist.md): manual trial checklist before paid review, PDF export, payment or CRM workflows.
 - [Quote review manual trial worksheet](./quote-review-manual-trial-worksheet.md): operator worksheet for unpaid controlled-lead quote-review trials.
+- [Quote review manual trial pack](./quote-review-manual-trial-pack.md): one-page guide linking the worksheet, snippets, trial log, sample and paid-service packaging.
+- [Quote review sample trial](./quote-review-sample-trial.md): fake no-customer-data sample for training and template review.
 - [Quote review trial log](./quote-review-trial-log.md): repeatable log for manual controlled quote-review trials.
 - [Quote review wording snippets](./quote-review-wording-snippets.md): customer-safe snippets for scope clarity, allowance risk, site measure and compliance prompts.
 - [Paid quote review service packaging](./paid-quote-review-service-packaging.md): future paid detailed review inclusions, exclusions, customer-safe report structure, delivery expectations and refund/cancellation principles without payment implementation.
@@ -58,9 +63,11 @@ Use this index to choose the right document before starting work. Operon Kitchen
 - [File upload release candidate summary](./file-upload-release-candidate-summary.md): what the signed-download batch would release and how to verify it.
 - [File upload release preflight](./file-upload-release-preflight.md): pre-deploy checklist for env vars, private bucket, metadata table and local tests.
 - [Signed download live verification checklist](./signed-download-live-verification-checklist.md): one-deploy production verification steps after approval.
+- [Signed download one-deploy checklist](./signed-download-one-deploy-checklist.md): compact release checklist for one future approved signed-download deploy.
 - [Signed download troubleshooting](./signed-download-troubleshooting.md): safe diagnostic guide for admin signed-download failures.
 - [Admin file delete UI design](./admin-file-delete-ui-design.md): future delete-button UX, confirmation copy and request guardrails without adding the live button yet.
 - [Soft delete release preflight](./soft-delete-release-preflight.md): metadata-only soft-delete readiness checks before visible delete UI.
+- [Soft delete one-deploy checklist](./soft-delete-one-deploy-checklist.md): compact verification checklist for one future approved metadata soft-delete function release.
 - [File retention decision worksheet](./file-retention-decision-worksheet.md): decisions needed before retention automation or fixed retention periods.
 - [Supabase file upload SQL checklist](./supabase-file-upload-sql-checklist.md): manual bucket/table/retention SQL checks for Vincent.
 - [File upload runtime slice decision](./file-upload-runtime-slice-decision.md): choose between deploying signed downloads, continuing local delete-function work, or pausing file ops.
