@@ -95,6 +95,19 @@ Manual verification after one approved deploy:
 6. Click `Download` and confirm the signed URL opens the file.
 7. Confirm unsafe fields and service keys are absent from browser/network responses.
 
+## Current Waiting Bundle: Trust Polish Patch
+
+Prepared locally and suitable for the next approved controlled release:
+
+- chatbot launcher now uses `Ask Operon` and `Kitchen scope guidance`
+- chatbot accessibility, launcher spacing and prompt separation are covered by tests
+- quote-review copy no longer says `final price comparison`
+- how-it-works copy no longer says `guaranteed saving`
+- route fallback wrappers now rely on the shared `_app` layout path
+- public copy guardrails cover unsafe prototype/final-price language
+
+Use the [trust polish release bundle note](./trust-polish-release-bundle-2026-06-13.md) before spending a deploy.
+
 ## Exclude Unless Separately Approved
 
 Do not include without explicit approval:

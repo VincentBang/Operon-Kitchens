@@ -14,6 +14,7 @@ Use this index to choose the right document before starting work. Operon Kitchen
 - [Release checkpoints](./release-checkpoints.md): approved future release gates.
 - [Local release bundle checklist](./local-release-bundle-checklist.md): how to batch local fixes before asking Vincent to approve one deploy.
 - [Phase 1 conversion completion](./phase-1-conversion-completion.md): local completion record for the public homepage, quote, quote review, FAQ, trust and shared layout experience.
+- [Trust polish release bundle: 13 June 2026](./trust-polish-release-bundle-2026-06-13.md): local release-candidate note for chatbot, quote-review wording, layout consistency and public copy guardrails.
 
 ## Controlled Testing
 

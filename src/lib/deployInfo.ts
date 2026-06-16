@@ -44,7 +44,7 @@ export function getDeployInfo(): DeployInfo {
     buildTimestamp: process.env.NEXT_PUBLIC_BUILD_TIMESTAMP || process.env.BUILD_TIMESTAMP || 'not available',
     expectedCopy: {
       hero: 'Sydney kitchen renovation estimates and quote review before you commit.',
-      chatbot: 'Need help with scope? Ask Operon',
+      chatbot: 'Ask Operon / Kitchen scope guidance',
       footerSpacingFixed: 'yes',
     },
   };

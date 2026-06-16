@@ -29,7 +29,7 @@ const notReplacementItems = [
   'Not legal advice',
   'Not compliance approval',
   'Not a substitute for site measure',
-  'Not a guaranteed saving',
+  'No promised savings outcome',
   'Not an online custom kitchen purchase',
 ];
 

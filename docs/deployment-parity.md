@@ -217,7 +217,23 @@ Expected public markers:
 
 - Static app version: `2026-05-31-quote-safety-pass`
 - Hero: `Clear kitchen renovation estimates for Sydney homes — before the site visit.`
-- Chatbot: `Need help with scope? Ask Operon`
+- Chatbot: `Ask Operon / Kitchen scope guidance`
 - Footer spacing fixed: `yes`
 
 Any required Netlify UI or production deployment setting change is outside this repository and should be done manually by Vincent.
+
+## Next Approved Trust-Polish Smoke Check
+
+The 13 June 2026 trust-polish patch is local-only until Vincent approves a deploy. After one approved deploy, check:
+
+- `https://operonkitchens.netlify.app/`
+- `https://operonkitchens.netlify.app/quote/review`
+- `https://operonkitchens.netlify.app/faqs`
+- `https://operonkitchens.netlify.app/request-review`
+
+Expected markers:
+
+- chatbot launcher shows `Ask Operon` and `Kitchen scope guidance`
+- `/quote/review` does not show `Phase 1`, `structured review intake`, `0/100` as the primary result or `final price comparison`
+- footer does not show `brand.Planning`
+- no customer-facing supplier costs, internal rates, margin logic, lead scores, admin priority, service keys or hidden pricing logic appear

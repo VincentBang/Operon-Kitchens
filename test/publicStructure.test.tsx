@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { render, screen } from '@testing-library/react';
 import PublicLayout from '../src/components/PublicLayout';
 import AreasPage from '../src/pages/areas';
@@ -146,6 +148,7 @@ describe('public site structure', () => {
 
   it('renders the public FAQ page without admin data dependencies', () => {
     const { container } = render(<FaqsPage />);
+    expect(fs.existsSync(path.join(process.cwd(), 'src/pages/faqs.tsx'))).toBe(true);
     expect(screen.getByRole('heading', { name: /Kitchen renovation FAQs for Sydney quotes, scope and site measure/i })).toBeInTheDocument();
     expect(screen.getByText(/Clear answers about planning estimates, kitchen quote review/i)).toBeInTheDocument();
     expect(screen.getByText(/Planning guidance only\. Site measure, selections, licensed trade checks/i)).toBeInTheDocument();
@@ -182,6 +185,17 @@ describe('public site structure', () => {
     expect(document.body.textContent).not.toMatch(/final fixed quote|approved quote|certified quote|guaranteed savings|order instantly/i);
   });
 
+  it('keeps public route wrappers on the shared app layout path', () => {
+    const serviceRoute = fs.readFileSync(path.join(process.cwd(), 'src/components/ServiceRoutePage.tsx'), 'utf8');
+    const educationRoute = fs.readFileSync(path.join(process.cwd(), 'src/components/EducationRoutePage.tsx'), 'utf8');
+    const appShell = fs.readFileSync(path.join(process.cwd(), 'src/pages/_app.tsx'), 'utf8');
+
+    expect(appShell).toContain('<PublicLayout>');
+    expect(appShell).toContain('<KitchenChatbot');
+    expect(serviceRoute).not.toContain('PublicLayout');
+    expect(educationRoute).not.toContain('PublicLayout');
+  });
+
   it('renders the upgraded homepage hero and sample estimate output', () => {
     render(<HomePage />);
 
@@ -210,7 +224,7 @@ describe('public site structure', () => {
     expect(screen.getByRole('heading', { name: /Operon Kitchens deploy check/i })).toBeInTheDocument();
     expect(screen.getAllByText('2026-05-31-quote-safety-pass').length).toBeGreaterThan(0);
     expect(screen.getByText(/Sydney kitchen renovation estimates and quote review before you commit/i)).toBeInTheDocument();
-    expect(screen.getByText(/Need help with scope\? Ask Operon/i)).toBeInTheDocument();
+    expect(screen.getByText(/Ask Operon \/ Kitchen scope guidance/i)).toBeInTheDocument();
     expect(screen.getAllByText(/yes/i).length).toBeGreaterThan(0);
     expect(pageText).not.toMatch(/secret|service_role|database_url|password|token/i);
   });
@@ -300,6 +314,7 @@ describe('public site structure', () => {
     expect(screen.queryByText(/0\/100/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/Upload your quote or answer the checklist/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/Phase 1/i)).not.toBeInTheDocument();
+    expect(document.body.textContent).not.toMatch(/MVP|structured review intake|internal|admin|final price comparison/i);
     expect(screen.getAllByText(/Scope clarity/i).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/Allowance risk/i).length).toBeGreaterThan(0);
   });

@@ -395,7 +395,7 @@ export default function QuoteReview() {
               <div className="emptyStatePanel">
                 <h3>Add quote details to generate a review readiness preview.</h3>
                 <p>Tick the items your quote clearly states, add basic job details, or attach files if you want them included in the review request.</p>
-                <p className="muted">This form organises your review details only. It does not provide full AI document review, legal advice or final price comparison.</p>
+                <p className="muted">This form organises your review details only. It does not provide full AI document review, legal advice or project-specific pricing comparison.</p>
               </div>
             ) : (
               <>
@@ -406,7 +406,7 @@ export default function QuoteReview() {
                   </div>
                   <span className={`confidence ${result.confidenceScore >= 80 ? 'high' : result.confidenceScore >= 45 ? 'medium' : 'low'}`}>Completeness score {result.confidenceScore}/100</span>
                 </div>
-                <p className="muted">This form organises your review details only. It does not provide full AI document review, legal advice or final price comparison.</p>
+                <p className="muted">This form organises your review details only. It does not provide full AI document review, legal advice or project-specific pricing comparison.</p>
                 <p className="muted">{result.disclaimer}</p>
                 <div className="summaryMetricGrid">
                   <article>

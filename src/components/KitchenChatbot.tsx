@@ -140,6 +140,7 @@ export default function KitchenChatbot({ placement = 'top' }: KitchenChatbotProp
       <button
         className="kitchenChatbotToggle"
         type="button"
+        aria-label="Ask Operon. Kitchen scope guidance"
         aria-expanded={open}
         aria-controls="kitchen-chatbot-panel"
         onClick={() => setOpen((value) => {
@@ -149,7 +150,11 @@ export default function KitchenChatbot({ placement = 'top' }: KitchenChatbotProp
         })}
       >
         <span className="chatbotIcon" aria-hidden="true" />
-        Need help with scope? Ask Operon
+        <span className="chatbotLauncherCopy">
+          <strong>Ask Operon</strong>
+          {' '}
+          <small>Kitchen scope guidance</small>
+        </span>
       </button>
     </div>
   );

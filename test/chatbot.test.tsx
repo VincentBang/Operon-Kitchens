@@ -41,15 +41,20 @@ describe('Operon Kitchens chatbot', () => {
 
   it('states the chatbot does not provide legal advice or compliance certainty', () => {
     render(<KitchenChatbot />);
-    expect(screen.getByRole('button', { name: /Need help with scope\? Ask Operon/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Ask Operon\. Kitchen scope guidance/i })).toBeInTheDocument();
+    expect(screen.getByText('Ask Operon')).toBeInTheDocument();
+    expect(screen.getByText('Kitchen scope guidance')).toBeInTheDocument();
     expect(document.body.textContent).not.toContain('??');
     fireEvent.click(screen.getByRole('button', { name: /Ask Operon/i }));
+    expect(screen.getByText(/Operon Kitchens Assistant/i)).toBeInTheDocument();
+    expect(screen.getByText(/Scope, quote and site-measure guidance/i)).toBeInTheDocument();
     expect(screen.getByText(/I do not provide final pricing or legal advice/i)).toBeInTheDocument();
     const paths = within(screen.getByRole('navigation', { name: /Kitchen next steps/i }));
     expect(paths.getByRole('link', { name: /Start kitchen estimate/i })).toHaveAttribute('href', '/quote');
     expect(paths.getByRole('link', { name: /Review existing quote/i })).toHaveAttribute('href', '/quote/review');
     expect(paths.getByRole('link', { name: /Request review/i })).toHaveAttribute('href', '/request-review');
     expect(paths.getByRole('link', { name: /Prepare for site measure/i })).toHaveAttribute('href', '/site-measure');
+    expect(paths.queryByRole('link', { name: /admin/i })).not.toBeInTheDocument();
   });
 
   it('renders quick prompts as separate readable buttons', () => {
@@ -67,6 +72,7 @@ describe('Operon Kitchens chatbot', () => {
     });
 
     expect(document.body.textContent).not.toContain('scope??Ask');
+    expect(document.body.textContent).not.toContain('What measurements should I prepare?Can I use engineered stone');
     expect(document.body.textContent).not.toMatch(/supplier cost|internal rate|lead score|admin priority/i);
   });
 });

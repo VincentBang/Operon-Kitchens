@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import PublicLayout from '@/components/PublicLayout';
 import ServicePageTemplate from '@/components/ServicePageTemplate';
 import { getServicePage } from '@/lib/servicePages';
 
@@ -12,23 +11,21 @@ export default function ServiceRoutePage({ slug }: Props) {
 
   if (!page) {
     return (
-      <PublicLayout>
-        <main className="contentPage">
-          <section className="contentHero">
-            <div>
-              <p className="eyebrow">Service page unavailable</p>
-              <h1 className="contentTitle">This kitchen service page needs review.</h1>
+      <main className="contentPage">
+        <section className="contentHero">
+          <div>
+            <p className="eyebrow">Service page unavailable</p>
+            <h1 className="contentTitle">This kitchen service page needs review.</h1>
+          </div>
+          <div>
+            <p className="muted">The requested service page is not configured yet. Use the estimate or quote review path while this page is checked.</p>
+            <div className="flexActions">
+              <Link href="/quote" className="button primary">Start kitchen estimate</Link>
+              <Link href="/quote/review" className="button ghost">Review existing quote</Link>
             </div>
-            <div>
-              <p className="muted">The requested service page is not configured yet. Use the estimate or quote review path while this page is checked.</p>
-              <div className="flexActions">
-                <Link href="/quote" className="button primary">Start kitchen estimate</Link>
-                <Link href="/quote/review" className="button ghost">Review existing quote</Link>
-              </div>
-            </div>
-          </section>
-        </main>
-      </PublicLayout>
+          </div>
+        </section>
+      </main>
     );
   }
 
