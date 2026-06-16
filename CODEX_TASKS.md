@@ -24,6 +24,8 @@ Use `docs/current-stage-execution-order.md` for the one-by-one order of the curr
 4. domain/email/Resend readiness
 5. quote-review manual trial
 
+Use `docs/next-30-local-tasks-2026-06-17.md` for the current no-deploy execution queue.
+
 Current local file-upload status:
 
 - admin signed-download function and `/admin/leads` download button are prepared locally

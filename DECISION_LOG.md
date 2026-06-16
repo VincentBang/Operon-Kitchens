@@ -115,3 +115,9 @@ Implication: The public site matches the supplied circular emblem exactly instea
 Decision: The conversion-grade public experience is considered complete locally for Phase 1.
 
 Implication: Homepage, quote, quote review, request review, how-it-works, FAQ, areas, privacy/terms, shared header/footer and chatbot should now be maintained through targeted blocker fixes rather than broad Phase 1 reopening. The next master-plan work should focus on controlled testing, file-upload MVP release decisions, domain/email setup, quote-review packaging trials and SEO rollout.
+
+## 2026-06-17: Controlled-Testing Execution Order Set Locally
+
+Decision: The next stage is organised as trust polish, visual review, file-upload MVP release prep, domain/email readiness and manual quote-review trials.
+
+Implication: Work should proceed one task at a time using local docs, tests and static-export checks. Netlify deploys, production verification and production Supabase changes remain paused unless Vincent explicitly approves a release checkpoint.
