@@ -145,3 +145,9 @@ Implication: The default recommendation is to release trust/visual polish first 
 Decision: A second local 100-task batch captured release-choice clarity, safer public wording, compact header/navigation changes, simplified footer links, homepage proof hierarchy and updated visual-system guardrails.
 
 Implication: The next approved public release can be framed as a trust/visual polish release, separate from file-upload backend operations unless Vincent deliberately chooses a combined release.
+
+## 2026-06-17: Viewport And Release Readiness Batch Completed Locally
+
+Decision: A third local 100-task batch checked the current release candidate at desktop, tablet and mobile widths, tightened public strata wording toward approval-review language, and prepared a one-approved-deploy smoke-check pack.
+
+Implication: The release candidate has a documented local viewport baseline and a concise smoke-check sequence. Deployment, production verification, Netlify settings and production Supabase changes remain approval-gated.

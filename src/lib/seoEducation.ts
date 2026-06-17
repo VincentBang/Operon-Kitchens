@@ -55,7 +55,7 @@ export const educationPages: SeoEducationPage[] = [
       },
       {
         heading: '6. Apartment and strata cost prompts',
-        body: 'Apartment kitchens may require lift bookings, parking coordination, work-hour limits, strata approval, protection, class 2 screening and more careful waste planning. These prompts should be visible before relying on a cost range.',
+        body: 'Apartment kitchens may require lift bookings, parking coordination, work-hour limits, strata approval or notification review, protection, class 2 screening and more careful waste planning. These prompts should be visible before relying on a cost range.',
       },
       {
         heading: '7. When to move from estimate to site measure',
@@ -185,7 +185,7 @@ export const educationPages: SeoEducationPage[] = [
       },
       {
         heading: '2. Apartment risks to capture early',
-        body: 'Apartment projects may need strata approval, lift bookings, parking planning, protection, noise controls, work-hour limits, waste planning and careful confirmation of the path from loading area to kitchen.',
+        body: 'Apartment projects may need strata or owners corporation approval review, lift bookings, parking planning, protection, noise controls, work-hour limits, waste planning and careful confirmation of the path from loading area to kitchen.',
       },
       {
         heading: '3. Typical apartment kitchen scope',
@@ -220,7 +220,7 @@ export const educationPages: SeoEducationPage[] = [
     ],
     faqs: [
       { question: 'Are apartment kitchens more expensive?', answer: 'They can be, depending on access, approvals, service constraints, waste handling and building rules. The estimate should flag those items rather than hide them.' },
-      { question: 'Do I need strata approval?', answer: 'Many apartment renovations require some form of approval or notification. Confirm with your strata manager and obtain project-specific advice for your building.' },
+      { question: 'Do I need strata approval or notification review?', answer: 'Many apartment renovations require some form of approval or notification. Confirm with your strata manager and obtain project-specific advice for your building.' },
       { question: 'What should an apartment kitchen quote include?', answer: 'Check cabinetry, benchtop, splashback, demolition, waste, delivery, protection, service assumptions, appliance installation, access conditions and site-measure requirements.' },
       { question: 'Can apartment service changes affect the quote?', answer: 'Yes. Plumbing, electrical, ventilation and gas assumptions can affect scope and may require licensed trade review before pricing is treated as reliable.' },
       { question: 'Is this strata or legal advice?', answer: 'No. These are general planning and quote review prompts. Strata, legal, contract and licensed trade questions require project-specific confirmation.' },
@@ -650,7 +650,7 @@ export const renovationGlossaryTerms = [
   ['Provisional sum', 'An allowance for work where the final scope or cost is not yet clear.'],
   ['Site measure', 'A professional measurement visit used to confirm dimensions, access, services and site conditions.'],
   ['HBC', 'Home Building Compensation cover, which may require confirmation for NSW residential projects over the relevant threshold.'],
-  ['Strata approval', 'Approval or notification that may be needed before work in an apartment or strata property.'],
+  ['Strata approval or notification review', 'Approval or notification that may be needed before work in an apartment or strata property.'],
   ['Engineered stone restriction', 'A compliance review item for benchtop, panel or slab products affected by the engineered-stone ban.'],
   ['Licensed trade', 'Electrical, plumbing and gas work must be handled by appropriately licensed trades.'],
 ];

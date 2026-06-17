@@ -19,7 +19,7 @@ const reviewValueCards = [
   ['Allowance clarity', 'PC sums, provisional sums, appliance allowances and benchtop allowances should be clear before you compare totals.'],
   ['Trade scope', 'Plumbing, electrical, gas and relocation assumptions need licensed trade confirmation.'],
   ['Benchtop and splashback clarity', 'Material, cut-outs, joins, waterfalls and splashback inclusions should be visible in the scope.'],
-  ['Apartment/strata risk', 'Lift access, parking, strata approval and class 2 screening can affect timing and review requirements.'],
+  ['Apartment/strata risk', 'Lift access, parking, strata or owners corporation approval review and class 2 screening can affect timing and review requirements.'],
   ['Contract and risk prompts', 'Deposit guidance, HBC review triggers and site measure requirements are flagged for professional confirmation.'],
   ['Quote confidence', 'The review separates what is clear, what is missing and what needs professional confirmation.'],
 ];

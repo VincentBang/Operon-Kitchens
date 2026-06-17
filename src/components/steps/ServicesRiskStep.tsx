@@ -81,7 +81,7 @@ export default function ServicesRiskStep({ data, onChange, onNext, onBack }: Pro
       <details className="advancedPanel" open>
         <summary>Approvals and property risks</summary>
         <div className="choiceGrid compact">
-          <label className="checkCard"><input type="checkbox" checked={data.strataApprovalRequired} onChange={(event) => onChange({ ...data, strataApprovalRequired: event.target.checked })} /><span>Strata approval likely</span></label>
+          <label className="checkCard"><input type="checkbox" checked={data.strataApprovalRequired} onChange={(event) => onChange({ ...data, strataApprovalRequired: event.target.checked })} /><span>Strata review likely</span></label>
           <label className="checkCard"><input type="checkbox" checked={data.basixReviewRequired} onChange={(event) => onChange({ ...data, basixReviewRequired: event.target.checked })} /><span>BASIX review risk</span></label>
           <label className="checkCard"><input type="checkbox" checked={data.dbpReviewRequired} onChange={(event) => onChange({ ...data, dbpReviewRequired: event.target.checked })} /><span>DBP/class 2 screen</span></label>
           <label className="checkCard"><input type="checkbox" checked={data.apartmentClass2Uncertainty} onChange={(event) => onChange({ ...data, apartmentClass2Uncertainty: event.target.checked })} /><span>Apartment/class 2 uncertainty</span></label>

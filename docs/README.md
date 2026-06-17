@@ -18,6 +18,9 @@ Use this index to choose the right document before starting work. Operon Kitchen
 - [Next 30 local tasks: controlled testing handoff batch](./next-30-local-tasks-2026-06-17-handoff-batch.md): second approved no-deploy queue for the operator handoff, request/admin audit, file-operation checklists and quote-review manual trial pack.
 - [Next 100 local tasks: controlled testing readiness](./next-100-local-tasks-2026-06-17.md): no-deploy execution batch covering release gates, file upload, domain/email, quote-review trials, admin operations, SEO backlog and risks.
 - [Next 100 local tasks: release decision and visual polish](./next-100-local-tasks-2026-06-17-release-decision-visual-batch.md): no-deploy batch for release-choice clarity, safer public wording, homepage proof hierarchy, compact navigation and visual guardrails.
+- [Next 100 local tasks: viewport and release readiness](./next-100-local-tasks-2026-06-17-viewport-release-readiness.md): no-deploy browser-backed viewport review, customer-safe strata wording pass and release smoke-pack preparation.
+- [Local viewport review: 17 June 2026](./local-viewport-review-2026-06-17.md): local route/viewport result for homepage, quote review, request review, site measure and admin leads.
+- [Release smoke check pack: 17 June 2026](./release-smoke-check-pack-2026-06-17.md): one-approved-deploy smoke-check sequence for the next release checkpoint.
 - [Phase 1 conversion completion](./phase-1-conversion-completion.md): local completion record for the public homepage, quote, quote review, FAQ, trust and shared layout experience.
 - [Trust polish release bundle: 13 June 2026](./trust-polish-release-bundle-2026-06-13.md): local release-candidate note for chatbot, quote-review wording, layout consistency and public copy guardrails.
 
@@ -45,6 +48,7 @@ Use this index to choose the right document before starting work. Operon Kitchen
 - [Sitewide layout QA](./sitewide-layout-qa.md): local visual checklist and notes for shared article spacing, footer, chatbot and mobile overlap checks.
 - [Local hardening batch: 4 June 2026](./local-hardening-batch-2026-06-04.md): no-deploy 50-task execution log for logo, header, footer, button and visual regression guardrails.
 - [Visual release review: 17 June 2026](./visual-release-review-2026-06-17.md): local static-export viewport check for homepage, quote review, request review, FAQ and admin leads.
+- [Local viewport review: 17 June 2026](./local-viewport-review-2026-06-17.md): browser-backed local viewport check for the latest release candidate routes.
 - [Lead handling playbook](./lead-handling-playbook.md): lead statuses, follow-up timing, internal notes style, site-measure triggers and what not to promise.
 - [Controlled testing feedback scorecard](./controlled-testing-feedback-scorecard.md): scoring template for trusted-tester clarity, mobile friction, admin handling and next-step confidence.
 - [Admin operations weekly review](./admin-operations-weekly-review.md): weekly internal review for lead statuses, notes, UTM/source, upload metadata and no-email fallback.

@@ -172,7 +172,7 @@ export const servicePages: ServicePage[] = [
       'Strata, DBP/class 2, written contract, deposit and HBC review prompts where relevant',
     ],
     scopeDrivers: [
-      'Strata approval or renovation by-law requirements',
+      'Strata approval or notification review and renovation by-law requirements',
       'Lift size, loading access, parking and common-area protection',
       'Plumbing, electrical, gas, ventilation and service-location constraints',
       'Work-hour limits, noise controls, rubbish removal and final clean requirements',
@@ -200,7 +200,7 @@ export const servicePages: ServicePage[] = [
       'Work-hour limits or after-hours requirements not described in the written scope',
     ],
     exclusionsToCheck: [
-      'Strata approval fees, consultant review or building-management charges',
+      'Strata approval or notification review fees, consultant review or building-management charges',
       'Building protection, lift booking, parking permits and loading restrictions',
       'After-hours work, noise management, rubbish movement and final common-area clean',
       'Licensed trade certificates, disconnection/reconnection and service relocation documentation',

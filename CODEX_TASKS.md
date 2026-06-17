@@ -36,6 +36,12 @@ Use `docs/release-decision-note-vincent-2026-06-17.md` when Vincent asks what sh
 
 Use `docs/next-100-local-tasks-2026-06-17-release-decision-visual-batch.md` for the latest no-deploy release-decision and visual-polish batch.
 
+Use `docs/next-100-local-tasks-2026-06-17-viewport-release-readiness.md` for the latest no-deploy viewport and release-readiness batch.
+
+Use `docs/local-viewport-review-2026-06-17.md` for the current local viewport result across `/`, `/quote/review`, `/request-review`, `/site-measure` and `/admin/leads`.
+
+Use `docs/release-smoke-check-pack-2026-06-17.md` only after Vincent explicitly approves one deploy.
+
 Current local file-upload status:
 
 - admin signed-download function and `/admin/leads` download button are prepared locally
@@ -75,6 +81,8 @@ Current visual-system status:
 - visual-system regression tests are prepared locally
 - no visual bundle has been pushed or deployed
 - next visual decision: review `/`, `/request-review`, `/quote/review` and `/admin/leads` locally at desktop and mobile widths, then decide whether to include this in one approved release checkpoint
+- latest viewport review: `/`, `/quote/review`, `/request-review`, `/site-measure` and `/admin/leads` were checked locally at 1440, 1280, 768, 390 and 360 widths with no horizontal overflow found
+- latest copy tightening: public strata wording now uses approval-review / owners-corporation-review language rather than implying Operon grants approval
 
 ## Local-Only Task Queue
 
@@ -139,6 +147,11 @@ Current visual-system status:
    - Request-review and quote-review form spacing.
    - Admin lead readability.
    - Do not deploy until Vincent approves a release checkpoint.
+
+10. Use the release smoke-check pack only when Vincent approves one deploy.
+   - Check `/`, `/quote/review`, `/request-review`, `/site-measure`, `/faqs` and `/admin/leads`.
+   - Include file-upload signed-download verification only if Vincent chooses the file bundle.
+   - Stop after one smoke-check cycle.
 
 ## Explicitly Deferred
 

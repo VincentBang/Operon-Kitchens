@@ -90,7 +90,7 @@ export default function QuoteReviewServicePage() {
 
         <aside className="compliancePanel">
           <h2>Review limits</h2>
-          <p>Quote review is general guidance for scope clarity. It does not replace legal advice, licensed trade inspection, site measure, strata approval, insurance confirmation or written scope confirmation.</p>
+          <p>Quote review is general guidance for scope clarity. It does not replace legal advice, licensed trade inspection, site measure, strata approval or notification review, insurance confirmation or written scope confirmation.</p>
         </aside>
 
         <section className="contentCta">

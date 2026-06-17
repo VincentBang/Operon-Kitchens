@@ -68,7 +68,7 @@ export const reviewChecks: { key: ReviewCheckKey; label: string; explanation: st
   { key: 'serviceRelocation', label: 'Service relocation', explanation: 'Plumbing, electrical and gas relocation require licensed trade confirmation.' },
   { key: 'applianceAssumptions', label: 'Appliance assumptions', explanation: 'Appliance model, size, connection and installation assumptions should be visible.' },
   { key: 'benchtopSplashback', label: 'Benchtop/splashback clarity', explanation: 'Material, thickness, restrictions and fabrication assumptions should be clear.' },
-  { key: 'strataApartment', label: 'Strata/apartment risks', explanation: 'Apartment work may need strata approval, access booking and class 2 screening.' },
+  { key: 'strataApartment', label: 'Strata/apartment risks', explanation: 'Apartment work may need strata approval or notification review, access booking and class 2 screening.' },
   { key: 'demolitionWaste', label: 'Demolition and waste scope', explanation: 'Removal, disposal, protection and make-good work should not be assumed.' },
   { key: 'siteMeasure', label: 'Site measure requirement', explanation: 'Project-specific pricing should follow site measure and confirmed selections.' },
 ];
@@ -117,8 +117,8 @@ export function evaluateKitchenQuoteReview(intake: KitchenQuoteReviewIntake): Ki
     customerQuestions.push('Is plumbing, electrical or gas being moved, upgraded or reconnected by licensed trades?');
   }
   if (intake.jobDetails.strataOrApartment || intake.jobDetails.propertyType === 'strataApartment' || !intake.checkedItems.strataApartment) {
-    compliancePrompts.push('Strata/apartment approval and DBP/class 2 screening may require review');
-    customerQuestions.push('Does the quote allow for strata approval, lift booking, access protection and building rules?');
+    compliancePrompts.push('Strata/apartment approval review and DBP/class 2 screening may require review');
+    customerQuestions.push('Does the quote allow for strata or owners corporation approval review, lift booking, access protection and building rules?');
   }
   if (!intake.checkedItems.depositHbc) {
     compliancePrompts.push('Deposit and HBC terms need confirmation, including 10% maximum deposit guidance and HBC review over $20,000 including GST');

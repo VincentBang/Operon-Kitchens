@@ -138,7 +138,7 @@ describe('pricing engine', () => {
     expect(complex.complianceFlags).toContain('DBP/class 2 screening may be required for apartment work');
     expect(complex.reviewRiskScore).toBeGreaterThan(simple.reviewRiskScore);
     expect(complex.reviewRiskLabel).toBe('high');
-    expect(complex.riskReasons).toEqual(expect.arrayContaining(['Apartment or strata approval pathway needs review']));
+    expect(complex.riskReasons).toEqual(expect.arrayContaining(['Apartment or strata approval or notification review pathway needs review']));
   });
 
   it('rewards clearer scope details with higher confidence', () => {

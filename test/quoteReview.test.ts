@@ -111,11 +111,11 @@ describe('kitchen quote review intake', () => {
     expect(result.complianceFlags).toEqual(
       expect.arrayContaining([
         'Licensed electrical, plumbing or gas trade confirmation may be required',
-        'Strata/apartment approval and DBP/class 2 screening may require review',
+        'Strata/apartment approval review and DBP/class 2 screening may require review',
         'Benchtop/splashback material and engineered-stone restriction needs confirmation',
       ]),
     );
-    expect(result.customerQuestions).toEqual(expect.arrayContaining(['Does the quote allow for strata approval, lift booking, access protection and building rules?']));
+    expect(result.customerQuestions).toEqual(expect.arrayContaining(['Does the quote allow for strata or owners corporation approval review, lift booking, access protection and building rules?']));
     expect(result.missingItems).toEqual(
       expect.arrayContaining(['Deposit / HBC flags', 'Benchtop/splashback clarity', 'Site measure requirement']),
     );

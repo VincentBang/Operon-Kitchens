@@ -21,7 +21,7 @@ const groupContent: Record<AreaType, { eyebrow: string; title: string; intro: st
   apartments: {
     eyebrow: 'Apartments and strata',
     title: 'Apartment and strata-heavy suburbs',
-    intro: 'Lift access, strata approval, work-hour limits, class 2 screening and service constraints may require confirmation before a scope can be relied on.',
+    intro: 'Lift access, strata or owners corporation approval review, work-hour limits, class 2 screening and service constraints may require confirmation before a scope can be relied on.',
     cta: 'Review quote for access and strata assumptions',
     href: '/quote/review',
   },
@@ -56,7 +56,7 @@ const groupContent: Record<AreaType, { eyebrow: string; title: string; intro: st
 };
 
 const contextCards = [
-  ['Apartments and strata', 'Lift access, strata approvals, class 2 screening, work-hour limits and service constraints can affect quote confidence before site measure.'],
+  ['Apartments and strata', 'Lift access, strata approval or notification review, class 2 screening, work-hour limits and service constraints can affect quote confidence before site measure.'],
   ['Older homes', 'Hidden conditions, make-good work, plumbing or electrical uncertainty and asbestos review prompts may require confirmation.'],
   ['Premium renovations', 'Custom joinery, finish selection, benchtop and splashback detail, hardware and allowance clarity can change quote review risk.'],
   ['Growth corridors and family homes', 'Project size, upgrade level, appliance planning, cabinetry quantity and budget alignment shape the planning estimate range.'],

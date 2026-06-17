@@ -51,7 +51,7 @@ const sampleReportSections = [
   ['Confidence score', '72/100 · medium confidence'],
   ['Included scope', 'Cabinetry, benchtop, splashback, selected trade allowances'],
   ['Assumptions', 'Services mostly stay in place and photos match site conditions'],
-  ['Exclusions', 'Structural work, strata approval and final selections not confirmed'],
+  ['Exclusions', 'Structural work, strata approval or notification review and final selections not confirmed'],
   ['Review flags', 'Apartment access, licensed trades, HBC/deposit prompt'],
   ['Next step', 'Prepare photos, plans or quote details, then request review or site measure'],
 ];

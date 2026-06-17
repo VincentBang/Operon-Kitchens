@@ -248,7 +248,7 @@ function calculateReviewRisk(input: QuoteInput) {
     reasons.push(reason);
   };
 
-  if (input.propertyType === 'strataApartment' || input.strataApprovalRequired) addRisk(14, 'Apartment or strata approval pathway needs review');
+  if (input.propertyType === 'strataApartment' || input.strataApprovalRequired) addRisk(14, 'Apartment or strata approval or notification review pathway needs review');
   if (input.propertyLevel === 'level2+' || (!input.hasLift && input.propertyLevel !== 'ground') || input.parkingAccess === 'limited') addRisk(8, 'Access, lift or loading constraints may affect scope');
   if (input.plumbingMovement === 'moves' || input.plumbingMovement === 'notSure') addRisk(10, 'Plumbing relocation or uncertainty needs licensed trade confirmation');
   if (input.electricalScope === 'upgrades' || input.electricalScope === 'notSure') addRisk(10, 'Electrical upgrade or uncertainty needs licensed trade confirmation');
@@ -568,7 +568,7 @@ export function calculatePricing(input: QuoteInput, activeRateCard: RateCard = r
   if (input.highRiskItems) exclusions.push('Structural changes, wall removal, and major service relocations require separate quote.');
   if (!input.flooring.included) exclusions.push('Flooring is excluded unless selected in the advanced scope.');
   if (input.structuralWorks.wallRemoval || input.structuralWorks.beamRequired || input.structuralWorks.windowDoorChanges) exclusions.push('Structural engineering, approvals and project-specific building work pricing require manual review.');
-  if (input.strataApprovalRequired) exclusions.push('Strata approval, by-law requirements and building management conditions are not confirmed by this estimate.');
+  if (input.strataApprovalRequired) exclusions.push('Strata approval or notification review, by-law requirements and building management conditions are not confirmed by this estimate.');
   // Flags
   const flags: string[] = [];
   if (confidenceLevel === 'low') flags.push('Low confidence – wide estimate range recommended');

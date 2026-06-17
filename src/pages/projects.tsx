@@ -25,7 +25,7 @@ const projectProfiles: ProjectProfile[] = [
     finish: 'Painted/profiled door direction with premium soft-close hardware.',
     benchtop: 'Porcelain or supplier-confirmed surface.',
     timeframe: 'Typical planning window: 6-8 weeks subject to approvals and selections.',
-    costDrivers: ['Lift and parking access', 'Strata approval pathway', 'Benchtop material confirmation', 'Electrical and plumbing review'],
+    costDrivers: ['Lift and parking access', 'Strata approval or notification review pathway', 'Benchtop material confirmation', 'Electrical and plumbing review'],
     result: 'The estimate would flag strata, service and allowance items before site measure.',
     imageClass: 'apartment',
   },

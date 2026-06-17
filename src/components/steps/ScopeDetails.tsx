@@ -33,7 +33,7 @@ const ScopeDetails: React.FC<Props> = ({ data, onChange, onNext, onBack }) => {
             checked={data.strataApprovalRequired}
             onChange={(e) => onChange({ ...data, strataApprovalRequired: e.target.checked })}
           />
-          <span>Strata approval likely required</span>
+          <span>Strata review likely required</span>
         </label>
       </div>
       <div className="choiceGrid">
