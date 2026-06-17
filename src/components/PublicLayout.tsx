@@ -3,7 +3,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ReactNode } from 'react';
-import { getAreaHref } from '@/lib/areas';
 import TrackedCtaLink from '@/components/TrackedCtaLink';
 
 interface PublicLayoutProps {
@@ -14,34 +13,32 @@ const quoteReviewLinks = [
   ['Start kitchen estimate', '/quote'],
   ['Review existing kitchen quote', '/quote/review'],
   ['Request review', '/request-review'],
+  ['Site measure', '/site-measure'],
   ['Kitchen quote Sydney', '/kitchen-quote-sydney'],
-  ['Kitchen renovation cost Sydney', '/kitchen-renovation-cost-sydney'],
 ];
 
 const serviceLinks = [
+  ['Kitchen renovation estimate', '/kitchen-renovation-cost-sydney'],
   ['Full kitchen renovation', '/full-kitchen-renovation-sydney'],
+  ['Design specification package', '/design-specification-package'],
+  ['Kitchen renovation process', '/kitchen-renovation-process'],
   ['Cabinetry and benchtop refresh', '/kitchen-cabinetry-benchtop-refresh'],
   ['Apartment kitchen renovation Sydney', '/apartment-kitchen-renovation-sydney'],
-  ['Benchtop replacement', '/kitchen-benchtop-replacement-sydney'],
-  ['Site measure', '/site-measure'],
-  ['Design/specification package', '/design-specification-package'],
 ];
 
 const guideLinks = [
   ['Kitchen renovation process', '/kitchen-renovation-process'],
   ['PC sums and provisional sums', '/kitchen-pc-sums-and-provisional-sums'],
-  ['Benchtop options', '/kitchen-benchtop-options-after-engineered-stone-ban'],
-  ['Kitchen renovation glossary', '/kitchen-renovation-glossary'],
+  ['Kitchen quote checklist', '/kitchen-renovation-quote-checklist'],
+  ['Questions before accepting quote', '/questions-before-accepting-kitchen-quote'],
   ['FAQ', '/faqs'],
 ];
 
 const companyLinks = [
-  ['Projects/examples', '/projects'],
+  ['About Operon Kitchens', '/how-it-works'],
   ['Privacy Policy', '/privacy'],
   ['Terms', '/terms'],
 ];
-
-const footerAreas = ['Mosman', 'Vaucluse', 'Double Bay', 'Bellevue Hill', 'Neutral Bay', 'Manly'];
 
 function FooterColumn({ title, links }: { title: string; links: string[][] }) {
   return (
@@ -83,22 +80,22 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
               <Link href="/quote">Estimate</Link>
               <Link href="/quote/review">Review quote</Link>
               <Link href="/how-it-works">How it works</Link>
+              <Link href="/site-measure">Site measure</Link>
               <Link href="/kitchen-renovation-process">Guides</Link>
-              <Link href="/areas">Areas</Link>
-              <Link href="/faqs">FAQ</Link>
+              <Link href="/request-review">Request review</Link>
             </nav>
+            <TrackedCtaLink href="/quote/review" className="headerCta secondary" eventName="quote_review_start_click" eventProperties={{ route: router.pathname, cta_location: 'header_secondary' }}>Review quote</TrackedCtaLink>
             <TrackedCtaLink href="/quote" className="headerCta" eventName="estimate_start_click" eventProperties={{ route: router.pathname, cta_location: 'header' }}>Start estimate</TrackedCtaLink>
             <details className="mobileNav">
-              <summary>Menu</summary>
+              <summary aria-label="Open navigation menu"><span></span><span></span><span></span></summary>
               <div>
                 <Link href="/quote">Estimate</Link>
                 <Link href="/quote/review">Review quote</Link>
                 <Link href="/how-it-works">How it works</Link>
+                <Link href="/site-measure">Site measure</Link>
                 <Link href="/request-review">Request review</Link>
                 <Link href="/kitchen-renovation-process">Guides</Link>
-                <Link href="/areas">Areas</Link>
                 <Link href="/faqs">FAQ</Link>
-                <Link href="/projects">Examples</Link>
               </div>
             </details>
           </div>
@@ -122,31 +119,12 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
             <FooterColumn title="Quote & review" links={quoteReviewLinks} />
             <FooterColumn title="Services" links={serviceLinks} />
             <FooterColumn title="Guides" links={guideLinks} />
-            <div className="footerStack">
-              <h2>Areas & company</h2>
-              <h3>Sydney areas</h3>
-              <ul>
-                {footerAreas.map((area) => (
-                  <li key={area}>
-                    <Link href={getAreaHref(area)}>{area}</Link>
-                  </li>
-                ))}
-                <li><Link href="/areas">View all areas</Link></li>
-              </ul>
-              <h3>Company</h3>
-              <ul>
-                {companyLinks.map(([label, href]) => (
-                  <li key={href}>
-                    <Link href={href}>{label}</Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <FooterColumn title="Company" links={companyLinks} />
           </div>
 
           <div className="footerBottom">
             <p>
-              Operon Kitchens is a separate customer-facing kitchen renovation brand. Planning guidance only. Site measure and written scope confirmation are required before contract pricing.
+              Operon Kitchens provides planning guidance only. Site measure, selections, licensed trade checks and written scope confirmation are required before contract pricing.
             </p>
             <p className="footerCopyright">© 2026 Operon Kitchens. All rights reserved.</p>
           </div>

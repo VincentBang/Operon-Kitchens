@@ -37,28 +37,28 @@ describe('public site structure', () => {
     );
     const footer = container.querySelector('footer');
     const quoteReviewColumn = screen.getByRole('heading', { name: /Quote & review/i }).closest('div');
-    const companyColumn = screen.getByRole('heading', { name: /Areas & company/i }).closest('div');
+    const companyColumn = screen.getByRole('heading', { name: /^Company$/i }).closest('div');
 
     expect(screen.getByRole('link', { name: /Operon Kitchens home/i })).toBeInTheDocument();
     expect(screen.getByRole('img', { name: 'Operon Kitchens logo' })).toBeInTheDocument();
     expect(screen.getAllByRole('link', { name: /Start kitchen estimate/i }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /How it works/i }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole('link', { name: /Site measure/i }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /Request review/i }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /Privacy Policy/i }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /Terms/i }).length).toBeGreaterThan(0);
     expect(screen.getByRole('heading', { name: /Quote & review/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /Services/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /Guides/i })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /Areas & company/i })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /View all areas/i })).toHaveAttribute('href', '/areas');
+    expect(screen.getByRole('heading', { name: /^Company$/i })).toBeInTheDocument();
     expect(quoteReviewColumn).toHaveTextContent('Request review');
     expect(companyColumn).not.toHaveTextContent('Request review');
     expect(screen.queryByRole('link', { name: /admin leads/i })).not.toBeInTheDocument();
     expect(container.querySelector('a[href="/admin/leads"]')).not.toBeInTheDocument();
     expect(screen.getByText(/Kitchen renovation estimate and quote review support/i)).toBeInTheDocument();
-    expect(screen.getByText(/brand\. Planning guidance only/i)).toBeInTheDocument();
+    expect(screen.getByText(/provides planning guidance only/i)).toBeInTheDocument();
     expect(screen.getByText(/© 2026 Operon Kitchens\. All rights reserved\./i)).toBeInTheDocument();
-    expect(footer).toHaveTextContent('Operon Kitchens is a separate customer-facing kitchen renovation brand. Planning guidance only. Site measure and written scope confirmation are required before contract pricing.');
+    expect(footer).toHaveTextContent('Operon Kitchens provides planning guidance only. Site measure, selections, licensed trade checks and written scope confirmation are required before contract pricing.');
     expect(footer?.textContent).not.toContain('brand.Planning');
     expect(document.body.textContent).not.toContain('scope??Ask');
   });
@@ -207,7 +207,7 @@ describe('public site structure', () => {
     expect(screen.getAllByRole('link', { name: /Request review/i }).length).toBeGreaterThan(0);
     expect(screen.getByText(/Planning range preview/i)).toBeInTheDocument();
     expect(screen.getAllByText(/\$38k - \$52k/i).length).toBeGreaterThan(0);
-    expect(screen.getByText(/Example only — actual range depends on scope and site review/i)).toBeInTheDocument();
+    expect(screen.getByText(/Example only\. Actual range depends on scope and site review/i)).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /Know what you receive before completing the wizard/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /What Operon Kitchens checks before you compare kitchen quotes/i })).toBeInTheDocument();
     expect(screen.getAllByText(/PC sums and provisional sums/i).length).toBeGreaterThan(0);
@@ -365,7 +365,7 @@ describe('public site structure', () => {
     expect(document.body.textContent).not.toContain('upload a quote');
 
     render(<SiteMeasurePage />);
-    expect(screen.getByRole('heading', { name: /Confirm the kitchen scope before locking in price/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Confirm the kitchen scope before contract pricing/i })).toBeInTheDocument();
     expect(screen.getByText(/What site measure is not/i)).toBeInTheDocument();
     expect(screen.getAllByRole('link', { name: /Request site measure/i }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /Review existing quote/i }).length).toBeGreaterThan(0);

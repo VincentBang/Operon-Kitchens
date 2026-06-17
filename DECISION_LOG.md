@@ -133,3 +133,15 @@ Implication: Future Codex runs and Vincent's manual testing can start from `docs
 Decision: The next controlled-testing work was packaged into a local 100-task readiness batch covering release-gate discipline, file-upload release prep, domain/email readiness, quote-review manual trials, feedback scoring, admin operations, SEO rollout backlog and risk tracking.
 
 Implication: The repo now has a stronger local operating system for deciding the next approved release without triggering Netlify or changing production Supabase settings. Runtime expansion, deploys and production verification remain approval-gated.
+
+## 2026-06-17: Vincent Release Decision Note Added Locally
+
+Decision: A human-readable release decision note now separates trust/visual-only, file-upload backend, combined and local-only next steps.
+
+Implication: The default recommendation is to release trust/visual polish first when Netlify credits are tight, then run a separate approved file-upload backend release only if admin signed downloads are needed during controlled testing.
+
+## 2026-06-17: Release Decision And Visual Polish Batch Completed Locally
+
+Decision: A second local 100-task batch captured release-choice clarity, safer public wording, compact header/navigation changes, simplified footer links, homepage proof hierarchy and updated visual-system guardrails.
+
+Implication: The next approved public release can be framed as a trust/visual polish release, separate from file-upload backend operations unless Vincent deliberately chooses a combined release.

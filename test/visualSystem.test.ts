@@ -10,24 +10,25 @@ describe('Operon Kitchens visual system guardrails', () => {
     const css = read('src/styles/globals.css');
 
     expect(css).toContain('--paper: #ffffff;');
-    expect(css).toContain('--ink: #142f38;');
-    expect(css).toContain('--accent: #142f38;');
-    expect(css).toContain('--accent-dark: #142f38;');
-    expect(css).toContain('--line: #dbe6e2;');
+    expect(css).toContain('--ink: #102b32;');
+    expect(css).toContain('--accent: #102b32;');
+    expect(css).toContain('--accent-dark: #102b32;');
+    expect(css).toContain('--line: #e2ddd2;');
     expect(css).toContain('background: rgba(255, 255, 255, 0.98);');
-    expect(css).toContain('min-height: 68px;');
-    expect(css).toContain('width: 270px;');
-    expect(css).toContain('min-height: 38px;');
+    expect(css).toContain('min-height: 72px;');
+    expect(css).toContain('width: 238px;');
+    expect(css).toContain('min-height: 40px;');
+    expect(css).toContain('.headerCta.secondary');
   });
 
   it('keeps the footer as a rounded dark container with white spacing around it', () => {
     const css = read('src/styles/globals.css');
 
     expect(css).toContain('.siteFooter {');
-    expect(css).toContain('border-radius: 30px;');
+    expect(css).toContain('border-radius: 28px;');
     expect(css).toContain('color: #e8efec;');
-    expect(css).toContain('margin: 48px clamp(16px, 4vw, 72px) 24px;');
-    expect(css).toContain('padding: clamp(32px, 6vw, 72px);');
+    expect(css).toContain('margin: 52px clamp(16px, 4vw, 72px) 24px;');
+    expect(css).toContain('padding: clamp(30px, 5.4vw, 64px);');
     expect(css).toContain('width: 190px;');
     expect(css).toContain('width: 170px;');
     expect(css).toContain('background: #fff;');

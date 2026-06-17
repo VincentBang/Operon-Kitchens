@@ -114,7 +114,7 @@ export default function Home() {
             <p className="eyebrow">Sydney kitchen quote clarity</p>
             <h1>Sydney kitchen renovation estimates and quote review before you commit.</h1>
             <p className="heroLead">
-              Get a planning estimate, review hidden quote risks, and prepare for site measure before locking in kitchen renovation pricing.
+              Get a planning estimate, review hidden quote risks, and prepare for site measure before moving toward written scope.
             </p>
             <div className="heroActions">
               <TrackedCtaLink href="/quote" className="button primary" eventName="estimate_start_click" eventProperties={{ route: '/', cta_location: 'home_hero' }}>Start kitchen estimate</TrackedCtaLink>
@@ -123,18 +123,24 @@ export default function Home() {
             </div>
             <p className="heroTrustLine">Planning estimate only. Site measure, selections and written scope confirmation are required before contract pricing.</p>
           </div>
-          <div className="estimatePreviewCard" aria-label="Example estimate preview">
-            <span className="eyebrow">Example only</span>
-            <h2>Planning range preview</h2>
-            <strong>$38k - $52k</strong>
-            <p>Medium confidence · 72/100</p>
-            <ul>
-              <li>Apartment access review</li>
-              <li>Benchtop compliance confirmation</li>
-              <li>Site measure required</li>
-            </ul>
-            <Link href="/quote" className="textLink">Start with your project details</Link>
-            <small>Example only — actual range depends on scope and site review.</small>
+          <div className="heroProofPanel">
+            <figure className="heroImageFrame">
+              <Image src="/images/kitchen-living.jpg" alt="Modern kitchen living space for renovation quote planning" width={980} height={735} sizes="(max-width: 820px) 100vw, 42vw" priority />
+              <figcaption>Planning-first kitchen scope review</figcaption>
+            </figure>
+            <div className="estimatePreviewCard" aria-label="Example estimate preview">
+              <span className="eyebrow">Example only</span>
+              <h2>Planning range preview</h2>
+              <strong>$38k - $52k</strong>
+              <p>Medium confidence · 72/100</p>
+              <ul>
+                <li>Apartment access review</li>
+                <li>Benchtop compliance confirmation</li>
+                <li>Site measure required</li>
+              </ul>
+              <Link href="/quote" className="textLink">Start with your project details</Link>
+              <small>Example only. Actual range depends on scope and site review.</small>
+            </div>
           </div>
         </div>
       </section>

@@ -66,8 +66,35 @@ describe('next 100 controlled-testing documents', () => {
     const tasks = readDoc('CODEX_TASKS.md');
 
     expect(docsIndex).toContain('next-100-local-tasks-2026-06-17.md');
+    expect(docsIndex).toContain('next-100-local-tasks-2026-06-17-release-decision-visual-batch.md');
     expect(docsIndex).toContain('release-gate-trust-visual-file-upload.md');
+    expect(docsIndex).toContain('release-decision-note-vincent-2026-06-17.md');
     expect(docsIndex).toContain('operations-risk-register.md');
     expect(tasks).toContain('docs/next-100-local-tasks-2026-06-17.md');
+    expect(tasks).toContain('docs/next-100-local-tasks-2026-06-17-release-decision-visual-batch.md');
+    expect(tasks).toContain('docs/release-decision-note-vincent-2026-06-17.md');
+  });
+
+  it('adds a Vincent-facing release decision note that keeps backend file operations approval gated', () => {
+    const note = readDoc('docs/release-decision-note-vincent-2026-06-17.md');
+
+    expect(note).toContain('Trust/visual polish only');
+    expect(note).toContain('File-upload backend release only');
+    expect(note).toContain('Keep local-only');
+    expect(note).toContain('SUPABASE_SERVICE_ROLE_KEY');
+    expect(note).toContain('no anon `SELECT` on file metadata');
+    expect(note).toContain('Default recommendation: choose 1 first');
+    expect(note).toContain('does not approve a deploy');
+  });
+
+  it('tracks the release decision and visual polish 100-task batch', () => {
+    const queue = readDoc('docs/next-100-local-tasks-2026-06-17-release-decision-visual-batch.md');
+
+    expect(queue).toContain('Release Decision And Visual Polish Batch');
+    expect(queue).toContain('Deployment status: not needed');
+    expect(queue).toContain('Simplify quote/review links');
+    expect(queue).toContain('Replace lock-in price wording with contract-pricing wording');
+    expect(queue).toContain('Update visual regression tests for the new tokens');
+    expect(queue).toContain('100. Report deployment status and recommended next task.');
   });
 });

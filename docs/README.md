@@ -17,6 +17,7 @@ Use this index to choose the right document before starting work. Operon Kitchen
 - [Next 30 local tasks: 17 June 2026](./next-30-local-tasks-2026-06-17.md): local execution queue for controlled-testing hardening while deploys remain paused.
 - [Next 30 local tasks: controlled testing handoff batch](./next-30-local-tasks-2026-06-17-handoff-batch.md): second approved no-deploy queue for the operator handoff, request/admin audit, file-operation checklists and quote-review manual trial pack.
 - [Next 100 local tasks: controlled testing readiness](./next-100-local-tasks-2026-06-17.md): no-deploy execution batch covering release gates, file upload, domain/email, quote-review trials, admin operations, SEO backlog and risks.
+- [Next 100 local tasks: release decision and visual polish](./next-100-local-tasks-2026-06-17-release-decision-visual-batch.md): no-deploy batch for release-choice clarity, safer public wording, homepage proof hierarchy, compact navigation and visual guardrails.
 - [Phase 1 conversion completion](./phase-1-conversion-completion.md): local completion record for the public homepage, quote, quote review, FAQ, trust and shared layout experience.
 - [Trust polish release bundle: 13 June 2026](./trust-polish-release-bundle-2026-06-13.md): local release-candidate note for chatbot, quote-review wording, layout consistency and public copy guardrails.
 
@@ -34,6 +35,7 @@ Use this index to choose the right document before starting work. Operon Kitchen
 - [Site measure readiness checklist](./site-measure-readiness-checklist.md): operator checklist for deciding when to suggest site measure.
 - [Release bundle decision matrix](./release-bundle-decision-matrix.md): local decision aid for trust, visual, file-upload and email release bundles.
 - [Release gate: trust, visual and file upload](./release-gate-trust-visual-file-upload.md): decision note separating trust/visual polish from backend file-operation releases.
+- [Release decision note for Vincent](./release-decision-note-vincent-2026-06-17.md): human-readable choice between trust/visual-only, file-upload backend, combined or local-only next steps.
 - [Request-review and admin mobile QA](./request-review-admin-mobile-qa.md): local visual checklist for `/request-review` and `/admin/leads` screenshots, spacing and usability.
 - [Request-review and admin handoff audit](./request-review-admin-handoff-audit-2026-06-17.md): local audit against the controlled-testing handoff, including remaining controlled-testing friction.
 - [Operon Flooring UI alignment audit](./operon-flooring-ui-alignment.md): how Kitchens should follow the Operon family layout rhythm without copying Flooring content or weakening kitchen safety rules.

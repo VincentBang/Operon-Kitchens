@@ -32,6 +32,10 @@ Use `docs/next-30-local-tasks-2026-06-17-handoff-batch.md` for the second approv
 
 Use `docs/next-100-local-tasks-2026-06-17.md` for the current 100-task no-deploy readiness batch covering release gates, file upload, domain/email, manual quote-review trials, admin operations, SEO backlog and risk tracking.
 
+Use `docs/release-decision-note-vincent-2026-06-17.md` when Vincent asks what should be released next or whether file-upload backend operations should be bundled with the trust/visual polish release.
+
+Use `docs/next-100-local-tasks-2026-06-17-release-decision-visual-batch.md` for the latest no-deploy release-decision and visual-polish batch.
+
 Current local file-upload status:
 
 - admin signed-download function and `/admin/leads` download button are prepared locally
@@ -51,6 +55,8 @@ Current quote-review packaging status:
 Current 100-task readiness status:
 
 - release gate decision note is documented
+- Vincent-facing release decision note is documented for trust/visual-only versus file-upload backend release choices
+- release-decision and visual-polish 100-task batch is documented
 - file-upload approved-release runbook is documented
 - domain/email/Resend verification runbook is documented
 - quote-review manual trial runbook is documented

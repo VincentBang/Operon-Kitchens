@@ -24,7 +24,7 @@ export default function SiteMeasurePage() {
       <section className="contentHero">
         <div>
           <p className="eyebrow">Site measure</p>
-          <h1 className="contentTitle">Confirm the kitchen scope before locking in price.</h1>
+          <h1 className="contentTitle">Confirm the kitchen scope before contract pricing.</h1>
         </div>
         <div>
           <p className="muted">

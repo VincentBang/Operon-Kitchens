@@ -3,19 +3,22 @@
 @tailwind utilities;
 
 :root {
-  --ink: #142f38;
-  --muted: #5f6b73;
-  --line: #dbe6e2;
+  --ink: #102b32;
+  --muted: #5d6a68;
+  --line: #e2ddd2;
   --paper: #ffffff;
   --surface: #ffffff;
-  --accent: #142f38;
-  --accent-dark: #142f38;
-  --gold: #b9872e;
-  --gold-soft: #f3ead9;
-  --soft: #f7f4ef;
-  --navy-soft: #eef2f5;
-  --shadow-soft: 0 18px 52px rgba(20, 47, 56, 0.08);
-  --shadow-lift: 0 26px 72px rgba(20, 47, 56, 0.13);
+  --surface-warm: #fbfaf6;
+  --accent: #102b32;
+  --accent-dark: #102b32;
+  --gold: #b98533;
+  --gold-soft: #f4eadb;
+  --soft: #f7f3ea;
+  --navy-soft: #f3f5f1;
+  --shadow-soft: 0 18px 46px rgba(16, 43, 50, 0.08);
+  --shadow-lift: 0 26px 70px rgba(16, 43, 50, 0.13);
+  --radius-card: 8px;
+  --container: 1180px;
 }
 
 * {
@@ -28,7 +31,7 @@ html {
 
 body {
   margin: 0;
-  background: var(--paper);
+  background: var(--surface-warm);
   color: var(--ink);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   overflow-x: hidden;
@@ -52,7 +55,7 @@ a {
 
 .siteHeader {
   background: rgba(255, 255, 255, 0.98);
-  border-bottom: 1px solid rgba(227, 224, 216, 0.95);
+  border-bottom: 1px solid rgba(226, 221, 210, 0.95);
   position: sticky;
   top: 0;
   z-index: 50;
@@ -66,11 +69,11 @@ a {
 .siteHeaderInner {
   align-items: center;
   display: grid;
-  gap: clamp(12px, 1.6vw, 22px);
-  grid-template-columns: auto 1fr auto auto;
+  gap: clamp(10px, 1.3vw, 18px);
+  grid-template-columns: auto 1fr auto auto auto;
   margin: 0 auto;
-  min-height: 68px;
-  width: min(1180px, calc(100% - 32px));
+  min-height: 72px;
+  width: min(var(--container), calc(100% - 32px));
 }
 
 .siteBrand,
@@ -91,8 +94,8 @@ a {
 .siteBrand img {
   display: block;
   height: auto;
-  max-width: min(280px, 32vw);
-  width: 270px;
+  max-width: min(248px, 29vw);
+  width: 238px;
 }
 
 .footerLogo {
@@ -109,13 +112,13 @@ a {
 .desktopNav {
   align-items: center;
   display: flex;
-  gap: clamp(10px, 1.55vw, 18px);
+  gap: clamp(10px, 1.25vw, 16px);
   justify-content: center;
 }
 
 .desktopNav a {
   color: var(--muted);
-  font-size: 0.89rem;
+  font-size: 0.86rem;
   font-weight: 750;
   line-height: 1;
 }
@@ -128,16 +131,27 @@ a {
 .headerCta {
   align-items: center;
   background: var(--accent);
-  border: 1px solid rgba(185, 135, 46, 0.22);
+  border: 1px solid var(--accent);
   border-radius: 8px;
   color: #fff;
   display: inline-flex;
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   font-weight: 850;
   justify-content: center;
-  min-height: 38px;
-  padding: 0 14px;
+  min-height: 40px;
+  padding: 0 15px;
   white-space: nowrap;
+}
+
+.headerCta.secondary {
+  background: #fff;
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+.headerCta:hover {
+  box-shadow: 0 10px 24px rgba(16, 43, 50, 0.1);
+  transform: translateY(-1px);
 }
 
 .mobileNav {
@@ -150,13 +164,24 @@ a {
   border: 1px solid var(--line);
   border-radius: 8px;
   cursor: pointer;
-  font-weight: 850;
+  display: grid;
+  gap: 4px;
+  height: 40px;
   list-style: none;
-  padding: 10px 13px;
+  place-content: center;
+  width: 42px;
 }
 
 .mobileNav summary::-webkit-details-marker {
   display: none;
+}
+
+.mobileNav summary span {
+  background: var(--ink);
+  border-radius: 999px;
+  display: block;
+  height: 2px;
+  width: 17px;
 }
 
 .mobileNav div {
@@ -246,26 +271,18 @@ label span:first-child {
 }
 
 .hero {
-  min-height: min(680px, calc(100svh - 82px));
-  display: flex;
-  flex-direction: column;
+  display: block;
+  min-height: auto;
   position: relative;
   overflow: hidden;
-  background-image:
-    radial-gradient(circle at 82% 18%, rgba(185, 135, 46, 0.17), transparent 30%),
-    linear-gradient(90deg, rgba(7, 29, 51, 0.92), rgba(7, 29, 51, 0.62), rgba(7, 29, 51, 0.16)),
-    url("/images/kitchen-hero.png");
-  background-size: cover;
-  background-position: center;
-  color: #fff;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(247, 243, 234, 0.92)),
+    var(--surface-warm);
+  color: var(--ink);
 }
 
 .hero::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0;
-  height: 18vh;
-  background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.96));
+  display: none;
 }
 
 .nav {
@@ -300,8 +317,9 @@ label span:first-child {
 }
 
 .heroContent {
-  width: min(1180px, calc(100% - 32px));
-  margin: auto auto clamp(44px, 7vh, 72px);
+  width: min(var(--container), calc(100% - 32px));
+  margin: 0 auto;
+  padding: clamp(58px, 7vw, 92px) 0 clamp(34px, 5vw, 58px);
   position: relative;
   z-index: 2;
 }
@@ -318,7 +336,7 @@ label span:first-child {
 .hero h1 {
   max-width: 760px;
   margin: 0;
-  font-size: clamp(2.8rem, 4.05vw, 4.35rem);
+  font-size: clamp(2.65rem, 4.2vw, 4.45rem);
   line-height: 1.03;
   letter-spacing: 0;
   text-wrap: balance;
@@ -326,16 +344,16 @@ label span:first-child {
 
 .siteFooter {
   background: var(--accent-dark);
-  border-radius: 30px;
+  border-radius: 28px;
   color: #e8efec;
-  margin: 48px clamp(16px, 4vw, 72px) 24px;
-  padding: clamp(32px, 6vw, 72px);
+  margin: 52px clamp(16px, 4vw, 72px) 24px;
+  padding: clamp(30px, 5.4vw, 64px);
 }
 
 .footerIntro,
 .footerGrid,
 .footerBottom {
-  width: min(1180px, 100%);
+  width: min(var(--container), 100%);
   margin: 0 auto;
 }
 
@@ -362,6 +380,21 @@ label span:first-child {
 
 .siteFooter .button.ghost {
   background: transparent;
+  border-color: rgba(255, 255, 255, 0.26);
+  color: #fff;
+}
+
+.siteFooter .button.primary,
+.finalCta .button.primary,
+.contentCta .button.primary {
+  background: #fff;
+  border-color: #fff;
+  color: var(--ink);
+  box-shadow: none;
+}
+
+.finalCta .button.secondary {
+  background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.26);
   color: #fff;
 }
@@ -430,7 +463,7 @@ label span:first-child {
 .heroLead {
   max-width: 660px;
   margin: 20px 0 0;
-  color: rgba(255, 255, 255, 0.88);
+  color: var(--muted);
   font-size: clamp(1rem, 1.2vw, 1.12rem);
   line-height: 1.55;
 }
@@ -450,7 +483,7 @@ label span:first-child {
 }
 
 .heroTextLink {
-  color: rgba(255, 255, 255, 0.88);
+  color: var(--ink);
   font-weight: 850;
   text-decoration: underline;
   text-underline-offset: 4px;
@@ -461,7 +494,7 @@ label span:first-child {
 }
 
 .heroTrustLine {
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--muted);
   font-size: 0.92rem;
   line-height: 1.5;
   margin: 18px 0 0;
@@ -482,20 +515,21 @@ label span:first-child {
 .button.primary {
   background: var(--accent);
   color: #fff;
-  box-shadow: 0 12px 28px rgba(7, 29, 51, 0.22);
+  border: 1px solid var(--accent);
+  box-shadow: 0 12px 28px rgba(16, 43, 50, 0.18);
 }
 
 .button.secondary {
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  color: #fff;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(10px);
+  background: #fff;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  box-shadow: 0 10px 26px rgba(16, 43, 50, 0.06);
 }
 
 .button.ghost {
   border: 1px solid var(--line);
   color: var(--ink);
-  background: var(--surface);
+  background: transparent;
 }
 
 .button.danger {
@@ -504,8 +538,8 @@ label span:first-child {
 }
 
 .proofStrip {
-  width: min(1180px, calc(100% - 32px));
-  margin: -34px auto 0;
+  width: min(var(--container), calc(100% - 32px));
+  margin: 0 auto;
   position: relative;
   z-index: 3;
   display: grid;
@@ -528,7 +562,7 @@ label span:first-child {
 }
 
 .section {
-  width: min(1180px, calc(100% - 32px));
+  width: min(var(--container), calc(100% - 32px));
   margin: 0 auto;
   padding: clamp(58px, 8vw, 92px) 0;
 }
@@ -793,7 +827,7 @@ a.infoCard:hover,
 }
 
 .contentHero {
-  width: min(1180px, calc(100% - 32px));
+  width: min(var(--container), calc(100% - 32px));
   margin: 0 auto;
   padding: clamp(52px, 6vw, 80px) 0 clamp(36px, 4vw, 50px);
   display: grid;
@@ -2296,6 +2330,10 @@ a.infoCard:hover,
     display: none;
   }
 
+  .headerCta.secondary {
+    display: none;
+  }
+
   .mobileNav {
     display: block;
   }
@@ -2311,7 +2349,7 @@ a.infoCard:hover,
   }
 
   .heroContent {
-    margin: 0 auto 72px;
+    margin: 0 auto;
     padding-top: 44px;
     width: min(100% - 28px, 640px);
   }
@@ -2516,21 +2554,60 @@ a.infoCard:hover,
 }
 
 .heroGrid {
-  align-items: end;
+  align-items: center;
   display: grid;
-  gap: clamp(24px, 4vw, 44px);
-  grid-template-columns: minmax(0, 1fr) minmax(300px, 390px);
+  gap: clamp(30px, 5vw, 62px);
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.82fr);
+}
+
+.heroProofPanel {
+  align-self: stretch;
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.heroImageFrame {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow-soft);
+  margin: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.heroImageFrame img {
+  aspect-ratio: 4 / 3;
+  display: block;
+  height: auto;
+  object-fit: cover;
+  width: 100%;
+}
+
+.heroImageFrame figcaption {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(226, 221, 210, 0.94);
+  border-radius: 999px;
+  bottom: 14px;
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 850;
+  left: 14px;
+  padding: 8px 11px;
+  position: absolute;
 }
 
 .estimatePreviewCard {
-  align-self: end;
-  background: rgba(255, 255, 255, 0.96);
-  border: 1px solid rgba(255, 255, 255, 0.38);
+  align-self: start;
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid var(--line);
   border-radius: 8px;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.28);
+  box-shadow: var(--shadow-lift);
   color: var(--ink);
   display: grid;
   gap: 10px;
+  margin: -54px 18px 0;
   padding: 24px 24px 22px;
   position: relative;
 }
@@ -2683,6 +2760,7 @@ a.infoCard:hover,
 
 @media (max-width: 820px) {
   .heroGrid,
+  .heroProofPanel,
   .reportPreviewGrid,
   .reportPreviewGrid.compact,
   .summaryMetricGrid {
@@ -2705,6 +2783,7 @@ a.infoCard:hover,
   }
 
   .estimatePreviewCard {
+    margin: -42px 14px 0;
     max-width: 520px;
     width: 100%;
   }
@@ -2770,20 +2849,20 @@ a.infoCard:hover,
 
 @media (max-width: 520px) {
   .hero h1 {
-    font-size: clamp(1.35rem, 6vw, 1.75rem);
+    font-size: clamp(2.05rem, 10.5vw, 3.05rem);
     line-height: 1.05;
-    max-width: min(100%, 340px);
+    max-width: 100%;
     text-wrap: wrap;
   }
 
   .heroContent {
-    margin-bottom: 68px;
+    margin-bottom: 0;
     padding-top: 34px;
     width: min(100% - 24px, 640px);
   }
 
   .heroLead {
-    max-width: min(100%, 340px);
+    max-width: 100%;
   }
 
   .heroActions {
@@ -2827,6 +2906,7 @@ a.infoCard:hover,
   }
 
   .estimatePreviewCard {
+    margin: -30px 10px 0;
     padding: 22px 18px 18px;
   }
 
