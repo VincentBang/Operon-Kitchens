@@ -34,6 +34,10 @@ Question: could the tester complete the form without confusion?
 
 Question: did any field, CTA, attachment area, chatbot or sticky element block progress?
 
+### CTA Visibility
+
+Question: could the tester clearly read and understand primary, secondary and final-page CTA buttons on desktop and mobile?
+
 ### Admin Handling
 
 Question: could Vincent find the lead, status, notes, source and file metadata in `/admin/leads`?
@@ -61,6 +65,7 @@ Treat as a blocker if:
 - a lead is not stored
 - admin cannot safely recover the lead
 - mobile layout prevents submission
+- CTA text is invisible or too low contrast to read
 
 ## Weekly Summary
 
@@ -73,4 +78,3 @@ Record:
 - top three confusion points
 - recommended local-only fixes
 - whether release is required, optional or not needed
-

@@ -38,9 +38,13 @@ Use `docs/next-100-local-tasks-2026-06-17-release-decision-visual-batch.md` for 
 
 Use `docs/next-100-local-tasks-2026-06-17-viewport-release-readiness.md` for the latest no-deploy viewport and release-readiness batch.
 
+Use `docs/next-100-local-tasks-2026-06-20-controlled-feedback.md` for the latest no-deploy controlled-feedback batch that captures tester findings, CTA visibility issues and release-bundle decisions.
+
 Use `docs/local-viewport-review-2026-06-17.md` for the current local viewport result across `/`, `/quote/review`, `/request-review`, `/site-measure` and `/admin/leads`.
 
 Use `docs/release-smoke-check-pack-2026-06-17.md` only after Vincent explicitly approves one deploy.
+
+Use `docs/trust-visual-release-candidate-summary-2026-06-20.md` when Vincent asks what is in the next trust/visual release candidate or wants a concise approval summary.
 
 Current local file-upload status:
 
@@ -83,6 +87,8 @@ Current visual-system status:
 - next visual decision: review `/`, `/request-review`, `/quote/review` and `/admin/leads` locally at desktop and mobile widths, then decide whether to include this in one approved release checkpoint
 - latest viewport review: `/`, `/quote/review`, `/request-review`, `/site-measure` and `/admin/leads` were checked locally at 1440, 1280, 768, 390 and 360 widths with no horizontal overflow found
 - latest copy tightening: public strata wording now uses approval-review / owners-corporation-review language rather than implying Operon grants approval
+- latest controlled-testing capture: homepage final CTA ghost buttons are fixed locally, tracked in `docs/controlled-testing-findings-log.md`, and waiting for the next approved trust/visual release
+- latest release summary: `docs/trust-visual-release-candidate-summary-2026-06-20.md` is the one-page approval note for the next trust/visual deploy
 
 ## Local-Only Task Queue
 

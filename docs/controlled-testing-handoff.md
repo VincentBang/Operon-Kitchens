@@ -21,6 +21,13 @@ Use the site to test:
 
 Do not treat this as a broad public launch, paid-service launch, final quote engine, CRM, legal/compliance approval tool or full custom kitchen ordering system.
 
+## Current Local Fixes Waiting For Release
+
+- Homepage final CTA ghost buttons above the footer now have visible white text and subtle borders in the local build.
+- This fix should be bundled into the next approved trust/visual release instead of deployed alone.
+- Until that release is deployed, live testers may still see low-contrast or empty-looking buttons in the final CTA band.
+- Latest local capture pass found no additional blocker across `/`, `/quote`, `/quote/review`, `/request-review` and `/admin/leads`.
+
 ## Daily Admin Routine
 
 While branded email is deferred:

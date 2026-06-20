@@ -19,6 +19,8 @@ describe('Operon Kitchens visual system guardrails', () => {
     expect(css).toContain('width: 238px;');
     expect(css).toContain('min-height: 40px;');
     expect(css).toContain('.headerCta.secondary');
+    expect(css).toContain('.finalCta .button.ghost');
+    expect(css).toContain('border-color: rgba(255, 255, 255, 0.36);');
   });
 
   it('keeps the footer as a rounded dark container with white spacing around it', () => {

@@ -24,6 +24,7 @@ Purpose: record controlled tester feedback in a consistent customer-safe way.
 - form issue:
 - chatbot issue:
 - footer/header issue:
+- CTA visibility issue:
 - upload issue:
 
 ## Customer Understanding
@@ -58,5 +59,11 @@ Classify:
 Recommended fix:
 
 - 
+
+## Release Bundle Notes
+
+- should be included in next trust/visual bundle:
+- can wait for later:
+- needs immediate deploy approval:
 
 Do not record supplier costs, internal rates, margin logic, lead scores, admin priority or secrets in this template.

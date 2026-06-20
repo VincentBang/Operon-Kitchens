@@ -19,8 +19,10 @@ Use this index to choose the right document before starting work. Operon Kitchen
 - [Next 100 local tasks: controlled testing readiness](./next-100-local-tasks-2026-06-17.md): no-deploy execution batch covering release gates, file upload, domain/email, quote-review trials, admin operations, SEO backlog and risks.
 - [Next 100 local tasks: release decision and visual polish](./next-100-local-tasks-2026-06-17-release-decision-visual-batch.md): no-deploy batch for release-choice clarity, safer public wording, homepage proof hierarchy, compact navigation and visual guardrails.
 - [Next 100 local tasks: viewport and release readiness](./next-100-local-tasks-2026-06-17-viewport-release-readiness.md): no-deploy browser-backed viewport review, customer-safe strata wording pass and release smoke-pack preparation.
+- [Next 100 local tasks: controlled feedback capture and release bundling](./next-100-local-tasks-2026-06-20-controlled-feedback.md): no-deploy batch for tester findings, CTA visibility capture and next release-bundle tracking.
 - [Local viewport review: 17 June 2026](./local-viewport-review-2026-06-17.md): local route/viewport result for homepage, quote review, request review, site measure and admin leads.
 - [Release smoke check pack: 17 June 2026](./release-smoke-check-pack-2026-06-17.md): one-approved-deploy smoke-check sequence for the next release checkpoint.
+- [Trust / visual release candidate summary: 20 June 2026](./trust-visual-release-candidate-summary-2026-06-20.md): concise approval summary for one future trust/visual deploy without file-upload backend scope.
 - [Phase 1 conversion completion](./phase-1-conversion-completion.md): local completion record for the public homepage, quote, quote review, FAQ, trust and shared layout experience.
 - [Trust polish release bundle: 13 June 2026](./trust-polish-release-bundle-2026-06-13.md): local release-candidate note for chatbot, quote-review wording, layout consistency and public copy guardrails.
 
@@ -31,6 +33,7 @@ Use this index to choose the right document before starting work. Operon Kitchen
 - [Controlled testing playbook](./controlled-testing-playbook.md): how Vincent and trusted testers should submit fake enquiries and record confusion points.
 - [Trusted tester instructions](./trusted-tester-instructions.md): short script for 2-3 trusted controlled testers.
 - [Tester feedback capture template](./tester-feedback-capture-template.md): structured way to record tester confusion, mobile issues and lead/admin checks.
+- [Controlled testing findings log](./controlled-testing-findings-log.md): running log for tester findings, local fixes and release-bundle decisions.
 - [No-email admin routine](./no-email-admin-routine.md): daily `/admin/leads` operating rhythm while Resend/domain email is deferred.
 - [Admin token handling](./admin-token-handling.md): rules for using and protecting `OPERON_KITCHENS_ADMIN_TOKEN`.
 - [Internal notes style guide](./internal-notes-style-guide.md): safe operator note examples and forbidden internal-note content.

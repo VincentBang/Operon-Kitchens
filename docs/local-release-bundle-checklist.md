@@ -60,6 +60,7 @@ Customer-facing polish:
 - exact Operon Flooring footer ink colour `#142f38` applied to the rounded footer container and primary CTA surfaces
 - footer changed to a rounded dark container with white spacing around it
 - mobile/short-screen chatbot launcher reduced to a compact icon so it does not cover the homepage sample estimate preview
+- homepage final CTA ghost buttons above the footer now use visible white text and subtle borders on the dark CTA band
 - homepage/header responsive QA completed at `1280`, `1440`, `390` and `360` widths
 - visual-system regression tests added for brand assets, footer colour, footer spacing and mobile sticky CTA behaviour
 

@@ -26,6 +26,36 @@ describe('controlled testing documentation handoff', () => {
     expect(handoff).toContain('Manual Quote-Review Trial');
     expect(handoff).toContain('Release Checkpoint Summary');
     expect(handoff).toContain('Default: no deploy.');
+    expect(handoff).toContain('Current Local Fixes Waiting For Release');
+  });
+
+  it('links the controlled feedback log and records the current CTA release-bundle finding', () => {
+    const docsIndex = readDoc('docs/README.md');
+    const tasks = readDoc('CODEX_TASKS.md');
+    const findingsLog = readDoc('docs/controlled-testing-findings-log.md');
+    const latestQueue = readDoc('docs/next-100-local-tasks-2026-06-20-controlled-feedback.md');
+
+    expect(docsIndex).toContain('[Controlled testing findings log](./controlled-testing-findings-log.md)');
+    expect(tasks).toContain('docs/next-100-local-tasks-2026-06-20-controlled-feedback.md');
+    expect(findingsLog).toContain('Homepage Final CTA Ghost Buttons Low Contrast');
+    expect(findingsLog).toContain('include in next trust/visual polish release');
+    expect(findingsLog).toContain('Local Controlled Tester Simulation');
+    expect(findingsLog).toContain('no new blocker found');
+    expect(latestQueue).toContain('Controlled Feedback Capture And Release Bundling');
+    expect(latestQueue).toContain('No deploy, no push, no production verification');
+  });
+
+  it('keeps a concise trust visual release candidate summary linked for deploy approval decisions', () => {
+    const docsIndex = readDoc('docs/README.md');
+    const tasks = readDoc('CODEX_TASKS.md');
+    const summary = readDoc('docs/trust-visual-release-candidate-summary-2026-06-20.md');
+
+    expect(docsIndex).toContain('[Trust / visual release candidate summary: 20 June 2026](./trust-visual-release-candidate-summary-2026-06-20.md)');
+    expect(tasks).toContain('docs/trust-visual-release-candidate-summary-2026-06-20.md');
+    expect(summary).toContain('Approve this as the next trust/visual polish release');
+    expect(summary).toContain('Do not include file-upload backend changes');
+    expect(summary).toContain('homepage final CTA ghost buttons fixed');
+    expect(summary).toContain('Deployment status: optional, not approved by this document');
   });
 
   it('documents the second approved 30-task local batch without approving deployment', () => {
