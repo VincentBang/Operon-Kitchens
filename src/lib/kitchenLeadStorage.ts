@@ -5,6 +5,11 @@ export interface KitchenLeadStorageMetadata {
   ipHash?: string;
 }
 
+export interface KitchenLeadStorageEnv {
+  supabaseUrl?: string;
+  serviceRoleKey?: string;
+}
+
 export interface KitchenRequestReviewStorageRecord {
   id: string;
   created_at: string;
@@ -127,6 +132,10 @@ function isMissingAttributionColumnError(detail: string) {
   return lowerDetail.includes('pgrst204') || attributionColumnNames.some((column) => lowerDetail.includes(column));
 }
 
+function cleanEnvValue(value: string | undefined) {
+  return value?.trim() || undefined;
+}
+
 async function insertKitchenLeadRecord(
   endpoint: string,
   serviceRoleKey: string,
@@ -144,27 +153,53 @@ async function insertKitchenLeadRecord(
   });
 }
 
+export function getKitchenLeadStorageEnv(): KitchenLeadStorageEnv {
+  return {
+    supabaseUrl: cleanEnvValue(process.env.OPERON_KITCHENS_SUPABASE_URL),
+    serviceRoleKey: cleanEnvValue(process.env.OPERON_KITCHENS_SUPABASE_SERVICE_ROLE_KEY),
+  };
+}
+
 export async function storeKitchenRequestReviewLead(
   lead: KitchenRequestReviewLead,
   metadata: KitchenLeadStorageMetadata = {},
+  env: KitchenLeadStorageEnv = getKitchenLeadStorageEnv(),
 ): Promise<KitchenLeadStorageResult> {
-  const supabaseUrl = process.env.OPERON_KITCHENS_SUPABASE_URL;
-  const serviceRoleKey = process.env.OPERON_KITCHENS_SUPABASE_SERVICE_ROLE_KEY;
+  const supabaseUrl = cleanEnvValue(env.supabaseUrl);
+  const serviceRoleKey = cleanEnvValue(env.serviceRoleKey);
 
   if (!supabaseUrl || !serviceRoleKey) return { configured: false, stored: false, reason: 'missing_env' };
 
   const endpoint = `${supabaseUrl.replace(/\/$/, '')}/rest/v1/kitchen_request_reviews`;
   const record = createKitchenRequestReviewStorageRecord(lead, metadata);
-  const response = await insertKitchenLeadRecord(endpoint, serviceRoleKey, record);
+  let response: Response;
+  try {
+    response = await insertKitchenLeadRecord(endpoint, serviceRoleKey, record);
+  } catch (error) {
+    return {
+      configured: true,
+      stored: false,
+      error: `Supabase insert request failed: ${error instanceof Error ? error.message : 'fetch failed'}`,
+    };
+  }
 
   if (!response.ok) {
     const detail = await response.text();
     if (isMissingAttributionColumnError(detail)) {
-      const fallbackResponse = await insertKitchenLeadRecord(
-        endpoint,
-        serviceRoleKey,
-        createLegacyKitchenRequestReviewStorageRecord(record),
-      );
+      let fallbackResponse: Response;
+      try {
+        fallbackResponse = await insertKitchenLeadRecord(
+          endpoint,
+          serviceRoleKey,
+          createLegacyKitchenRequestReviewStorageRecord(record),
+        );
+      } catch (error) {
+        return {
+          configured: true,
+          stored: false,
+          error: `Supabase legacy insert request failed: ${error instanceof Error ? error.message : 'fetch failed'}`,
+        };
+      }
       if (fallbackResponse.ok) return { configured: true, stored: true, id: lead.id };
 
       const fallbackDetail = await fallbackResponse.text();

@@ -170,6 +170,7 @@ describe('kitchen-request-review Netlify function', () => {
   beforeEach(() => {
     process.env = { ...originalEnv };
     global.fetch = originalFetch;
+    delete (globalThis as unknown as { Netlify?: unknown }).Netlify;
     delete process.env.OPERON_KITCHENS_SUPABASE_URL;
     delete process.env.OPERON_KITCHENS_SUPABASE_SERVICE_ROLE_KEY;
     delete process.env.OPERON_KITCHENS_RESEND_API_KEY;
@@ -188,6 +189,7 @@ describe('kitchen-request-review Netlify function', () => {
   afterAll(() => {
     process.env = originalEnv;
     global.fetch = originalFetch;
+    delete (globalThis as unknown as { Netlify?: unknown }).Netlify;
   });
 
   it('stores through Supabase when storage env vars are configured', async () => {
@@ -224,6 +226,44 @@ describe('kitchen-request-review Netlify function', () => {
     expect(JSON.stringify(body).toLowerCase()).not.toContain('margin');
     expect(JSON.stringify(body).toLowerCase()).not.toContain('leadscore');
     expect(JSON.stringify(body).toLowerCase()).not.toContain('service-role-test-key');
+  });
+
+  it('uses Netlify runtime env values for Supabase storage when available', async () => {
+    (globalThis as unknown as {
+      Netlify: { env: { get(key: string): string | undefined } };
+    }).Netlify = {
+      env: {
+        get: jest.fn((key: string) => {
+          if (key === 'OPERON_KITCHENS_SUPABASE_URL') return 'https://kitchens.supabase.co';
+          if (key === 'OPERON_KITCHENS_SUPABASE_SERVICE_ROLE_KEY') return 'netlify-service-role-test-key';
+          return undefined;
+        }),
+      },
+    };
+    const fetchMock = jest.fn(async () => ({ ok: true, text: async () => '' }));
+    global.fetch = fetchMock as typeof fetch;
+
+    const response = await handler({
+      httpMethod: 'POST',
+      body: JSON.stringify(validPayload),
+      headers: {
+        'user-agent': 'Netlify env browser',
+      },
+    });
+    const body = JSON.parse(response.body);
+
+    expect(response.statusCode).toBe(202);
+    expect(body.delivery.stored).toBe(true);
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://kitchens.supabase.co/rest/v1/kitchen_request_reviews',
+      expect.objectContaining({
+        method: 'POST',
+        headers: expect.objectContaining({
+          apikey: 'netlify-service-role-test-key',
+        }),
+      }),
+    );
+    expect(JSON.stringify(body)).not.toContain('netlify-service-role-test-key');
   });
 
   it('uses email as fallback when storage env vars are missing', async () => {
@@ -503,6 +543,22 @@ describe('kitchen request review storage adapter', () => {
       configured: false,
       stored: false,
       reason: 'missing_env',
+    });
+  });
+
+  it('returns a safe storage failure when the Supabase insert request rejects', async () => {
+    const validation = validateKitchenRequestReview(validPayload);
+    if (!validation.ok) throw new Error('Expected valid payload');
+    process.env.OPERON_KITCHENS_SUPABASE_URL = 'https://kitchens.supabase.co/';
+    process.env.OPERON_KITCHENS_SUPABASE_SERVICE_ROLE_KEY = 'service-role-test-key';
+    global.fetch = jest.fn(async () => {
+      throw new TypeError('fetch failed');
+    }) as typeof fetch;
+
+    await expect(storeKitchenRequestReviewLead(validation.data)).resolves.toEqual({
+      configured: true,
+      stored: false,
+      error: 'Supabase insert request failed: fetch failed',
     });
   });
 

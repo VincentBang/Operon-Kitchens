@@ -19,6 +19,12 @@ interface NetlifyResponse {
   body: string;
 }
 
+declare const Netlify: {
+  env?: {
+    get(key: string): string | undefined;
+  };
+} | undefined;
+
 const jsonHeaders = {
   'Content-Type': 'application/json',
   'Cache-Control': 'no-store',
@@ -63,8 +69,16 @@ function getHeader(headers: NetlifyEvent['headers'], key: string) {
   return matchedKey ? headers[matchedKey] : undefined;
 }
 
+function getRuntimeEnv(key: string) {
+  try {
+    return typeof Netlify !== 'undefined' ? Netlify?.env?.get(key) || process.env[key] : process.env[key];
+  } catch {
+    return process.env[key];
+  }
+}
+
 function getIpHash(event: NetlifyEvent) {
-  const salt = process.env.OPERON_KITCHENS_IP_HASH_SALT;
+  const salt = getRuntimeEnv('OPERON_KITCHENS_IP_HASH_SALT');
   if (!salt) return undefined;
   const forwardedFor = getHeader(event.headers, 'x-forwarded-for');
   const netlifyIp = getHeader(event.headers, 'x-nf-client-connection-ip');
@@ -143,9 +157,9 @@ function getFileDeliveryStatusCode(fileStorage: {
 }
 
 async function notifyByResend(lead: KitchenRequestReviewLead) {
-  const apiKey = process.env.OPERON_KITCHENS_RESEND_API_KEY;
-  const to = process.env.OPERON_KITCHENS_REQUEST_REVIEW_TO_EMAIL;
-  const from = process.env.OPERON_KITCHENS_REQUEST_REVIEW_FROM_EMAIL || 'Operon Kitchens <onboarding@resend.dev>';
+  const apiKey = getRuntimeEnv('OPERON_KITCHENS_RESEND_API_KEY');
+  const to = getRuntimeEnv('OPERON_KITCHENS_REQUEST_REVIEW_TO_EMAIL');
+  const from = getRuntimeEnv('OPERON_KITCHENS_REQUEST_REVIEW_FROM_EMAIL') || 'Operon Kitchens <onboarding@resend.dev>';
   if (!apiKey || !to) return { configured: false, sent: false as const, reason: 'email_env_missing' as const };
 
   const response = await fetch('https://api.resend.com/emails', {
@@ -192,6 +206,9 @@ export async function handler(event: NetlifyEvent): Promise<NetlifyResponse> {
   const storage = await storeKitchenRequestReviewLead(lead, {
     userAgent: getHeader(event.headers, 'user-agent'),
     ipHash: getIpHash(event),
+  }, {
+    supabaseUrl: getRuntimeEnv('OPERON_KITCHENS_SUPABASE_URL'),
+    serviceRoleKey: getRuntimeEnv('OPERON_KITCHENS_SUPABASE_SERVICE_ROLE_KEY'),
   });
   const fileStorage = storage.stored
     ? await storeKitchenRequestReviewFiles(lead)
