@@ -7,6 +7,8 @@ const publicRoots = [
   'src/pages/terms.tsx',
   'src/pages/privacy.tsx',
   'src/pages/design.tsx',
+  'src/pages/design-brief.tsx',
+  'src/pages/scope-builder.tsx',
   'src/pages/projects.tsx',
   'src/pages/quote/review.tsx',
   'src/pages/quote/[id].tsx',

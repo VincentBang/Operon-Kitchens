@@ -1,6 +1,6 @@
 # Operon Kitchens Codex Tasks
 
-Last updated: 4 June 2026
+Last updated: 27 June 2026
 
 Read `AGENTS.md`, `PROJECT_BRIEF.md`, `DEPLOYMENT_RULES.md`, `DECISION_LOG.md` and `docs/release-checkpoints.md` before every implementation task.
 
@@ -15,6 +15,80 @@ Vincent is low on Netlify credits. Do not deploy, push to `main`, create deploy 
 Make controlled customer testing operationally smoother without adding major runtime features.
 
 Phase 1 conversion-grade public experience is complete locally. Do not keep re-opening homepage, quote/review positioning, FAQ, trust pages, header/footer or chatbot as broad Phase 1 work unless Vincent reports a specific blocker from testing.
+
+## Advanced design-build tool stage gate
+
+Use `docs/advanced-kitchen-design-build-tool-implementation-tracker.md` before any advanced design-build work.
+
+Current status:
+
+- Phase 0 baseline audit and source-of-truth plan are complete.
+- Phase 1 structured design brief assistant is implemented locally and complete after Vincent approved Phase 2.
+- Phase 2 kitchen scope builder is implemented locally and complete after Vincent approved Phase 3.
+- Phase 2 automated local viewport metrics passed at 1440, 1280, 768, 390 and 360 widths with no horizontal overflow.
+- Phase 3 allowance and quote-risk engine is implemented locally inside the hidden `/scope-builder` review step, has passed local viewport metrics and is approved for Phase 5 planning.
+- Phase 5 internal review-console integration planning is documented locally.
+- Phase 5 slice 1 local projection helpers are implemented in `src/lib/advancedReviewConsole.ts` with tests in `test/advancedReviewConsole.test.ts`.
+- Phase 5 slice 2 storage-adapter planning is documented in `docs/advanced-kitchen-design-build-tool-phase-5-slice-2-storage-adapter-plan.md`.
+- Phase 5 slice 2 storage-adapter interface sketch is implemented in `src/lib/advancedReviewStorage.ts` with tests in `test/advancedReviewStorage.test.ts`.
+- Phase 5 slice 2 no-write mock adapter harness is implemented in `test/helpers/advancedReviewStorageMockHarness.ts` with tests in `test/advancedReviewStorageMockHarness.test.ts`.
+- Phase 5 Netlify Function contract test plan for `kitchen-advanced-review-payload` is documented in `docs/advanced-kitchen-design-build-tool-phase-5-netlify-function-contract-test-plan.md`.
+- Phase 5 `kitchen-advanced-review-payload` request/response contract fixtures and a thin test helper are implemented in `test/fixtures/advancedReviewPayloadFunctionFixtures.ts` and `test/helpers/advancedReviewPayloadFunctionContractHelper.ts`.
+- Phase 5 thin function implementation plan is documented in `docs/advanced-kitchen-design-build-tool-phase-5-thin-function-implementation-plan.md`.
+- Phase 5 helper-only runtime slice is implemented in `src/lib/advancedReviewPayloadFunction.ts` with mock-adapter contract tests.
+- Phase 5 wrapper-only implementation plan is documented in `docs/advanced-kitchen-design-build-tool-phase-5-wrapper-implementation-plan.md`.
+- Phase 5 wrapper contract tests are implemented in `test/advancedReviewPayloadWrapperContract.test.ts`.
+- Phase 5 disabled/no-write wrapper creation plan is documented in `docs/advanced-kitchen-design-build-tool-phase-5-disabled-wrapper-creation-plan.md`.
+- Phase 5 disabled/no-write Netlify wrapper is implemented in `netlify/functions/kitchen-advanced-review-payload.ts` with tests in `test/advancedReviewPayloadDisabledWrapper.test.ts`.
+- Phase 5 real Supabase adapter planning is documented in `docs/advanced-kitchen-design-build-tool-phase-5-real-supabase-adapter-plan.md`.
+- Phase 5 mocked Supabase adapter contract tests are implemented in `test/helpers/advancedReviewSupabaseAdapterContractHarness.ts` and `test/advancedReviewSupabaseAdapterContract.test.ts`.
+- Phase 5 real adapter implementation planning is documented in `docs/advanced-kitchen-design-build-tool-phase-5-real-adapter-implementation-plan.md`.
+- Phase 5 real Supabase adapter is implemented locally in `src/lib/advancedReviewSupabaseStorage.ts` with mocked-fetch tests in `test/advancedReviewSupabaseStorage.test.ts`.
+- Phase 5 wrapper replacement planning is documented in `docs/advanced-kitchen-design-build-tool-phase-5-wrapper-replacement-plan.md`.
+- Phase 5 wrapper replacement contract tests are implemented in `test/advancedReviewPayloadWrapperReplacementContract.test.ts`.
+- Phase 5 SQL migration and wrapper replacement activation checklists are documented in `docs/advanced-kitchen-design-build-tool-phase-5-activation-checklists.md`.
+- Phase 5 exact SQL-only approval packet is prepared in `docs/advanced-kitchen-design-build-tool-phase-5-sql-approval-packet.sql`.
+- Phase 5 wrapper replacement implementation checklist is prepared in `docs/advanced-kitchen-design-build-tool-phase-5-wrapper-replacement-implementation-checklist.md`.
+- Phase 5 wrapper replacement patch plan is prepared in `docs/advanced-kitchen-design-build-tool-phase-5-wrapper-replacement-patch-plan.md`.
+- Phase 5 active-wrapper contract tests are prepared in `test/advancedReviewPayloadActiveWrapperContract.test.ts`.
+- Phase 5 wrapper activation readiness review is prepared in `docs/advanced-kitchen-design-build-tool-phase-5-wrapper-activation-readiness-review.md`.
+- Phase 5 local active wrapper replacement is implemented in `netlify/functions/kitchen-advanced-review-payload.ts` with mocked tests only.
+- Phase 5 production persistence activation, Supabase migration, admin UI runtime and browser submission wiring have not started.
+- `/design-brief` exists but is disabled by default behind `NEXT_PUBLIC_OPERON_KITCHENS_ENABLE_DESIGN_BRIEF`.
+- `/scope-builder` exists but is disabled by default behind `NEXT_PUBLIC_OPERON_KITCHENS_ENABLE_SCOPE_BUILDER`.
+- Do not expose `/design-brief` in header, footer, chatbot or sitemap until Vincent approves it after local review.
+- Do not expose `/scope-builder` in header, footer, chatbot or sitemap until Vincent approves it after local review.
+- Keep Phase 1, Phase 2 and Phase 3 deterministic, feature-flagged off by default, customer-safe and non-persistent.
+- Do not add AI summarisation, file-upload expansion, payment, full CRM, production Supabase migrations or production deploys as part of this advanced-tool work.
+- Do not start Phase 5 slice 2 runtime storage implementation until the storage-adapter interface sketch and mock harness have been human reviewed and explicitly approved for coding.
+
+Core docs:
+
+- `docs/advanced-kitchen-design-build-tool-master-plan.md`
+- `docs/advanced-kitchen-design-build-tool-implementation-tracker.md`
+- `docs/advanced-kitchen-design-build-tool-product-architecture.md`
+- `docs/advanced-kitchen-design-build-tool-data-contracts.md`
+- `docs/advanced-kitchen-design-build-tool-decisions.md`
+- `docs/advanced-kitchen-design-build-tool-phase-1-spec.md`
+- `docs/advanced-kitchen-design-build-tool-phase-2-spec.md`
+- `docs/advanced-kitchen-design-build-tool-phase-2-viewport-review.md`
+- `docs/advanced-kitchen-design-build-tool-phase-3-spec.md`
+- `docs/advanced-kitchen-design-build-tool-phase-3-viewport-review.md`
+- `docs/advanced-kitchen-design-build-tool-phase-5-planning-spec.md`
+- `docs/advanced-kitchen-design-build-tool-phase-5-slice-2-storage-adapter-plan.md`
+- `docs/advanced-kitchen-design-build-tool-phase-5-netlify-function-contract-test-plan.md`
+- `docs/advanced-kitchen-design-build-tool-phase-5-thin-function-implementation-plan.md`
+- `docs/advanced-kitchen-design-build-tool-phase-5-wrapper-implementation-plan.md`
+- `docs/advanced-kitchen-design-build-tool-phase-5-disabled-wrapper-creation-plan.md`
+- `docs/advanced-kitchen-design-build-tool-phase-5-real-supabase-adapter-plan.md`
+- `docs/advanced-kitchen-design-build-tool-phase-5-real-adapter-implementation-plan.md`
+- `docs/advanced-kitchen-design-build-tool-phase-5-wrapper-replacement-plan.md`
+- `docs/advanced-kitchen-design-build-tool-phase-5-activation-checklists.md`
+- `docs/advanced-kitchen-design-build-tool-phase-5-sql-approval-packet.sql`
+- `docs/advanced-kitchen-design-build-tool-phase-5-wrapper-replacement-implementation-checklist.md`
+- `docs/advanced-kitchen-design-build-tool-phase-5-wrapper-replacement-patch-plan.md`
+- `docs/advanced-kitchen-design-build-tool-phase-5-wrapper-activation-readiness-review.md`
+- `docs/advanced-kitchen-design-build-tool-phase-0-baseline-audit.md`
 
 Use `docs/current-stage-execution-order.md` for the one-by-one order of the current stage. The current sequence is:
 
@@ -40,6 +114,8 @@ Use `docs/next-100-local-tasks-2026-06-17-viewport-release-readiness.md` for the
 
 Use `docs/next-100-local-tasks-2026-06-20-controlled-feedback.md` for the latest no-deploy controlled-feedback batch that captures tester findings, CTA visibility issues and release-bundle decisions.
 
+Use `docs/next-500-local-tasks-2026-06-23.md` when Vincent asks to "work on the next 500 tasks" or similar broad continuation prompts. Treat it as a grouped local execution map, not deployment approval.
+
 Use `docs/local-viewport-review-2026-06-17.md` for the current local viewport result across `/`, `/quote/review`, `/request-review`, `/site-measure` and `/admin/leads`.
 
 Use `docs/release-smoke-check-pack-2026-06-17.md` only after Vincent explicitly approves one deploy.
@@ -59,8 +135,16 @@ Current quote-review packaging status:
 
 - quote-review report template and readiness checklist are documented
 - Paid quote-review service packaging is documented for future detailed review
+- first unpaid manual quote-review trial prep is documented in `docs/quote-review-first-manual-trial-prep.md`
+- first fake no-customer-data filled trial example is documented in `docs/quote-review-first-trial-filled-example.md`
+- second fake service-relocation trial example is documented in `docs/quote-review-second-trial-service-relocation-example.md`
+- quote-review manual worksheet now has optional operator-only service-relocation prompts for plumbing, electrical, gas, make-good and older-property review
+- real controlled-lead service-relocation tracking is documented in `docs/quote-review-controlled-lead-trial-log.md`
+- service-relocation wording snippets are added to `docs/quote-review-wording-snippets.md` for manual reports
+- one-page manual quote-review response draft is documented in `docs/quote-review-manual-response-draft.md`
+- next-500 grouped local execution map is documented in `docs/next-500-local-tasks-2026-06-23.md`
 - payment, checkout, PDF automation, customer accounts and full CRM remain deferred
-- next quote-review decision: run manual unpaid report trials from controlled leads, then refine report copy before any paid-service implementation
+- next quote-review decision: decide whether to refine the worksheet service-relocation prompts after two or three controlled leads, then refine report copy before any paid-service implementation
 
 Current 100-task readiness status:
 
@@ -82,6 +166,10 @@ Current visual-system status:
 - white Operon Flooring-style header/page chrome is prepared locally
 - rounded dark footer container with white spacing is prepared locally
 - primary CTA/button ink now follows the Operon Flooring footer colour `#142f38`
+- current Operon System visual alignment audit is documented in `docs/operon-system-visual-alignment-audit.md`
+- Operon System palette aliases are present in global CSS for navy, gold, warm white, charcoal, borders, cards and soft shadow
+- footer Company links include Projects/examples while `/admin/leads` remains excluded from public navigation
+- chatbot styling has a tighter navy/gold brand shell with separated prompt buttons and safe guidance copy
 - visual-system regression tests are prepared locally
 - no visual bundle has been pushed or deployed
 - next visual decision: review `/`, `/request-review`, `/quote/review` and `/admin/leads` locally at desktop and mobile widths, then decide whether to include this in one approved release checkpoint
@@ -89,6 +177,7 @@ Current visual-system status:
 - latest copy tightening: public strata wording now uses approval-review / owners-corporation-review language rather than implying Operon grants approval
 - latest controlled-testing capture: homepage final CTA ghost buttons are fixed locally, tracked in `docs/controlled-testing-findings-log.md`, and waiting for the next approved trust/visual release
 - latest release summary: `docs/trust-visual-release-candidate-summary-2026-06-20.md` is the one-page approval note for the next trust/visual deploy
+- latest public trust gate: footer links are organised into Quote & review, Services, Guides and Areas & company; `/pc-sums-provisional-sums` is a short alias to the canonical PC sums guide; `docs/public-trust-gate-operon-kitchens.md` records the local no-deploy trust gate
 
 ## Local-Only Task Queue
 

@@ -3,6 +3,17 @@
 @tailwind utilities;
 
 :root {
+  --operon-navy: #102b32;
+  --operon-navy-soft: #f3f5f1;
+  --operon-gold: #b98533;
+  --operon-gold-muted: #f4eadb;
+  --operon-cream: #f7f3ea;
+  --operon-warm-white: #ffffff;
+  --operon-charcoal: #102b32;
+  --operon-muted: #5d6a68;
+  --operon-border: #e2ddd2;
+  --operon-card: #ffffff;
+  --operon-shadow-soft: 0 18px 46px rgba(16, 43, 50, 0.08);
   --ink: #102b32;
   --muted: #5d6a68;
   --line: #e2ddd2;
@@ -1610,6 +1621,165 @@ a.infoCard:hover,
   width: 100%;
 }
 
+.designBriefShell .wizardHeader h1 {
+  max-width: 920px;
+}
+
+.choiceFieldset {
+  border: 0;
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+}
+
+.choiceFieldset legend {
+  color: var(--ink);
+  font-weight: 850;
+  padding: 0;
+}
+
+.designBriefStepNav {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.scopeBuilderShell .wizardHeader h1 {
+  max-width: 920px;
+}
+
+.scopeBuilderStepNav {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.scopeBuilderForm {
+  margin-top: 20px;
+}
+
+.designBriefForm {
+  margin-top: 20px;
+}
+
+.designBriefResultGrid,
+.designBriefMissingGrid,
+.scopeBuilderResultGrid,
+.scopeBuilderChecklistGrid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.designBriefResultGrid .advancedPanel,
+.designBriefMissingGrid article,
+.scopeBuilderResultGrid .advancedPanel,
+.scopeBuilderChecklistGrid article {
+  background: #fffdfa;
+  border: 1px solid rgba(222, 214, 200, 0.78);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.designBriefResultGrid h3,
+.scopeBuilderResultGrid h3,
+.scopeBuilderChecklistGrid strong,
+.designBriefMissingGrid strong,
+.designBriefSummaryList dt {
+  color: var(--ink);
+}
+
+.designBriefResultGrid p,
+.designBriefResultGrid small,
+.scopeBuilderResultGrid p,
+.scopeBuilderResultGrid li,
+.scopeBuilderResultGrid small,
+.scopeBuilderChecklistGrid p,
+.designBriefMissingGrid li,
+.designBriefSummaryList dd {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.designBriefSummaryList {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.designBriefSummaryList div {
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: 4px;
+  padding-bottom: 10px;
+}
+
+.designBriefSummaryList div:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.designBriefSummaryList dt {
+  font-weight: 850;
+}
+
+.designBriefSummaryList dd {
+  margin: 0;
+}
+
+.riskPanelHeader {
+  align-items: flex-start;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.riskPanelHeader h3,
+.riskPanelHeader p {
+  margin: 0;
+}
+
+.riskPanelHeader p {
+  color: var(--muted);
+  line-height: 1.55;
+  margin-top: 6px;
+}
+
+.riskPanelHeader > strong {
+  background: var(--gold-soft);
+  border: 1px solid rgba(185, 135, 46, 0.28);
+  border-radius: 999px;
+  color: var(--ink);
+  flex: 0 0 auto;
+  padding: 8px 12px;
+}
+
+.riskFollowUpGrid {
+  margin-top: 14px;
+}
+
+.riskFollowUpGrid article {
+  background: #fffdfa;
+  border: 1px solid rgba(222, 214, 200, 0.78);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.riskFollowUpGrid h4 {
+  color: var(--ink);
+  margin: 0 0 10px;
+}
+
+.riskFollowUpGrid ul {
+  color: var(--muted);
+  line-height: 1.55;
+  margin: 0;
+  padding-left: 18px;
+}
+
+.designBriefMissingGrid ul {
+  margin: 10px 0 0;
+  padding-left: 18px;
+}
+
 .wizardActions {
   align-items: center;
   display: flex;
@@ -2043,14 +2213,22 @@ a.infoCard:hover,
 
 .kitchenChatbotPanel {
   background: #fff;
-  border: 1px solid rgba(7, 29, 51, 0.14);
+  border: 1px solid rgba(226, 221, 210, 0.95);
   border-radius: 12px;
-  box-shadow: 0 24px 72px rgba(7, 29, 51, 0.2);
+  box-shadow: 0 22px 58px rgba(16, 43, 50, 0.18);
   display: none;
   flex-direction: column;
   max-height: min(680px, calc(100vh - 120px));
   overflow: hidden;
   width: min(390px, calc(100vw - 28px));
+}
+
+.kitchenChatbotPanel::before {
+  background: linear-gradient(90deg, var(--gold), rgba(185, 135, 51, 0.32));
+  content: "";
+  display: block;
+  height: 4px;
+  width: 100%;
 }
 
 .kitchenChatbot[data-open="true"] .kitchenChatbotPanel {
@@ -2059,7 +2237,9 @@ a.infoCard:hover,
 
 .kitchenChatbotHeader {
   align-items: center;
-  background: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(185, 135, 51, 0.08)),
+    var(--ink);
   color: #fff;
   display: flex;
   gap: 14px;
@@ -2088,6 +2268,10 @@ a.infoCard:hover,
   height: 34px;
   line-height: 1;
   width: 34px;
+}
+
+.kitchenChatbotHeader button:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .kitchenChatbotMessages {
@@ -2234,6 +2418,7 @@ a.infoCard:hover,
 .kitchenChatbotToggle {
   align-items: center;
   background: var(--ink);
+  border: 1px solid rgba(185, 135, 51, 0.24);
   box-shadow: 0 14px 36px rgba(7, 29, 51, 0.22);
   color: #fff;
   display: inline-flex;
@@ -2247,8 +2432,9 @@ a.infoCard:hover,
 
 .kitchenChatbotToggle .chatbotIcon {
   align-items: center;
-  background: var(--accent);
+  background: var(--gold);
   border-radius: 999px;
+  color: var(--ink);
   display: inline-flex;
   flex: 0 0 auto;
   height: 30px;
@@ -2461,6 +2647,22 @@ a.infoCard:hover,
 }
 
 @media (max-width: 520px) {
+  .designBriefShell .wizardHeader h1 {
+    font-size: clamp(2.45rem, 10.5vw, 3rem);
+  }
+
+  .designBriefShell .wizardHeader .muted {
+    font-size: 1rem;
+  }
+
+  .scopeBuilderShell .wizardHeader h1 {
+    font-size: clamp(2.45rem, 10.5vw, 3rem);
+  }
+
+  .scopeBuilderShell .wizardHeader .muted {
+    font-size: 1rem;
+  }
+
   .pageSurface {
     padding: 20px 12px 58px;
   }
@@ -2469,9 +2671,44 @@ a.infoCard:hover,
     grid-template-columns: 1fr;
   }
 
+  .designBriefResultGrid,
+  .designBriefMissingGrid,
+  .scopeBuilderResultGrid,
+  .scopeBuilderChecklistGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .designBriefStepNav,
+  .scopeBuilderStepNav {
+    gap: 6px;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .designBriefStepNav li,
+  .scopeBuilderStepNav li {
+    justify-content: center;
+    min-height: 44px;
+    padding: 8px 4px;
+  }
+
+  .designBriefStepNav li span,
+  .scopeBuilderStepNav li span {
+    margin: 0;
+  }
+
+  .designBriefStepNav li em,
+  .scopeBuilderStepNav li em {
+    display: none;
+  }
+
   .wizardJourneyStrip,
   .summaryCtaGrid {
     grid-template-columns: 1fr;
+  }
+
+  .riskPanelHeader {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .wizardHeader h1,
@@ -2498,6 +2735,29 @@ a.infoCard:hover,
 
   .stepNav {
     grid-template-columns: 1fr;
+  }
+
+  .designBriefStepNav,
+  .scopeBuilderStepNav {
+    gap: 6px;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .designBriefStepNav li,
+  .scopeBuilderStepNav li {
+    justify-content: center;
+    min-height: 44px;
+    padding: 8px 4px;
+  }
+
+  .designBriefStepNav li span,
+  .scopeBuilderStepNav li span {
+    margin: 0;
+  }
+
+  .designBriefStepNav li em,
+  .scopeBuilderStepNav li em {
+    display: none;
   }
 
   .proofStrip span {

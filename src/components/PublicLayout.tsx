@@ -18,24 +18,30 @@ const quoteReviewLinks = [
 ];
 
 const serviceLinks = [
-  ['Kitchen renovation estimate', '/kitchen-renovation-cost-sydney'],
   ['Full kitchen renovation', '/full-kitchen-renovation-sydney'],
-  ['Design specification package', '/design-specification-package'],
-  ['Kitchen renovation process', '/kitchen-renovation-process'],
   ['Cabinetry and benchtop refresh', '/kitchen-cabinetry-benchtop-refresh'],
   ['Apartment kitchen renovation Sydney', '/apartment-kitchen-renovation-sydney'],
+  ['Benchtop replacement', '/kitchen-benchtop-replacement-sydney'],
+  ['Design specification package', '/design-specification-package'],
 ];
 
 const guideLinks = [
   ['Kitchen renovation process', '/kitchen-renovation-process'],
-  ['PC sums and provisional sums', '/kitchen-pc-sums-and-provisional-sums'],
+  ['PC sums and provisional sums', '/pc-sums-provisional-sums'],
   ['Kitchen quote checklist', '/kitchen-renovation-quote-checklist'],
   ['Questions before accepting quote', '/questions-before-accepting-kitchen-quote'],
   ['FAQ', '/faqs'],
 ];
 
-const companyLinks = [
-  ['About Operon Kitchens', '/how-it-works'],
+const areaCompanyLinks = [
+  ['Mosman', '/areas/mosman'],
+  ['Vaucluse', '/areas/vaucluse'],
+  ['Double Bay', '/areas/double-bay'],
+  ['Bellevue Hill', '/areas/bellevue-hill'],
+  ['Neutral Bay', '/areas/neutral-bay'],
+  ['Manly', '/areas/manly'],
+  ['View all areas', '/areas'],
+  ['Projects/examples', '/projects'],
   ['Privacy Policy', '/privacy'],
   ['Terms', '/terms'],
 ];
@@ -59,6 +65,10 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
   const router = useRouter();
   const canonicalBase = process.env.NEXT_PUBLIC_SITE_URL || 'https://operonkitchens.com.au';
   const canonicalPath = router.asPath === '/' ? '' : router.asPath.split('?')[0];
+  const resolvedCanonicalPath =
+    canonicalPath === '/pc-sums-provisional-sums'
+      ? '/kitchen-pc-sums-and-provisional-sums'
+      : canonicalPath;
   const isQuoteFlow = router.pathname.startsWith('/quote');
   const isRequestReviewFlow = router.pathname === '/request-review' || router.pathname === '/contact';
   const showStickyCta = !isQuoteFlow && !isRequestReviewFlow;
@@ -67,7 +77,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
     <>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="canonical" href={`${canonicalBase}${canonicalPath}`} />
+        <link rel="canonical" href={`${canonicalBase}${resolvedCanonicalPath}`} />
         <link rel="icon" href="/brand/operon-kitchens-favicon.png" type="image/png" />
       </Head>
       <div className="siteShell">
@@ -119,12 +129,12 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
             <FooterColumn title="Quote & review" links={quoteReviewLinks} />
             <FooterColumn title="Services" links={serviceLinks} />
             <FooterColumn title="Guides" links={guideLinks} />
-            <FooterColumn title="Company" links={companyLinks} />
+            <FooterColumn title="Areas & company" links={areaCompanyLinks} />
           </div>
 
           <div className="footerBottom">
             <p>
-              Operon Kitchens provides planning guidance only. Site measure, selections, licensed trade checks and written scope confirmation are required before contract pricing.
+              Operon Kitchens is a separate customer-facing kitchen renovation brand. Planning guidance only. Site measure and written scope confirmation are required before contract pricing.
             </p>
             <p className="footerCopyright">© 2026 Operon Kitchens. All rights reserved.</p>
           </div>

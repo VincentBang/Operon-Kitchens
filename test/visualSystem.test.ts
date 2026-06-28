@@ -10,6 +10,12 @@ describe('Operon Kitchens visual system guardrails', () => {
     const css = read('src/styles/globals.css');
 
     expect(css).toContain('--paper: #ffffff;');
+    expect(css).toContain('--operon-navy: #102b32;');
+    expect(css).toContain('--operon-gold: #b98533;');
+    expect(css).toContain('--operon-warm-white: #ffffff;');
+    expect(css).toContain('--operon-charcoal: #102b32;');
+    expect(css).toContain('--operon-border: #e2ddd2;');
+    expect(css).toContain('--operon-shadow-soft: 0 18px 46px rgba(16, 43, 50, 0.08);');
     expect(css).toContain('--ink: #102b32;');
     expect(css).toContain('--accent: #102b32;');
     expect(css).toContain('--accent-dark: #102b32;');
@@ -34,6 +40,27 @@ describe('Operon Kitchens visual system guardrails', () => {
     expect(css).toContain('width: 190px;');
     expect(css).toContain('width: 170px;');
     expect(css).toContain('background: #fff;');
+  });
+
+  it('documents the public Operon System visual alignment audit', () => {
+    const audit = read('docs/operon-system-visual-alignment-audit.md');
+
+    expect(audit).toContain('Operon Flooring was used only as a public visual reference');
+    expect(audit).toContain('No Operon Flooring source files, assets, production settings or repository files were opened or modified.');
+    expect(audit).toContain('Planning estimate and quote review remain the main public conversion paths.');
+    expect(audit).toContain('Areas & company');
+    expect(audit).toContain('/pc-sums-provisional-sums');
+    expect(audit).toContain('Deployment is not needed');
+  });
+
+  it('documents the local public trust gate before release', () => {
+    const trustGate = read('docs/public-trust-gate-operon-kitchens.md');
+
+    expect(trustGate).toContain('Deployment status: not deployed');
+    expect(trustGate).toContain('Footer is intentionally compact and grouped into four public columns');
+    expect(trustGate).toContain('/pc-sums-provisional-sums');
+    expect(trustGate).toContain('Production upload verification remains an approved-release task');
+    expect(trustGate).toContain('npm test -- --runInBand');
   });
 
   it('uses the current Operon Kitchens brand assets across header, footer and favicon', () => {

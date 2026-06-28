@@ -24,10 +24,11 @@ Do not copy supplier costs, internal rates, margin logic, lead score, admin prio
 ## Documents To Use
 
 1. [Quote review manual trial worksheet](./quote-review-manual-trial-worksheet.md)
-2. [Quote review wording snippets](./quote-review-wording-snippets.md)
-3. [Quote review trial log](./quote-review-trial-log.md)
-4. [Quote review sample trial](./quote-review-sample-trial.md)
-5. [Paid quote review service packaging](./paid-quote-review-service-packaging.md)
+2. [Quote review wording snippets](./quote-review-wording-snippets.md), including service-relocation wording for plumbing, electrical, gas, make-good and older-property review prompts
+3. [Quote review manual response draft](./quote-review-manual-response-draft.md)
+4. [Quote review trial log](./quote-review-trial-log.md)
+5. [Quote review sample trial](./quote-review-sample-trial.md)
+6. [Paid quote review service packaging](./paid-quote-review-service-packaging.md)
 
 ## Trial Steps
 
@@ -39,7 +40,8 @@ Do not copy supplier costs, internal rates, margin logic, lead score, admin prio
 6. Add customer-ready questions.
 7. Add general compliance prompts where relevant.
 8. Add a recommended next step.
-9. Log what was confusing, what was missing and what should be improved before a paid service.
+9. Put the customer-safe version into the manual response draft.
+10. Log what was confusing, what was missing and what should be improved before a paid service.
 
 ## Customer-Safe Closing
 
@@ -57,5 +59,5 @@ Stop and refine the template if:
 - the report implies a final fixed price
 - the report needs data that the intake form does not collect
 - the report cannot explain PC sums, provisional sums or exclusions clearly
+- the report cannot explain service relocation without sounding like trade inspection, legal advice or a final quote
 - the report cannot produce a useful recommended next step
-

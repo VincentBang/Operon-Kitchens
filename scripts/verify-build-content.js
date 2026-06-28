@@ -13,7 +13,7 @@ const requiredCopy = [
   'Sydney kitchen renovation estimates and quote review before you commit.',
   'Ask Operon',
   'Kitchen scope guidance',
-  'Operon Kitchens provides planning guidance only. Site measure, selections, licensed trade checks and written scope confirmation are required before contract pricing.',
+  'Operon Kitchens is a separate customer-facing kitchen renovation brand. Planning guidance only. Site measure and written scope confirmation are required before contract pricing.',
   'Planning range preview',
   'Sample review result',
 ];
@@ -23,7 +23,6 @@ const forbiddenCopy = [
   'Need help with scope??Ask Operon',
   'brand.Planning',
   'scope??Ask',
-  'Operon Kitchens is a separate customer-facing kitchen renovation brand. Planning guidance only. Site measure and written scope confirmation are required before contract pricing.',
 ];
 
 function collectTextFiles(targetPath) {

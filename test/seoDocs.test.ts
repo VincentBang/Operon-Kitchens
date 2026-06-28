@@ -26,6 +26,7 @@ describe('SEO planning documentation', () => {
 
     expect(audit).toContain('Deployment status: not deployed');
     expect(audit).toMatch(/`\/kitchen-quote-exclusions` is not present/);
+    expect(audit).toMatch(/`\/pc-sums-provisional-sums` is present as a short alias/);
     expect(audit).toMatch(/`\/site-measure` now links to `\/quote\/review`/);
 
     expect(nextPageBriefs).toContain('Kitchen Quote Exclusions');

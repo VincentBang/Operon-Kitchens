@@ -1,6 +1,6 @@
 # Quote Review Manual Trial Worksheet
 
-Last updated: 17 June 2026
+Last updated: 23 June 2026
 
 Purpose: run unpaid/manual quote-review trials from controlled leads before building paid review, PDF automation, payment, customer accounts or CRM workflows.
 
@@ -84,6 +84,55 @@ Trade/access allowance:
 
 - 
 
+## Optional Service-Relocation Review
+
+Use this section when the lead mentions moving the sink, cooktop, oven, dishwasher, power points, lighting, gas line or other services.
+
+Keep this operator-only for now. Do not change the public `/request-review` form from fake examples alone; compare two or three real controlled leads first.
+
+Current and proposed service locations:
+
+- sink:
+- dishwasher:
+- cooktop:
+- oven:
+- power points:
+- lighting:
+- rangehood/extraction:
+
+Plumbing review prompts:
+
+- sink or dishwasher location changing:
+- water/waste access unclear:
+- plumbing reconnection included, excluded or provisional:
+- licensed plumbing review required:
+
+Electrical review prompts:
+
+- cooktop, oven, lighting or power point location changing:
+- switchboard/load context unclear:
+- electrical relocation included, excluded or provisional:
+- licensed electrical review required:
+
+Gas review prompts:
+
+- gas cooktop or gas line involved:
+- gas disconnection/reconnection included, excluded or provisional:
+- licensed gas review required:
+
+Make-good after demolition:
+
+- plastering/patching included:
+- flooring make-good included:
+- tile removal and wall repair included:
+- painting or finishing excluded:
+
+Older-property risk:
+
+- age of property known:
+- asbestos or hazardous-material review needed:
+- demolition should pause until review is clear:
+
 ## Missing Information
 
 Missing or unclear:
@@ -93,8 +142,14 @@ Missing or unclear:
 - appliance list:
 - finish tier:
 - service relocation:
+- current and proposed service locations:
+- plumbing relocation:
+- electrical relocation:
+- gas work:
+- make-good after demolition:
 - demolition/rubbish removal:
 - strata/access:
+- older-property/asbestos:
 - site measure:
 
 ## Customer Questions
@@ -107,6 +162,7 @@ Use or adapt:
 - Is electrical relocation included?
 - Is plumbing relocation included?
 - Is gas work involved?
+- Are wall, floor, plastering or tile make-good items included after demolition?
 - Is splashback included?
 - Are benchtop cut-outs, joins and edge details included?
 - Are delivery, access, parking and work-hour limits allowed for?

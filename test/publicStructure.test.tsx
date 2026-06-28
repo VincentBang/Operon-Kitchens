@@ -11,6 +11,7 @@ import DesignSpecificationPackagePage from '../src/pages/design-specification-pa
 import HowItWorksPage from '../src/pages/how-it-works';
 import HomePage from '../src/pages';
 import KitchenRenovationProcessPage from '../src/pages/kitchen-renovation-process';
+import PcSumsProvisionalSumsAliasPage from '../src/pages/pc-sums-provisional-sums';
 import QuoteReviewServicePage from '../src/pages/quote-review-service';
 import RequestReviewPage from '../src/pages/request-review';
 import QuoteReviewPage from '../src/pages/quote/review';
@@ -37,7 +38,7 @@ describe('public site structure', () => {
     );
     const footer = container.querySelector('footer');
     const quoteReviewColumn = screen.getByRole('heading', { name: /Quote & review/i }).closest('div');
-    const companyColumn = screen.getByRole('heading', { name: /^Company$/i }).closest('div');
+    const areasCompanyColumn = screen.getByRole('heading', { name: /^Areas & company$/i }).closest('div');
 
     expect(screen.getByRole('link', { name: /Operon Kitchens home/i })).toBeInTheDocument();
     expect(screen.getByRole('img', { name: 'Operon Kitchens logo' })).toBeInTheDocument();
@@ -50,15 +51,21 @@ describe('public site structure', () => {
     expect(screen.getByRole('heading', { name: /Quote & review/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /Services/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /Guides/i })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /^Company$/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /^Areas & company$/i })).toBeInTheDocument();
     expect(quoteReviewColumn).toHaveTextContent('Request review');
-    expect(companyColumn).not.toHaveTextContent('Request review');
+    expect(areasCompanyColumn).toHaveTextContent('Mosman');
+    expect(areasCompanyColumn).toHaveTextContent('Vaucluse');
+    expect(areasCompanyColumn).toHaveTextContent('Double Bay');
+    expect(areasCompanyColumn).toHaveTextContent('View all areas');
+    expect(areasCompanyColumn).toHaveTextContent('Projects/examples');
+    expect(areasCompanyColumn).not.toHaveTextContent('Request review');
+    expect(container.querySelector('a[href="/pc-sums-provisional-sums"]')).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: /admin leads/i })).not.toBeInTheDocument();
     expect(container.querySelector('a[href="/admin/leads"]')).not.toBeInTheDocument();
     expect(screen.getByText(/Kitchen renovation estimate and quote review support/i)).toBeInTheDocument();
-    expect(screen.getByText(/provides planning guidance only/i)).toBeInTheDocument();
+    expect(screen.getByText(/separate customer-facing kitchen renovation brand\. Planning guidance only/i)).toBeInTheDocument();
     expect(screen.getByText(/© 2026 Operon Kitchens\. All rights reserved\./i)).toBeInTheDocument();
-    expect(footer).toHaveTextContent('Operon Kitchens provides planning guidance only. Site measure, selections, licensed trade checks and written scope confirmation are required before contract pricing.');
+    expect(footer).toHaveTextContent('Operon Kitchens is a separate customer-facing kitchen renovation brand. Planning guidance only. Site measure and written scope confirmation are required before contract pricing.');
     expect(footer?.textContent).not.toContain('brand.Planning');
     expect(document.body.textContent).not.toContain('scope??Ask');
   });
@@ -185,15 +192,45 @@ describe('public site structure', () => {
     expect(document.body.textContent).not.toMatch(/final fixed quote|approved quote|certified quote|guaranteed savings|order instantly/i);
   });
 
+  it('renders the short PC sums alias through the canonical education content', () => {
+    const { container } = render(<PcSumsProvisionalSumsAliasPage />);
+
+    expect(screen.getByRole('heading', { name: /Kitchen PC sums and provisional sums, in plain English/i })).toBeInTheDocument();
+    expect(screen.getByText(/PC sums and provisional sums are not automatically bad/i)).toBeInTheDocument();
+    expect(container.querySelector('a[href="/quote/review"]')).toBeInTheDocument();
+    expect(document.body.textContent).not.toMatch(/final fixed quote|approved quote|certified quote|guaranteed savings|order instantly/i);
+  });
+
   it('keeps public route wrappers on the shared app layout path', () => {
     const serviceRoute = fs.readFileSync(path.join(process.cwd(), 'src/components/ServiceRoutePage.tsx'), 'utf8');
     const educationRoute = fs.readFileSync(path.join(process.cwd(), 'src/components/EducationRoutePage.tsx'), 'utf8');
     const appShell = fs.readFileSync(path.join(process.cwd(), 'src/pages/_app.tsx'), 'utf8');
+    const layout = fs.readFileSync(path.join(process.cwd(), 'src/components/PublicLayout.tsx'), 'utf8');
 
     expect(appShell).toContain('<PublicLayout>');
     expect(appShell).toContain('<KitchenChatbot');
     expect(serviceRoute).not.toContain('PublicLayout');
     expect(educationRoute).not.toContain('PublicLayout');
+    expect(layout).toContain("canonicalPath === '/pc-sums-provisional-sums'");
+    expect(layout).toContain("'/kitchen-pc-sums-and-provisional-sums'");
+  });
+
+  it('keeps public source titles free of React comment artifacts', () => {
+    const publicSourcePaths = [
+      'src/pages/index.tsx',
+      'src/pages/quote/index.tsx',
+      'src/pages/quote/review.tsx',
+      'src/pages/faqs.tsx',
+      'src/pages/request-review.tsx',
+      'src/pages/site-measure.tsx',
+      'src/lib/seoEducation.ts',
+      'src/lib/servicePages.ts',
+    ];
+
+    publicSourcePaths.forEach((relativePath) => {
+      const source = fs.readFileSync(path.join(process.cwd(), relativePath), 'utf8');
+      expect(source).not.toMatch(/<!--|-->/);
+    });
   });
 
   it('renders the upgraded homepage hero and sample estimate output', () => {

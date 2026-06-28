@@ -44,7 +44,7 @@ Area pages found:
 ## Pages Missing Or Deferred
 
 - `/kitchen-quote-exclusions` is not present.
-- `/pc-sums-provisional-sums` exact URL is not present; closest pages are `/kitchen-pc-sums-and-provisional-sums` and `/pc-sums-vs-provisional-sums`.
+- `/pc-sums-provisional-sums` is present as a short alias and canonicalises to `/kitchen-pc-sums-and-provisional-sums`.
 - Future suburb URLs such as `/kitchen-renovation-mosman`, `/kitchen-renovation-vaucluse`, `/kitchen-renovation-double-bay`, `/kitchen-renovation-neutral-bay` and `/kitchen-renovation-manly` are not present and should stay deferred until unique content is approved.
 
 ## Metadata Findings
@@ -97,7 +97,7 @@ Small improvement applied during this pass:
 Remaining opportunities:
 
 - Add contextual links to future `/kitchen-quote-exclusions` only after the page exists.
-- Decide whether an exact `/pc-sums-provisional-sums` URL is needed or whether existing pages are enough.
+- Keep `/pc-sums-provisional-sums` as a short alias only; the canonical topic page remains `/kitchen-pc-sums-and-provisional-sums`.
 - Keep future suburb pages connected from `/areas`, not from an overstuffed footer.
 
 ## Unsafe Wording Found
