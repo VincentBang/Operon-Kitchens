@@ -389,6 +389,7 @@ describe('kitchen-request-review Netlify function', () => {
 
     expect(response.statusCode).toBe(503);
     expect(body.ok).toBe(false);
+    expect(body.diagnostic).toBe('storage_env_missing');
     expect(body.error).toContain('temporarily unavailable');
     expect(warnSpy).toHaveBeenCalledWith(
       'operon_kitchens_request_review_storage_env_missing',
@@ -422,6 +423,7 @@ describe('kitchen-request-review Netlify function', () => {
 
     expect(response.statusCode).toBe(503);
     expect(body.ok).toBe(false);
+    expect(body.diagnostic).toBe('storage_insert_failed');
     expect(warnSpy).toHaveBeenCalledWith(
       'operon_kitchens_request_review_storage_insert_failed',
       expect.objectContaining({

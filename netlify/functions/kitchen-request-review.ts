@@ -281,6 +281,7 @@ export async function handler(event: NetlifyEvent): Promise<NetlifyResponse> {
   }
 
   if (!storage.stored && !notificationPrepared) {
+    const diagnostic = !storage.configured ? 'storage_env_missing' : 'storage_insert_failed';
     console.warn('operon_kitchens_request_review_no_durable_path_available', {
       category: 'no_durable_path_available',
       storageConfigured: storage.configured,
@@ -289,6 +290,7 @@ export async function handler(event: NetlifyEvent): Promise<NetlifyResponse> {
     });
     return json(503, {
       ok: false,
+      diagnostic,
       error: 'Request intake is temporarily unavailable. Please try again later or use the estimate and quote review pathways to prepare your details.',
     });
   }
