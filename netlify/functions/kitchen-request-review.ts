@@ -30,6 +30,21 @@ const jsonHeaders = {
   'Cache-Control': 'no-store',
 };
 
+function toWebResponse(response: NetlifyResponse) {
+  return new Response(response.body, {
+    status: response.statusCode,
+    headers: response.headers,
+  });
+}
+
+function headersToRecord(headers: Headers) {
+  const record: Record<string, string> = {};
+  headers.forEach((value, key) => {
+    record[key] = value;
+  });
+  return record;
+}
+
 function json(statusCode: number, body: Record<string, unknown>): NetlifyResponse {
   return {
     statusCode,
@@ -291,4 +306,12 @@ export async function handler(event: NetlifyEvent): Promise<NetlifyResponse> {
       notificationPrepared,
     },
   });
+}
+
+export default async function kitchenRequestReview(request: Request) {
+  return toWebResponse(await handler({
+    httpMethod: request.method,
+    body: request.method === 'POST' ? await request.text() : null,
+    headers: headersToRecord(request.headers),
+  }));
 }

@@ -1,4 +1,4 @@
-import { handler } from '../netlify/functions/kitchen-request-review';
+import kitchenRequestReview, { handler } from '../netlify/functions/kitchen-request-review';
 import { storeKitchenRequestReviewFiles } from '../src/lib/kitchenFileStorage';
 import { createKitchenRequestReviewStorageRecord, storeKitchenRequestReviewLead } from '../src/lib/kitchenLeadStorage';
 import { validateKitchenRequestReview } from '../src/lib/requestReview';
@@ -264,6 +264,61 @@ describe('kitchen-request-review Netlify function', () => {
       }),
     );
     expect(JSON.stringify(body)).not.toContain('netlify-service-role-test-key');
+  });
+
+  it('supports the modern default-export Request handler shape', async () => {
+    (globalThis as unknown as {
+      Netlify: { env: { get(key: string): string | undefined } };
+    }).Netlify = {
+      env: {
+        get: jest.fn((key: string) => {
+          if (key === 'OPERON_KITCHENS_SUPABASE_URL') return 'https://kitchens.supabase.co';
+          if (key === 'OPERON_KITCHENS_SUPABASE_SERVICE_ROLE_KEY') return 'modern-default-service-role-test-key';
+          return undefined;
+        }),
+      },
+    };
+    const fetchMock = jest.fn(async () => ({ ok: true, text: async () => '' }));
+    global.fetch = fetchMock as typeof fetch;
+    (globalThis as unknown as {
+      Response: typeof Response;
+    }).Response = class {
+      status: number;
+
+      constructor(private readonly body: string, init: { status: number }) {
+        this.status = init.status;
+      }
+
+      async json() {
+        return JSON.parse(this.body);
+      }
+    } as unknown as typeof Response;
+
+    const request = {
+      method: 'POST',
+      headers: {
+        forEach(callback: (value: string, key: string) => void) {
+          callback('application/json', 'content-type');
+          callback('Modern Request wrapper', 'user-agent');
+        },
+      },
+      text: async () => JSON.stringify(validPayload),
+    } as unknown as Request;
+    const response = await kitchenRequestReview(request);
+    const body = await response.json();
+
+    expect(response.status).toBe(202);
+    expect(body.delivery.stored).toBe(true);
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://kitchens.supabase.co/rest/v1/kitchen_request_reviews',
+      expect.objectContaining({
+        method: 'POST',
+        headers: expect.objectContaining({
+          apikey: 'modern-default-service-role-test-key',
+        }),
+      }),
+    );
+    expect(JSON.stringify(body)).not.toContain('modern-default-service-role-test-key');
   });
 
   it('uses email as fallback when storage env vars are missing', async () => {
