@@ -424,10 +424,12 @@ describe('kitchen-request-review Netlify function', () => {
     expect(response.statusCode).toBe(503);
     expect(body.ok).toBe(false);
     expect(body.diagnostic).toBe('storage_insert_failed');
+    expect(body.diagnosticDetail).toBe('schema_or_table_missing');
     expect(warnSpy).toHaveBeenCalledWith(
       'operon_kitchens_request_review_storage_insert_failed',
       expect.objectContaining({
         category: 'storage_insert_failed',
+        code: 'schema_or_table_missing',
         error: expect.stringContaining('Supabase insert failed with 404'),
       }),
     );
@@ -616,6 +618,7 @@ describe('kitchen request review storage adapter', () => {
       configured: true,
       stored: false,
       error: 'Supabase insert request failed: fetch failed',
+      errorCode: 'insert_request_failed',
     });
   });
 
@@ -669,6 +672,46 @@ describe('kitchen request review storage adapter', () => {
     expect(fallbackRecord).not.toHaveProperty('utm_source');
     expect(fallbackRecord).not.toHaveProperty('landing_page');
     expect(fallbackRecord.status).toBe('new');
+  });
+
+  it('falls back to minimum safe storage columns if optional server metadata columns are missing', async () => {
+    const validation = validateKitchenRequestReview(validPayload);
+    if (!validation.ok) throw new Error('Expected valid payload');
+    process.env.OPERON_KITCHENS_SUPABASE_URL = 'https://kitchens.supabase.co/';
+    process.env.OPERON_KITCHENS_SUPABASE_SERVICE_ROLE_KEY = 'service-role-test-key';
+    const fetchMock = jest
+      .fn()
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        text: async () => 'PGRST204 Could not find the user_agent column of kitchen_request_reviews',
+      })
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        text: async () => 'PGRST204 Could not find the user_agent column of kitchen_request_reviews',
+      })
+      .mockResolvedValueOnce({ ok: true, text: async () => '' });
+    global.fetch = fetchMock as typeof fetch;
+
+    await expect(storeKitchenRequestReviewLead(validation.data, { userAgent: 'Fallback browser' })).resolves.toEqual({
+      configured: true,
+      stored: true,
+      id: validation.data.id,
+    });
+    const minimumRecord = JSON.parse(String(fetchMock.mock.calls[2][1]?.body));
+    expect(minimumRecord).toEqual(expect.objectContaining({
+      id: validation.data.id,
+      name: 'Vincent',
+      email: 'vincent@example.com',
+      property_type: 'house',
+      project_stage: 'quoteInHand',
+      preferred_next_step: 'quoteReview',
+    }));
+    expect(minimumRecord).not.toHaveProperty('user_agent');
+    expect(minimumRecord).not.toHaveProperty('status');
+    expect(minimumRecord).not.toHaveProperty('internal_notes');
+    expect(minimumRecord).not.toHaveProperty('utm_source');
   });
 
   it('keeps the documented Supabase SQL aligned with the storage record mapping', () => {

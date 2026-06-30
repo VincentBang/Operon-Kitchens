@@ -237,6 +237,7 @@ export async function handler(event: NetlifyEvent): Promise<NetlifyResponse> {
   } else if (!storage.stored) {
     console.warn('operon_kitchens_request_review_storage_insert_failed', {
       category: 'storage_insert_failed',
+      code: storage.errorCode,
       error: storage.error,
     });
   }
@@ -282,15 +283,18 @@ export async function handler(event: NetlifyEvent): Promise<NetlifyResponse> {
 
   if (!storage.stored && !notificationPrepared) {
     const diagnostic = !storage.configured ? 'storage_env_missing' : 'storage_insert_failed';
+    const diagnosticDetail = storage.configured ? storage.errorCode : undefined;
     console.warn('operon_kitchens_request_review_no_durable_path_available', {
       category: 'no_durable_path_available',
       storageConfigured: storage.configured,
       storageStored: storage.stored,
       notificationPrepared,
+      diagnosticDetail,
     });
     return json(503, {
       ok: false,
       diagnostic,
+      diagnosticDetail,
       error: 'Request intake is temporarily unavailable. Please try again later or use the estimate and quote review pathways to prepare your details.',
     });
   }

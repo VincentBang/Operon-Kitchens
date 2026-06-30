@@ -44,10 +44,36 @@ type KitchenRequestReviewLegacyStorageRecord = Omit<
   'referrer' | 'utm_source' | 'utm_medium' | 'utm_campaign' | 'utm_content' | 'utm_term' | 'landing_page'
 >;
 
+type KitchenRequestReviewMinimumStorageRecord = Pick<
+  KitchenRequestReviewStorageRecord,
+  | 'id'
+  | 'created_at'
+  | 'name'
+  | 'email'
+  | 'phone'
+  | 'suburb'
+  | 'property_type'
+  | 'project_stage'
+  | 'has_current_quote'
+  | 'has_photos_or_plans'
+  | 'budget_range'
+  | 'preferred_next_step'
+  | 'message'
+  | 'marketing_opt_in'
+>;
+
+export type KitchenLeadStorageFailureCode =
+  | 'insert_request_failed'
+  | 'schema_or_table_missing'
+  | 'optional_column_mismatch'
+  | 'permission_or_key_rejected'
+  | 'constraint_or_payload_rejected'
+  | 'insert_failed';
+
 export type KitchenLeadStorageResult =
   | { configured: false; stored: false; reason: 'missing_env' }
   | { configured: true; stored: true; id: string }
-  | { configured: true; stored: false; error: string };
+  | { configured: true; stored: false; error: string; errorCode: KitchenLeadStorageFailureCode };
 
 const attributionColumnNames = [
   'referrer',
@@ -127,9 +153,49 @@ export function createLegacyKitchenRequestReviewStorageRecord(
   return legacyRecord;
 }
 
-function isMissingAttributionColumnError(detail: string) {
+export function createMinimumKitchenRequestReviewStorageRecord(
+  record: KitchenRequestReviewStorageRecord,
+): KitchenRequestReviewMinimumStorageRecord {
+  return {
+    id: record.id,
+    created_at: record.created_at,
+    name: record.name,
+    email: record.email,
+    phone: record.phone,
+    suburb: record.suburb,
+    property_type: record.property_type,
+    project_stage: record.project_stage,
+    has_current_quote: record.has_current_quote,
+    has_photos_or_plans: record.has_photos_or_plans,
+    budget_range: record.budget_range,
+    preferred_next_step: record.preferred_next_step,
+    message: record.message,
+    marketing_opt_in: record.marketing_opt_in,
+  };
+}
+
+function isMissingOptionalColumnError(detail: string) {
   const lowerDetail = detail.toLowerCase();
-  return lowerDetail.includes('pgrst204') || attributionColumnNames.some((column) => lowerDetail.includes(column));
+  const optionalColumns = [
+    ...attributionColumnNames,
+    'source_route',
+    'status',
+    'internal_notes',
+    'user_agent',
+    'ip_hash',
+  ];
+  return lowerDetail.includes('pgrst204') || optionalColumns.some((column) => lowerDetail.includes(column));
+}
+
+function classifyStorageFailure(status: number, detail: string): KitchenLeadStorageFailureCode {
+  const lowerDetail = detail.toLowerCase();
+  if (status === 401 || status === 403) return 'permission_or_key_rejected';
+  if (status === 404 || lowerDetail.includes('does not exist') || lowerDetail.includes('schema cache')) return 'schema_or_table_missing';
+  if (isMissingOptionalColumnError(detail)) return 'optional_column_mismatch';
+  if (status === 400 || status === 409 || status === 422 || lowerDetail.includes('violates') || lowerDetail.includes('constraint')) {
+    return 'constraint_or_payload_rejected';
+  }
+  return 'insert_failed';
 }
 
 function cleanEnvValue(value: string | undefined) {
@@ -139,7 +205,7 @@ function cleanEnvValue(value: string | undefined) {
 async function insertKitchenLeadRecord(
   endpoint: string,
   serviceRoleKey: string,
-  record: KitchenRequestReviewStorageRecord | KitchenRequestReviewLegacyStorageRecord,
+  record: KitchenRequestReviewStorageRecord | KitchenRequestReviewLegacyStorageRecord | KitchenRequestReviewMinimumStorageRecord,
 ) {
   return fetch(endpoint, {
     method: 'POST',
@@ -180,40 +246,37 @@ export async function storeKitchenRequestReviewLead(
       configured: true,
       stored: false,
       error: `Supabase insert request failed: ${error instanceof Error ? error.message : 'fetch failed'}`,
+      errorCode: 'insert_request_failed',
     };
   }
 
   if (!response.ok) {
     const detail = await response.text();
-    if (isMissingAttributionColumnError(detail)) {
+    const fallbackRecords = [
+      createLegacyKitchenRequestReviewStorageRecord(record),
+      createMinimumKitchenRequestReviewStorageRecord(record),
+    ];
+
+    for (const fallbackRecord of fallbackRecords) {
       let fallbackResponse: Response;
       try {
-        fallbackResponse = await insertKitchenLeadRecord(
-          endpoint,
-          serviceRoleKey,
-          createLegacyKitchenRequestReviewStorageRecord(record),
-        );
+        fallbackResponse = await insertKitchenLeadRecord(endpoint, serviceRoleKey, fallbackRecord);
       } catch (error) {
         return {
           configured: true,
           stored: false,
-          error: `Supabase legacy insert request failed: ${error instanceof Error ? error.message : 'fetch failed'}`,
+          error: `Supabase fallback insert request failed: ${error instanceof Error ? error.message : 'fetch failed'}`,
+          errorCode: 'insert_request_failed',
         };
       }
       if (fallbackResponse.ok) return { configured: true, stored: true, id: lead.id };
-
-      const fallbackDetail = await fallbackResponse.text();
-      return {
-        configured: true,
-        stored: false,
-        error: `Supabase insert failed with ${fallbackResponse.status}: ${fallbackDetail.slice(0, 180)}`,
-      };
     }
 
     return {
       configured: true,
       stored: false,
       error: `Supabase insert failed with ${response.status}: ${detail.slice(0, 180)}`,
+      errorCode: classifyStorageFailure(response.status, detail),
     };
   }
 
