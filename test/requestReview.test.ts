@@ -642,6 +642,42 @@ describe('kitchen request review storage adapter', () => {
     expect(record).not.toHaveProperty('adminPriority');
   });
 
+  it('accepts Supabase URL env values accidentally wrapped in quotes', async () => {
+    const validation = validateKitchenRequestReview(validPayload);
+    if (!validation.ok) throw new Error('Expected valid payload');
+    process.env.OPERON_KITCHENS_SUPABASE_URL = '"https://kitchens.supabase.co/"';
+    process.env.OPERON_KITCHENS_SUPABASE_SERVICE_ROLE_KEY = 'service-role-test-key';
+    const fetchMock = jest.fn(async () => ({ ok: true, text: async () => '' }));
+    global.fetch = fetchMock as typeof fetch;
+
+    await expect(storeKitchenRequestReviewLead(validation.data)).resolves.toEqual({
+      configured: true,
+      stored: true,
+      id: validation.data.id,
+    });
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://kitchens.supabase.co/rest/v1/kitchen_request_reviews',
+      expect.objectContaining({ method: 'POST' }),
+    );
+  });
+
+  it('returns a safe diagnostic when Supabase URL env is malformed', async () => {
+    const validation = validateKitchenRequestReview(validPayload);
+    if (!validation.ok) throw new Error('Expected valid payload');
+    process.env.OPERON_KITCHENS_SUPABASE_URL = 'not a url';
+    process.env.OPERON_KITCHENS_SUPABASE_SERVICE_ROLE_KEY = 'service-role-test-key';
+    const fetchMock = jest.fn();
+    global.fetch = fetchMock as typeof fetch;
+
+    await expect(storeKitchenRequestReviewLead(validation.data)).resolves.toEqual({
+      configured: true,
+      stored: false,
+      error: 'Supabase URL is not a valid HTTP endpoint.',
+      errorCode: 'invalid_supabase_url',
+    });
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
   it('falls back to legacy storage columns if attribution migration has not been applied yet', async () => {
     const validation = validateKitchenRequestReview({
       ...validPayload,

@@ -64,6 +64,7 @@ type KitchenRequestReviewMinimumStorageRecord = Pick<
 
 export type KitchenLeadStorageFailureCode =
   | 'insert_request_failed'
+  | 'invalid_supabase_url'
   | 'schema_or_table_missing'
   | 'optional_column_mismatch'
   | 'permission_or_key_rejected'
@@ -199,7 +200,19 @@ function classifyStorageFailure(status: number, detail: string): KitchenLeadStor
 }
 
 function cleanEnvValue(value: string | undefined) {
-  return value?.trim() || undefined;
+  const trimmed = value?.trim();
+  if (!trimmed) return undefined;
+  const quotePairs = [
+    ['"', '"'],
+    ["'", "'"],
+    ['`', '`'],
+  ];
+  for (const [open, close] of quotePairs) {
+    if (trimmed.startsWith(open) && trimmed.endsWith(close)) {
+      return trimmed.slice(1, -1).trim() || undefined;
+    }
+  }
+  return trimmed;
 }
 
 async function insertKitchenLeadRecord(
@@ -237,6 +250,25 @@ export async function storeKitchenRequestReviewLead(
   if (!supabaseUrl || !serviceRoleKey) return { configured: false, stored: false, reason: 'missing_env' };
 
   const endpoint = `${supabaseUrl.replace(/\/$/, '')}/rest/v1/kitchen_request_reviews`;
+  try {
+    const parsedEndpoint = new URL(endpoint);
+    if (!['http:', 'https:'].includes(parsedEndpoint.protocol)) {
+      return {
+        configured: true,
+        stored: false,
+        error: 'Supabase URL must use http or https.',
+        errorCode: 'invalid_supabase_url',
+      };
+    }
+  } catch {
+    return {
+      configured: true,
+      stored: false,
+      error: 'Supabase URL is not a valid HTTP endpoint.',
+      errorCode: 'invalid_supabase_url',
+    };
+  }
+
   const record = createKitchenRequestReviewStorageRecord(lead, metadata);
   let response: Response;
   try {
